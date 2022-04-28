@@ -1,30 +1,28 @@
 from typing import Any
+import stringcase
 
-from .base_widget import BaseWidget
 
-
-class TextWidget(BaseWidget):
+class TextWidget:
 
     def __init__(self, name: str, label: str|None = None, col: int = 0, default="") -> None:
-        super().__init__(name, label=label, col=col)
+        self._name = name
+        self._col = col
         self._default = default
-
-    # def __init__(self, name:str, default="") -> None:
-    #     self._data = default
-    #     self._name = name
+        self._data = default
+        self._label = label or stringcase.capitalcase(name)
 
     def get_context(self) -> Any:
-        ...
+        return self._data
 
     def serialize(self) -> Any:
-        ...
+        return self._data
 
     def load(self, value: Any) -> None:
-        # self._data
-        pass
+        self._data = value
+        
 
     def get_default_serialized_data(self) -> Any:
-        ...
+        return self._default
 
 
     @property
@@ -37,8 +35,8 @@ class TextWidget(BaseWidget):
 
     @property
     def label(self) -> str:
-        ...
+        return self._label
 
     @property
     def col(self) -> int:
-        ...
+        return self._col

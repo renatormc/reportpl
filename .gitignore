@@ -5,3 +5,4 @@ dist
 .idea
 .mypy_cache
 .env
+test.py

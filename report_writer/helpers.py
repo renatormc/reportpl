@@ -1,4 +1,3 @@
-from typing import Union
 from pathlib import Path
 from PIL import ImageOps, Image
 

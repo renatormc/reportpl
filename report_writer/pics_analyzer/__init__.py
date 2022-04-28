@@ -1,7 +1,7 @@
 from pathlib import Path
 import re
 from typing import TypedDict, Optional, Union
-from rlibs.report_writer.types import CaseObjectsType, ObjectType
+from report_writer.types import CaseObjectsType, ObjectType
 
 
 class AnalyzedPicInfo(TypedDict):

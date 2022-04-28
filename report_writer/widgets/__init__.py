@@ -1,6 +1,7 @@
-from .base_widget import BaseWidget
+from typing import Type
+from .widget import Widget
 from .text_widget import TextWidget
 
-__widgets__: list[BaseWidget] = [
+__widgets__: list[Type['Widget']] = [
     TextWidget
 ]

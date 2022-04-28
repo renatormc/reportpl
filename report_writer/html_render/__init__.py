@@ -1,7 +1,7 @@
 from pathlib import Path
 from jinja2 import Template
 from bs4 import BeautifulSoup
-from rlibs.report_writer.doc_handler.jenv import make_jinja_env
+from report_writer.doc_handler.jenv import make_jinja_env
 
 def remove_extra_spaces(text):
     lines = text.split()

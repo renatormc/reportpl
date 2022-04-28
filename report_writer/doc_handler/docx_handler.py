@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Optional, Union
 from docxtpl import DocxTemplate, InlineImage
-from rlibs.report_writer.doc_handler.jenv import make_jinja_env
+from report_writer.doc_handler.jenv import make_jinja_env
 from docx.shared import Mm
 from uuid import uuid4
 
