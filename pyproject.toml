@@ -10,6 +10,7 @@ stringcase = "^1.2.0"
 docxtpl = "^0.16.0"
 beautifulsoup4 = "*"
 Pillow = "^9.1.0"
+Flask = "^2.1.2"
 
 [tool.poetry.dev-dependencies]
 mypy = "^0.950"
