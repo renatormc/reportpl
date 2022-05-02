@@ -4,7 +4,7 @@ from importlib.machinery import SourceFileLoader
 from .widgets import Widget
 from .doc_handler import DocxHandler
 from .html_render import render_pre_html
-from .types import FormLayoutItem, ValidationError
+from .types import WidgetAttributesType, ValidationError
 import json
 
 __version__ = '0.1.0'
@@ -58,16 +58,16 @@ class ReportWriter:
     def set_model(self, model_name: str) -> None:
         self._current_module_model = ModuleModel(self.models_folder, model_name)
 
-    def get_form_layout(self) -> list[list[FormLayoutItem]]:
+    def get_form_layout(self) -> list[list[WidgetAttributesType]]:
         """Return the layout description of the form in a json form"""
         widgets = self.current_module_model.get_web_form()
-        return [[{'field_name': w.name, 'widget_type': w.widget_type} for w in row] for row in widgets]
+        return [[w.get_layout() for w in row] for row in widgets]
 
     def get_default_data(self) -> dict[str, Any]:
         data = {}
         for row in self.current_module_model.get_web_form():
             for w in row:
-                data[w.name] = w.get_default_serialized_data()
+                data[w.name] = w.get_default_data()
         return data
 
     def render_docx(self, dest_file: str | Path) -> Tuple[Any, Optional[Path]]:
@@ -76,7 +76,7 @@ class ReportWriter:
         r = Renderer(self.current_module_model.module)
         return r.render(self.context, dest_file)
 
-    def validate(self,  data: dict[str, Any]) -> dict:
+    def validate(self,  data: dict) -> dict:
         """Receive data serialized, validate and convert types
         Returns errors"""
         self._context = {}

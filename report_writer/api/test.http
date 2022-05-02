@@ -1,0 +1,7 @@
+@baseurl = http://localhost:5000
+
+###
+GET {{baseurl}}/api/form-layout/example
+
+###
+GET {{baseurl}}/api/form-default-data/example

@@ -1,6 +1,7 @@
 
 class Filters:
-    pass
-    # @staticmethod
-    # def quote(value):
-    #     return f"\"{value}\""
+    @staticmethod
+    def quote(value):
+        return f"\"{value}\""
+
+  

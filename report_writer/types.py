@@ -1,18 +1,29 @@
 from pathlib import Path
-from typing import Any, TypedDict
+from typing import Any, Callable, TypedDict
 
 
 class ValidationError(Exception):
     pass
+
 
 class InitialData:
     def __init__(self) -> None:
         self.context: dict = {}
         self.form_data: dict = {}
 
-class FormLayoutItem(TypedDict):
+
+class WidgetAttributesType(TypedDict):
     field_name: str
     widget_type: str
+    widget_props: Any
+    label: str
+    col: int
+
+
+WidgetMatrixType = list[list[WidgetAttributesType]]
+
+ValidatorType = Callable[[Any], None] 
+ConverterType = Callable[[Any], Any] 
 
 
 class ObjectType:
@@ -47,10 +58,9 @@ class ObjectType:
             text += f"\n{pic}"
         return text
 
-  
 
 class CaseObjectsType:
-    def __init__(self, folder: str|Path, objects: list[ObjectType] = [],
+    def __init__(self, folder: str | Path, objects: list[ObjectType] = [],
                  pics_not_classified: list[str] = [],
                  alias: str = "") -> None:
         self.folder: Path = Path(folder)
@@ -71,14 +81,14 @@ class CaseObjectsType:
 
     def from_dict(self, data: dict[str, Any]) -> 'CaseObjectsType':
         # self.folder = Path(data['folder'])
-        self.objects = [ObjectType().from_dict(item) for item in data['objects']]
+        self.objects = [ObjectType().from_dict(item)
+                        for item in data['objects']]
         self.pics_not_classified = data['pics_not_classified']
         try:
             self.alias = data['alias']
         except KeyError:
             self.alias = ""
         return self
-
 
     def __str__(self) -> str:
         return (f"alias: {self.alias}, n_objetos: {len(self.objects)}, n_pics_not_classified: {len(self.pics_not_classified)}, folder: {self.folder}")

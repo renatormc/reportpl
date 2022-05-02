@@ -1,0 +1,10 @@
+.error-message{
+  color: brown;
+  font-size: 10pt;
+}
+
+.array-widget-item{
+  background-color: aliceblue;
+  margin-top: 5px;
+  padding: 5px 5px 5px 5px;
+}

@@ -1,33 +1,30 @@
-from typing import Any, Protocol
+from typing import Any, Callable, Optional, Protocol
+
+from report_writer.types import ConverterType, ValidatorType, WidgetAttributesType
 
 
 class Widget(Protocol):
 
-    def get_context(self) -> Any:
+    validators: list[ValidatorType]
+    converter: Optional[ConverterType]
+    data: Any
+    raw_data: Any
+    col: int
+    name: str
+
+    def get_default_data(self) -> Any:
         pass
 
-    def serialize(self) -> Any:
+    def get_context(self) -> Any:
         pass
 
     def load(self, value: Any) -> None:
         pass
 
-    def get_default_serialized_data(self) -> Any:
+    def get_layout(self) -> WidgetAttributesType:
         pass
 
-    @property
-    def widget_type(self) -> str:
-        pass
+    # @property
+    # def name(self) -> str:
+    #     pass
 
-    @property
-    def name(self) -> str:
-        pass
-
-    @property
-    def label(self) -> str:
-        pass
-
-
-    @property
-    def col(self) -> int:
-        pass
