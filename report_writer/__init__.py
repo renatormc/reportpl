@@ -1,10 +1,12 @@
 from pathlib import Path
 from typing import Any, Optional, Tuple, Union
 from importlib.machinery import SourceFileLoader
+
+from report_writer.widgets.composite_widget import CompositeWidget
 from .widgets import Widget
 from .doc_handler import DocxHandler
 from .html_render import render_pre_html
-from .types import WidgetAttributesType, ValidationError
+from .types import ErrorsType, WidgetAttributesType
 import json
 
 __version__ = '0.1.0'
@@ -76,21 +78,22 @@ class ReportWriter:
         r = Renderer(self.current_module_model.module)
         return r.render(self.context, dest_file)
 
-    def validate(self,  data: dict) -> dict:
+    def validate(self,  data: dict) -> ErrorsType:
         """Receive data serialized, validate and convert types
         Returns errors"""
-        self._context = {}
-        errors = {}
-        for row in self.current_module_model.get_web_form():
-            for w in row:
-                try:
-                    w.load(data[w.name])
-                    self._context[w.name] = w.get_context()
-                except KeyError:
-                    errors[w.name] = "not found"
-                except ValidationError as e:
-                    message = str(e)
-                    errors[w.name] = message
+        composite = CompositeWidget(self.current_module_model.get_web_form())
+        self._context, errors = composite.convert_data(data)
+        # errors = {}
+        # for row in self.current_module_model.get_web_form():
+        #     for w in row:
+        #         try:
+        #             w.load(data[w.name])
+        #             self._context[w.name] = w.get_context()
+        #         except KeyError:
+        #             errors[w.name] = "not found"
+        #         except ValidationError as e:
+        #             message = str(e)
+        #             errors[w.name] = message
         return errors
 
     def save_data_to_file(self, data: dict, path: str | Path) -> None:

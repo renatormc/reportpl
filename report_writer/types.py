@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Any, Callable, TypedDict
+from typing import Any, Callable, Literal, TypedDict
 
 
 class ValidationError(Exception):
@@ -22,8 +22,10 @@ class WidgetAttributesType(TypedDict):
 
 WidgetMatrixType = list[list[WidgetAttributesType]]
 
-ValidatorType = Callable[[Any], None] 
-ConverterType = Callable[[Any], Any] 
+ValidatorType = Callable[[Any], None]
+ConverterType = Callable[[Any], Any]
+ErrorsType = dict[str, str]|str|list[str]| None
+# FormDataType = dict[str, Any]
 
 
 class ObjectType:

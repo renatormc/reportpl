@@ -1,24 +1,24 @@
 from typing import Any, Optional, Tuple
+
+from click import option
 from report_writer.types import ConverterType, ErrorsType, ValidatorType, WidgetAttributesType, ValidationError
 import stringcase
 
-class TextWidget:
+class SelectWidget:
 
     def __init__(self, name: str,
                  label: str | None = None,
                  col: int = 0, default="",
-                 placeholder: str = "",
-                 required: bool = False,
+                 options: list[str] = [],
                  validators: list[ValidatorType] = [],
                  converter: Optional[ConverterType] = None) -> None:
         self.name = name
         self.col = col
         self.default = default
-        self.placeholder = placeholder
-        self.required = required
         self.label = label or stringcase.capitalcase(name)
         self.validators = validators
         self.converter = converter
+        self.options = options
 
     def convert_data(self, raw_data: Any) -> Tuple[Any, ErrorsType]:
         text = str(raw_data).strip()
