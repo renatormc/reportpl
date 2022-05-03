@@ -44,7 +44,7 @@ Importe os arquivos js e css e deixe um div de id "root" passando o nome do mode
 <html lang="pt-BR">
   <head>
     ...
-    <script defer="defer" src="{% static 'front/js/main.6047306e.js' %}"></script>
+    <script defer="defer" src="{% static 'front/js/main.f7f1e0f0.js' %}"></script>
     <link href="{% static 'front/css/main.9aa2823c.css' %}" rel="stylesheet" />
     ...
   </head>
@@ -78,7 +78,7 @@ data = rw.get_default_data()
 ## Validar dados
 ```python
 errors = rw.validate(json_data)
-context = rw.
+context = rw.context
 ```
 
 ## Pegar contexto
