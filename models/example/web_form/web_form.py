@@ -1,6 +1,5 @@
-from report_writer.widgets import TextWidget, Widget
+from report_writer.widgets import TextWidget, Widget, ArrayWidget, TextAreaWidget
 from report_writer.types import ValidationError
-from report_writer.widgets.array_widget import ArrayWidget
 from report_writer.web_converters import DateConverter, FloatConverter
 
 
@@ -28,5 +27,8 @@ widgets: list[list[Widget]] = [
                 TextWidget('profissao', label="Profissão", required=True),
             ]
         ])
+    ],
+    [
+        TextAreaWidget('texto_long', label='Texto longo', rows=10)
     ]
 ]

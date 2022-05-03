@@ -1,8 +1,13 @@
 from typing import Any
-from flask import Flask, jsonify, request, abort
+from flask import Flask, jsonify, request, abort, render_template
 from report_writer import ReportWriter
 
 app = Flask(__name__)
+
+
+@app.route("/<model_name>")
+def index(model_name: str):
+    return render_template('base.html', model_name=model_name)
 
 
 @app.route("/api/form-layout/<model_name>")
