@@ -1,4 +1,4 @@
-# How to develop doc models
+# How to develop docmodels
 
 Run the command 
 ```

@@ -9,6 +9,8 @@ from .html_render import render_pre_html
 from .types import ErrorsType, WidgetAttributesType
 import json
 
+
+
 __version__ = '0.1.0'
 
 
@@ -83,17 +85,6 @@ class ReportWriter:
         Returns errors"""
         composite = CompositeWidget(self.current_module_model.get_web_form())
         self._context, errors = composite.convert_data(data)
-        # errors = {}
-        # for row in self.current_module_model.get_web_form():
-        #     for w in row:
-        #         try:
-        #             w.load(data[w.name])
-        #             self._context[w.name] = w.get_context()
-        #         except KeyError:
-        #             errors[w.name] = "not found"
-        #         except ValidationError as e:
-        #             message = str(e)
-        #             errors[w.name] = message
         return errors
 
     def save_data_to_file(self, data: dict, path: str | Path) -> None:
@@ -106,3 +97,6 @@ class ReportWriter:
         with path.open("r", encoding="utf-8") as f:
             data = json.load(f)
         return data
+
+
+
