@@ -21,11 +21,8 @@ class SelectWidget:
         self.options = options
 
     def convert_data(self, raw_data: Any) -> Tuple[Any, ErrorsType]:
-        text = str(raw_data).strip()
-        if self.required and text == "":
-            return None, "Campo obrigatório"
         try:
-            self.data = self.converter(text) if self.converter else text
+            self.data = self.converter(raw_data) if self.converter else raw_data
         except ValidationError as e:
             return None, str(e)
         for v in self.validators:
@@ -39,10 +36,10 @@ class SelectWidget:
     def get_layout(self) -> WidgetAttributesType:
         return {
             'field_name': self.name,
-            'widget_type': "text_widget",
+            'widget_type': "select_widget",
             'label': self.label,
             'col': self.col,
-            'widget_props': {'placeholder': self.placeholder},
+            'widget_props': {'options': self.options},
         }
 
 
