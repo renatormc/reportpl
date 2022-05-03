@@ -44,8 +44,8 @@ Importe os arquivos js e css e deixe um div de id "root" passando o nome do mode
 <html lang="pt-BR">
   <head>
     ...
-    <script defer="defer" src="{{ url_for('static', filename='front/js/main.6047306e.js') }}"></script>
-    <link href="{{ url_for('static', filename='front/css/main.9aa2823c.css') }}" rel="stylesheet" />
+    <script defer="defer" src="{% static 'front/js/main.6047306e.js' %}"></script>
+    <link href="{% static 'front/css/main.9aa2823c.css' %}" rel="stylesheet" />
     ...
   </head>
   <body>
