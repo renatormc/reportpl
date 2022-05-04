@@ -5,6 +5,14 @@ from typing import Any, Callable, Literal, TypedDict
 class ValidationError(Exception):
     pass
 
+class ModelListItem(TypedDict):
+    key: str
+    value: Any
+
+class ModelList(TypedDict):
+    name: str
+    items: list[ModelListItem]
+
 
 class InitialData:
     def __init__(self) -> None:

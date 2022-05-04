@@ -84,14 +84,20 @@ data = rw.get_form_layout()
 data = rw.get_default_data()
 ```
 
-## Validar dados
+## Validar dados e renderizar docx
 ```python
+rw = ReportWriter("/caminho/pasta/models")
+rw.set_model("docmodel_name")
 errors = rw.validate(json_data)
-context = rw.context
+if not errors:
+  rw.render_doc("/caminho/do/arquivo.docx")
 ```
 
-## Pegar contexto
-O contexto após a validação caso não haja erros se encontrará dentro da propriedade "context"
+## Pegar listas declaradas no docmodel
+As listas de  autocomplete deverão ser salvas em banco para futura filtragem. Para pegar quais listas existem em cada docmodel pode-se utilizar o código a seguir.
+
 ```python
-context = rw.context
+rw = ReportWriter("/caminho/pasta/models")
+rw.set_model("docmodel_name")
+lists = rw.get_lists()
 ```

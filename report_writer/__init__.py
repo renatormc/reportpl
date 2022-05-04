@@ -6,14 +6,15 @@ from report_writer.widgets.composite_widget import CompositeWidget
 from .widgets import Widget
 from .doc_handler import DocxHandler
 from .html_render import render_pre_html
-from .types import ErrorsType, WidgetAttributesType
+from .types import ErrorsType, ModelList, ModelListItem, WidgetAttributesType
 import json
 import json
 import os
 
 __version__ = '0.1.0'
 
-script_dir =  Path(os.path.dirname(os.path.realpath(__file__)))
+script_dir = Path(os.path.dirname(os.path.realpath(__file__)))
+
 
 class Renderer:
     def __init__(self, model):
@@ -36,7 +37,8 @@ class ModuleModel:
         self.path = Path(models_folder) / model_name / "__init__.py"
         if not self.path.exists():
             raise Exception(f"Model \"{model_name}\" not found")
-        self.module = SourceFileLoader(model_name, str(self.path)).load_module()
+        self.module = SourceFileLoader(
+            model_name, str(self.path)).load_module()
 
     def get_web_form(self) -> list[list[Widget]]:
         return self.module.web_form.widgets
@@ -46,7 +48,14 @@ class ReportWriter:
     def __init__(self, models_folder: str | Path) -> None:
         self.models_folder = Path(models_folder)
         self._current_module_model: None | ModuleModel = None
-        self._context: dict| None = None
+        self._current_model_folder: Path | None = None
+        self._context: dict | None = None
+
+    @property
+    def current_model_folder(self) -> Path:
+        if self._current_model_folder is None:
+            raise Exception("current_module_model must was not initialized")
+        return self._current_model_folder
 
     @property
     def current_module_model(self) -> ModuleModel:
@@ -60,8 +69,13 @@ class ReportWriter:
             raise Exception("validate was not called")
         return self._context
 
+    def list_models(self) -> list[str]:
+        return [entry.name for entry in self.models_folder.iterdir() if entry.is_dir()]
+
     def set_model(self, model_name: str) -> None:
-        self._current_module_model = ModuleModel(self.models_folder, model_name)
+        self._current_model_folder = self.models_folder / model_name
+        self._current_module_model = ModuleModel(
+            self.models_folder, model_name)
 
     def get_form_layout(self) -> list[list[WidgetAttributesType]]:
         """Return the layout description of the form in a json form"""
@@ -99,10 +113,28 @@ class ReportWriter:
             data = json.load(f)
         return data
 
+    def get_lists(self) -> list[ModelList]:
+        folder = self.current_model_folder / "lists"
+        lists: list[ModelList] = []
+        if folder.exists():
+            for entry in folder.iterdir():
+                if entry.is_dir():
+                    continue
+                l: ModelList = {'name': entry.stem, 'items': []}
+                if entry.suffix == ".txt":
+                    text = entry.read_text(encoding="utf-8")
+                    lines = text.split("\n")
+                    l["items"] = [{'key': line, 'value': line}
+                                  for line in lines]
+                elif entry.suffix == ".json":
+                    with entry.open("r", encoding="utf-8") as f:
+                        l["items"] = json.load(f)
+                lists.append(l)
+        return lists
+
 
 def get_file_names() -> dict[str, str]:
     folder = script_dir / "api/static/front"
     with (folder / "filenames.json").open("r", encoding="utf-8") as f:
         data = json.load(f)
     return data
-
