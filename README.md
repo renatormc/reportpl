@@ -37,6 +37,15 @@ python -m report_writer copy-spa <destination_folder>
 ```
 
 ## Importar dentro do template
+Como os arquivos js e css mudam o nome a cada nova compilação foi disponibilizado a função get_file_names que deve ser utilizada para pegar o nome dos arquivos 
+os quais deverão ser passado para o template.
+
+```python
+from report_writer import get_file_names
+
+filenames = get_file_names()
+```
+
 Importe os arquivos js e css e deixe um div de id "root" passando o nome do modelo no atributo "model_name"
 
 ```html
@@ -44,8 +53,8 @@ Importe os arquivos js e css e deixe um div de id "root" passando o nome do mode
 <html lang="pt-BR">
   <head>
     ...
-    <script defer="defer" src="{% static 'front/js/main.f7f1e0f0.js' %}"></script>
-    <link href="{% static 'front/css/main.9aa2823c.css' %}" rel="stylesheet" />
+    <script defer="defer" src="{% static 'front/js/' + filenames.js_filename %}"></script>
+    <link href="{% static 'front/css/' + filenames.css_filename %}" rel="stylesheet" />
     ...
   </head>
   <body>

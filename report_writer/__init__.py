@@ -8,11 +8,12 @@ from .doc_handler import DocxHandler
 from .html_render import render_pre_html
 from .types import ErrorsType, WidgetAttributesType
 import json
-
-
+import json
+import os
 
 __version__ = '0.1.0'
 
+script_dir =  Path(os.path.dirname(os.path.realpath(__file__)))
 
 class Renderer:
     def __init__(self, model):
@@ -99,4 +100,8 @@ class ReportWriter:
         return data
 
 
-
+def get_file_names() -> dict[str, str]:
+    folder = script_dir / "api/static/front"
+    with (folder / "filenames.json").open("r", encoding="utf-8") as f:
+        data = json.load(f)
+    return data

@@ -1,13 +1,14 @@
 from typing import Any
 from flask import Flask, jsonify, request, abort, render_template
-from report_writer import ReportWriter
+from report_writer import ReportWriter, get_file_names
 
 app = Flask(__name__)
 
 
 @app.route("/<model_name>")
 def index(model_name: str):
-    return render_template('base.html', model_name=model_name)
+    filenames = get_file_names()
+    return render_template('base.html', model_name=model_name, filenames=filenames)
 
 
 @app.route("/api/form-layout/<model_name>")

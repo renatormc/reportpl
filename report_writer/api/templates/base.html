@@ -14,8 +14,8 @@
       crossorigin="anonymous"
     ></script>
 
-    <script defer="defer" src="{{ url_for('static', filename='front/js/main.f7f1e0f0.js') }}"></script>
-    <link href="{{ url_for('static', filename='front/css/main.9aa2823c.css') }}" rel="stylesheet" />
+    <script defer="defer" src="{{ url_for('static', filename='front/js/' + filenames.js_filename ) }}"></script>
+    <link href="{{ url_for('static', filename='front/css/' + filenames.css_filename) }}" rel="stylesheet" />
   </head>
   <body>
     <div id="root" model_name="{{ model_name }}"></div>

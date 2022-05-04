@@ -4,6 +4,8 @@ from pathlib import Path
 import shutil
 from report_writer.copy_spa import copy_spa
 import os
+import subprocess
+import json
 
 script_dir =  Path(os.path.dirname(os.path.realpath(__file__)))
 
@@ -13,9 +15,6 @@ parser.add_argument("-v", "--verbose", help="Verbose")
 
 p_dev = subparsers.add_parser("dev")
 
-# p_copy_build = subparsers.add_parser("copy-build")
-# p_copy_build.add_argument("folder")
-
 p_copy_spa = subparsers.add_parser("copy-spa")
 p_copy_spa.add_argument("folder_to")
 
@@ -24,19 +23,11 @@ p_build_spa = subparsers.add_parser("build-spa")
 args = parser.parse_args()
 if args.command == "dev":
     run_app()
-# elif args.command == "copy-build":
-#     folder_from = Path(args.folder) / "build/static"
-#     folder_to = config.api_dir / "static/front"
-#     try:
-#         shutil.rmtree(folder_to)
-#     except FileNotFoundError:
-#         pass
-#     shutil.copytree(folder_from, folder_to)
 elif args.command == "copy-spa":
     copy_spa(args.folder_to)
 elif args.command == "build-spa":
     os.chdir(script_dir.parent / "form")
-    os.system("yarn build")
+    subprocess.check_call(["yarn", "build"])
     folder_from = script_dir.parent / "form/build/static"
     folder_to = config.api_dir / "static/front"
     try:
@@ -45,7 +36,17 @@ elif args.command == "build-spa":
         pass
     shutil.copytree(folder_from, folder_to)
     
-
+    filenames = {}
+    for entry in (folder_to / "css").iterdir():
+        name = entry.name
+        if name.startswith("main.") and name.endswith(".css"):
+            filenames['css_filename'] = name
+    for entry in (folder_to / "js").iterdir():
+        name = entry.name
+        if name.startswith("main.") and name.endswith(".js"):
+            filenames['js_filename'] = name
+    with (folder_to / "filenames.json").open("w", encoding="utf-8") as f:
+        f.write(json.dumps(filenames, ensure_ascii=False, indent=4))
 
 
 
