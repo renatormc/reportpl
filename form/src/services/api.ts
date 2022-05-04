@@ -1,6 +1,7 @@
 import { AxiosError } from 'axios';
 import { WidgetMatrixType, ErrorsType } from './../types/custom_types';
 import axios from './axios'
+import { getCookie } from './cookies';
 
 
 export const getFormLayout = async (model_name: string): Promise<WidgetMatrixType> => {
@@ -16,7 +17,14 @@ export const getFormDefaultData = async (model_name: string): Promise<{ [key: st
 
 export const renderDoc = async (model_name: string, data: any): Promise<ErrorsType> => {
     try {
-        const resp = await axios.post<ErrorsType>("/api/render-doc/" + model_name, data);
+        const csrftoken = getCookie('csrftoken') || "";
+        const resp = await axios.post<ErrorsType>("/api/render-doc/" + model_name,
+            data,
+            {
+                headers: {
+                    'X-CSRFToken': csrftoken
+                }
+            });
         return resp.data;
     } catch (error) {
         const err = error as AxiosError
@@ -24,7 +32,5 @@ export const renderDoc = async (model_name: string, data: any): Promise<ErrorsTy
             return err.response.data as ErrorsType;
         }
         throw error;
-        
     }
-
 }

@@ -18,6 +18,10 @@
     <link href="{{ url_for('static', filename='front/css/' + filenames.css_filename) }}" rel="stylesheet" />
   </head>
   <body>
-    <div id="root" model_name="{{ model_name }}"></div>
+
+
+    <div id="root" model_name="{{ model_name }}" csrf_token="token_test"></div>
+
+
   </body>
 </html>
