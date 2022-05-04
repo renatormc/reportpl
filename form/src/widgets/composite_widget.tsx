@@ -1,6 +1,7 @@
 import React from 'react';
 import { DataType, ErrorsType, WidgetMatrixType } from '../types/custom_types';
 import SwitchWidget from './switch_widget';
+import { Row, Col} from 'react-bootstrap';
 
 type Props = {
   widgetMatrix: WidgetMatrixType,
@@ -17,36 +18,36 @@ function CompositeWidget(props: Props) {
   const errors = props.errors || {}
 
   const updateFormValue = (field: string, value: any) => {
-    if(props.field_name){
+    if (props.field_name) {
       // setData(data => ({ ...data, [field]: value }));
       props.updateFormValue(props.field_name, { ...props.data, [field]: value });
-    }else {
+    } else {
       props.updateFormValue(field, value);
     }
   }
 
   return (
     <div>
-    {props.widgetMatrix.map((row, index) => {
-      return (
-        <div key={index} className="row">
-          {row.map(w => {
-            return (
-              <div key={w.field_name} className={w.col > 0 ? 'col-' + w.col : 'col'}>
-                <SwitchWidget
-                  widget_props={w.widget_props}
-                  data={props.data[w.field_name]}
-                  field_name={w.field_name}
-                  widget_type={w.widget_type}
-                  updateFormValue={updateFormValue} 
-                  errors={errors[w.field_name]}
-                  label={w.label}/>
-              </div>
-            );
-          })}
-        </div>
-      );
-    })}
+      {props.widgetMatrix.map((row, index) => {
+        return (
+          <Row key={index}>
+            {row.map(w => {
+              return (
+                <Col   sm={w.col > 0 ? w.col : undefined}>
+                    <SwitchWidget
+                      widget_props={w.widget_props}
+                      data={props.data[w.field_name]}
+                      field_name={w.field_name}
+                      widget_type={w.widget_type}
+                      updateFormValue={updateFormValue}
+                      errors={errors[w.field_name]}
+                      label={w.label} />
+                </Col>
+              );
+            })}
+          </Row>
+        );
+      })}
     </div>
   );
 }

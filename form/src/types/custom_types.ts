@@ -3,7 +3,7 @@ export type WidgetAttributesType = {
     field_name: string,
     widget_type: string,
     label: string,
-    col: Number
+    col: number
 }
 
 export type WidgetMatrixType = Array<Array<WidgetAttributesType>>

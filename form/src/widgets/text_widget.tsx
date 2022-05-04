@@ -1,4 +1,5 @@
 import React from 'react';
+import { Form } from 'react-bootstrap';
 
 type Props = {
   widget_props: any,
@@ -13,10 +14,9 @@ function TextWidget(props: Props) {
 
   return (
     <div>
-      <label className="form-label">{props.label}</label>
-      <input
+      <Form.Label>{props.label}</Form.Label>
+      <Form.Control
         type="text"
-        className="form-control"
         placeholder={props.widget_props.placeholder}
         value={props.data}
         onChange={(e) => { props.updateFormValue(props.field_name, e.target.value) }}

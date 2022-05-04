@@ -1,6 +1,7 @@
 from typing import Any
 from flask import Flask, jsonify, request, abort, render_template
 from report_writer import ReportWriter, get_file_names
+from report_writer.api import config
 
 app = Flask(__name__)
 
@@ -41,6 +42,26 @@ def render_doc(model_name: str):
     if not isinstance(json_data, dict):
         return "Incorrect data format", 401
     errors = rw.validate(json_data)
+    print("Errors: ")
+    print(errors)
     if errors:
         return jsonify(errors), 422
+    print("\n\nContext: ")
+    print(rw.context)
+    rw.render_docx("./compilado.docx")
     return jsonify(errors)
+
+# @app.route("/api/save-data")
+# def save_data(model_name: str):
+#     name_id = request.args.get("name_id")
+#     if name_id is None:
+#         return "No name_id was informed", 404
+#     json_data = request.json
+#     if not isinstance(json_data, dict):
+#         return "Incorrect data format", 401
+#     model_folder = config.saved_data_dir / model_name
+#     try:
+#         model_folder.mkdir()
+#     except FileExistsError:
+#         pass
+#     path = model_folder / f""

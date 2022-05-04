@@ -105,3 +105,4 @@ def get_file_names() -> dict[str, str]:
     with (folder / "filenames.json").open("r", encoding="utf-8") as f:
         data = json.load(f)
     return data
+

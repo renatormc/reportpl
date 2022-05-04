@@ -1,4 +1,5 @@
 import React from 'react';
+import { Form } from 'react-bootstrap';
 
 type Props = {
   widget_props: any,
@@ -13,14 +14,14 @@ function TextAreaWidget(props: Props) {
 
   return (
     <div>
-      <label className="form-label">{props.label}</label>
-      <textarea
-        className="form-control"
-        placeholder={props.widget_props.placeholder}
+      <Form.Label>{props.label}</Form.Label>
+      <Form.Control as="textarea"
         rows={props.widget_props.rows}
-        onChange={(e) => { props.updateFormValue(props.field_name, e.target.value) }}>
-        {props.data}
-      </textarea>
+        value={props.data}
+        placeholder={props.widget_props.placeholder}
+        onChange={(e) => { props.updateFormValue(props.field_name, e.target.value) }}
+      />
+
       {props.errors && <div className="error-message">{props.errors}</div>}
     </div >
   );

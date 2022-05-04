@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { DataType, ErrorsType, WidgetMatrixType } from '../types/custom_types';
 import CompositeWidget from './composite_widget';
+import { Row, Col, Button, Form, Container } from 'react-bootstrap';
 
 type Props = {
   widget_props: any,
@@ -58,38 +59,58 @@ function ArrayWidget(props: Props) {
 
   return (
     <div>
-      <label className="form-label">{props.label}</label>
-      <div className="container-fluid array-container">
-        <div className="row">
-          <div className="col">
-            <div className="d-inline-flex justify-content-start align-items-start gap-1">
-              <input
+      <Form.Label>{props.label}</Form.Label>
+      <Container fluid className="array-container">
+        <Row>
+          <Col>
+            <div className="d-inline-flex justify-content-start align-items-start gap-2">
+              <Form.Control
                 type="number"
-                min="1"
-                className="form-control"
+                min={1}
                 value={qtdItems}
                 onChange={(e) => { setQtdItems(parseInt(e.target.value)) }}
-                id={props.field_name}
-              />
-              <button className="btn btn-primary"
-                data-bs-toggle="tooltip" data-bs-placement="top" title="Adicionar"
-                onClick={addItems}><i className="fas fa-plus"></i></button>
-              <button className="btn btn-danger "
-                data-bs-toggle="tooltip" data-bs-placement="top" title="Deletar todos"
-                onClick={removeAll}><i className="fas fa-trash-alt"></i></button>
+                id={props.field_name} />
+
+              <Button variant="primary"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="Adicionar"
+                onClick={addItems}>
+                <i className="fas fa-plus"></i>
+              </Button>
+
+
+              <Button variant="danger"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="Deletar todos"
+                onClick={removeAll}>
+                <i className="fas fa-trash-alt"></i>
+              </Button>
             </div>
-          </div>
-        </div>
+          </Col>
+        </Row>
 
         {props.data.map((item, index) => {
           return (
             <div className='array-widget-item'>
               <div className='d-flex flex-row justify-content-end gap-1'>
-                <button className="btn btn-secondary btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Clonar"
-                  onClick={() => { clone(index) }}><i className="far fa-clone"></i></button>
-                <button className="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Deletar"
-                  onClick={() => { removeAt(index) }}><i className="fas fa-trash-alt"></i></button>
-
+                <Button variant="secondary"
+                  size="sm"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  title="Clonar"
+                  onClick={() => { clone(index) }}>
+                  <i className="far fa-clone"></i>
+                </Button>
+                <Button variant="danger"
+                  size="sm"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  title="Deletar"
+                  onClick={() => { removeAt(index) }}>
+                  <i className="fas fa-trash-alt"></i>
+                </Button>
               </div>
               <CompositeWidget
                 widgetMatrix={widgetMatrix}
@@ -102,7 +123,7 @@ function ArrayWidget(props: Props) {
 
           );
         })}
-      </div>
+      </Container>
     </div >
   );
 }

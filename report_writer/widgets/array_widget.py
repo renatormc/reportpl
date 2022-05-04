@@ -24,15 +24,16 @@ class ArrayWidget:
         self.widgets = widgets
         self.composite = CompositeWidget(self.widgets)
 
-    def convert_data(self, raw_data: Any) -> Tuple[Any, ErrorsType]:
-        data: Any = {}
+    def convert_data(self, raw_data: Any) -> Tuple[list, ErrorsType]:
+        data = []
         errors: dict = {}
         for i, item in enumerate(list(raw_data)):
             d, e = self.composite.convert_data(item)
-            data[i] = d
+            data.append(d)
             if e is not None:
                 errors[i] = e
-        return data, errors
+        er = errors or None
+        return data, er
 
     def get_layout(self) -> WidgetAttributesType:
         defaul_item_data = {}

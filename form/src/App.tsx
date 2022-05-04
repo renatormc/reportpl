@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
+import MsgBox from './components/msgbox';
 import { getFormDefaultData, getFormLayout, renderDoc } from './services/api';
 import { DataType, ErrorsType, WidgetMatrixType } from './types/custom_types';
 import CompositeWidget from './widgets/composite_widget';
-
+import { Button, Row, Col, Container, Form } from 'react-bootstrap';
 
 
 type Props = {
@@ -12,6 +13,10 @@ type Props = {
 
 function App(props: Props) {
   const [widgetMatrix, setWidgetMatrix] = useState<WidgetMatrixType>([[]]);
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalText, setModalText] = useState("");
 
   const [data, setData] = useState<DataType>({});
 
@@ -23,7 +28,24 @@ function App(props: Props) {
 
   const submitForm = async () => {
     const errors = await renderDoc(props.model_name, data);
+    console.log(errors);
     setErrors(errors);
+    if (errors === null) {
+      showModal("Renderização", "Arquivo renderizado com sucesso");
+    }
+  }
+
+  const clearForm = () => {
+    getFormDefaultData(props.model_name).then((data) => {
+      setData(data);
+    })
+  }
+
+  const showModal = (title: string, text: string) => {
+    console.log("Mostrar modal");
+    setModalTitle(title);
+    setModalText(text);
+    setModalVisible(true);
   }
 
   useEffect(() => {
@@ -34,33 +56,40 @@ function App(props: Props) {
     });
     getFormDefaultData(props.model_name).then((data) => {
       setData(data);
-      console.log(JSON.stringify(data));
     })
   }, [])
 
   return (
     <div className="App">
-      <div className="container-fluid">
-        <div className="row">
-          <div className="col">
-            <form onSubmit={e => e.preventDefault()}>
-              <CompositeWidget
-                widgetMatrix={widgetMatrix}
-                errors={errors}
-                data={data}
-                updateFormValue={updateFormValue} />
-              <div className="row mt-3">
-                <div className="col text-center">
-                  <button className="btn btn-primary" onClick={submitForm}>Gerar docx</button>
-                </div>
-              </div>
 
-              {/* <p className='text-center'>{JSON.stringify(data)}</p>
+      <Container fluid>
+        <Row>
+          <Col>
+            <Form onSubmit={e => e.preventDefault()}>
+             
+                <CompositeWidget
+                  widgetMatrix={widgetMatrix}
+                  errors={errors}
+                  data={data}
+                  updateFormValue={updateFormValue} />
+                <Row className="mt-3">
+                  <Col className="text-center">
+
+                    <div className="d-inline-flex p-2 bd-highlight gap-3">
+                      <Button variant="secondary" onClick={clearForm}><i className="fa fa-broom"></i> Limpar</Button>
+                      <Button variant="primary" onClick={submitForm}><i className="fa fa-file-word"></i> Gerar docx</Button>
+                    </div>
+
+                  </Col>
+                </Row>
+                {/* <p className='text-center'>{JSON.stringify(data)}</p>
               <p className='text-center'>{JSON.stringify(errors)}</p> */}
-            </form>
-          </div>
-        </div>
-      </div>
+
+            </Form>
+          </Col>
+        </Row>
+      </Container>
+      <MsgBox show={modalVisible} setShow={setModalVisible} title={modalTitle} text={modalText} />
     </div>
   );
 }
