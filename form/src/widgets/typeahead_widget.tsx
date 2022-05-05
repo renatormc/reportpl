@@ -11,7 +11,7 @@ type Props = {
   updateFormValue: (field: string, value: any) => void
 }
 
-function AutoCompleteWidget(props: Props) {
+function TypeAheadWidget(props: Props) {
 
 
   return (
@@ -37,4 +37,4 @@ function AutoCompleteWidget(props: Props) {
   );
 }
 
-export default AutoCompleteWidget;
+export default TypeAheadWidget;

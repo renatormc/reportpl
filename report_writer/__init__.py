@@ -1,6 +1,7 @@
 from pathlib import Path
-from typing import Any, Optional, Tuple, Union
+from typing import Any, Optional, Tuple, Type, Union
 from importlib.machinery import SourceFileLoader
+from report_writer.base_web_form import BaseWebForm
 
 from report_writer.widgets.composite_widget import CompositeWidget
 from .widgets import Widget
@@ -40,8 +41,8 @@ class ModuleModel:
         self.module = SourceFileLoader(
             model_name, str(self.path)).load_module()
 
-    def get_web_form(self) -> list[list[Widget]]:
-        return self.module.web_form.widgets
+    def get_web_form(self) -> BaseWebForm:
+        return self.module.web_form.Form()
 
 
 class ReportWriter:
@@ -79,12 +80,16 @@ class ReportWriter:
 
     def get_form_layout(self) -> list[list[WidgetAttributesType]]:
         """Return the layout description of the form in a json form"""
-        widgets = self.current_module_model.get_web_form()
+        form = self.current_module_model.get_web_form()
+        form.define_widgets()
+        widgets = form.widgets
         return [[w.get_layout() for w in row] for row in widgets]
 
     def get_default_data(self) -> dict[str, Any]:
+        form = self.current_module_model.get_web_form()
+        form.define_widgets()
         data = {}
-        for row in self.current_module_model.get_web_form():
+        for row in form.widgets:
             for w in row:
                 data[w.name] = w.get_default_data()
         return data
@@ -98,7 +103,10 @@ class ReportWriter:
     def validate(self,  data: dict) -> ErrorsType:
         """Receive data serialized, validate and convert types
         Returns errors"""
-        composite = CompositeWidget(self.current_module_model.get_web_form())
+        form = self.current_module_model.get_web_form()
+        form.define_widgets()
+        widgets = form.widgets
+        composite = CompositeWidget(widgets)
         self._context, errors = composite.convert_data(data)
         return errors
 

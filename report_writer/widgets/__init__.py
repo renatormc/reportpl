@@ -10,5 +10,6 @@ __widgets__: list[Type['Widget']] = [
     TextWidget,
     ArrayWidget,
     CheckBoxWidget,
-    SelectWidget
+    SelectWidget,
+    TextAreaWidget
 ]

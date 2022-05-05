@@ -1,17 +1,22 @@
-from typing import Any, Optional, Tuple
+from typing import Any, Optional, Tuple, TYPE_CHECKING
 
-from click import option
+if TYPE_CHECKING:
+    from report_writer.base_web_form import BaseWebForm
+
 from report_writer.types import ConverterType, ErrorsType, ModelListItem, ValidatorType, WidgetAttributesType, ValidationError
 import stringcase
 
+
 class SelectWidget:
 
-    def __init__(self, name: str,
+    def __init__(self, form: 'BaseWebForm',
+                 name: str,
+                 options: list[str] | list[ModelListItem],
                  label: str | None = None,
                  col: int = 0, default="",
-                 options: list[str]|list[ModelListItem] = [],
                  validators: list[ValidatorType] = [],
                  converter: Optional[ConverterType] = None) -> None:
+        self.form = form
         self.name = name
         self.col = col
         self.default = default
@@ -27,7 +32,8 @@ class SelectWidget:
 
     def convert_data(self, raw_data: Any) -> Tuple[Any, ErrorsType]:
         try:
-            self.data = self.converter(raw_data) if self.converter else raw_data
+            self.data = self.converter(
+                raw_data) if self.converter else raw_data
         except ValidationError as e:
             return None, str(e)
         for v in self.validators:
@@ -37,8 +43,7 @@ class SelectWidget:
                 return None, str(e)
         return self.data, None
 
-
-    def get_layout(self) -> WidgetAttributesType: 
+    def get_layout(self) -> WidgetAttributesType:
         return {
             'field_name': self.name,
             'widget_type': "select_widget",
@@ -46,7 +51,6 @@ class SelectWidget:
             'col': self.col,
             'widget_props': {'options': self.options},
         }
-
 
     def get_default_data(self) -> Any:
         return self.default

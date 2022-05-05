@@ -1,4 +1,7 @@
-from typing import Any,  Optional, Protocol, Tuple
+from typing import Any,  Optional, Protocol, Tuple, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from report_writer.base_web_form import BaseWebForm
 
 from report_writer.types import ConverterType, ErrorsType, ValidatorType, WidgetAttributesType
 
@@ -9,6 +12,7 @@ class Widget(Protocol):
     converter: Optional[ConverterType]
     col: int
     name: str
+    form: 'BaseWebForm'
 
     def get_default_data(self) -> Any:
         pass

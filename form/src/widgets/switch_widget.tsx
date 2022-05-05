@@ -2,7 +2,7 @@ import React from 'react';
 import TextWidget from './text_widget';
 import ArrayWidget from './array_widget';
 import TextAreaWidget from './text_area_widget';
-import AutoCompleteWidget from './autocomplete_widget';
+import TypeAheadWidget from './typeahead_widget';
 
 type Props = {
   widget_props: any,
@@ -41,7 +41,7 @@ function SwitchWidget(props: Props) {
         errors={props.errors}
         label={props.label} />
     case "autocomplete_widget":
-      return <AutoCompleteWidget
+      return <TypeAheadWidget
         updateFormValue={props.updateFormValue}
         widget_props={props.widget_props}
         data={props.data}

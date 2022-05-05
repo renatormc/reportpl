@@ -1,1 +1,1 @@
-from .web_form import widgets
+from .web_form import Form

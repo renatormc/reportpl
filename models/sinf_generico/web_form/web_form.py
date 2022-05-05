@@ -1,3 +1,4 @@
+from report_writer.base_web_form import BaseWebForm
 from report_writer.widgets import TextWidget, Widget
 from report_writer.types import ValidationError
 from report_writer.web_converters import DateConverter, PathConverter
@@ -10,32 +11,35 @@ def convert_pericia(value):
 def convert_relatores(value):
     return [item.strip() for item in value.split(",")]
 
+class Form(BaseWebForm):
 
-widgets: list[list[Widget]] = [
-    [
-        TextWidget('pericia', label="Perícia", required=True, converter=convert_pericia),
-        TextWidget('requisitante', label="Requisitante", required=True),
-        TextWidget('procedimento', label="Procedimento"),
-        TextWidget('ocorrencia_odin', label="Ocorrência ODIN")
-    ],
-    [
-       TextWidget('data_odin', label="Data ODIN", converter=DateConverter()),
-       TextWidget('inicio_exame', label="Data de início do exame", converter=DateConverter()),
-       TextWidget('data_recebimento', label="Data de recebimento", converter=DateConverter())
-    ],
-    [
-        TextWidget('numero_quesito', label="Número do quesito"),
-        TextWidget('autoridade', label="Autoridade", placeholder="Nome do delegado ou juiz"),
-    ],
-    [
-        TextWidget('relatores', label="Relatores", placeholder="Relatores separados por vírgula", converter=convert_relatores),
-        TextWidget('revisor', label="Revisor")
-    ],
-    [
-        TextWidget('lacre_entrada', label="Lacre de entrada"),
-        TextWidget('lacre_saida', label="Lacre de saída")
-    ],
-    [
-        TextWidget('pics_folder', label="Pasta com fotos", converter=PathConverter(type_="dir"))
-    ]
-]
+    def define_widgets(self):
+
+        self.widgets = [
+            [
+                TextWidget(self, 'pericia', label="Perícia", required=True, converter=convert_pericia),
+                TextWidget(self,'requisitante', label="Requisitante", required=True),
+                TextWidget(self,'procedimento', label="Procedimento"),
+                TextWidget(self,'ocorrencia_odin', label="Ocorrência ODIN")
+            ],
+            [
+                TextWidget(self,'data_odin', label="Data ODIN", converter=DateConverter()),
+                TextWidget(self,'inicio_exame', label="Data de início do exame", converter=DateConverter()),
+                TextWidget(self,'data_recebimento', label="Data de recebimento", converter=DateConverter())
+            ],
+            [
+                TextWidget(self,'numero_quesito', label="Número do quesito"),
+                TextWidget(self,'autoridade', label="Autoridade", placeholder="Nome do delegado ou juiz"),
+            ],
+            [
+                TextWidget(self,'relatores', label="Relatores", placeholder="Relatores separados por vírgula", converter=convert_relatores),
+                TextWidget(self,'revisor', label="Revisor")
+            ],
+            [
+                TextWidget(self,'lacre_entrada', label="Lacre de entrada"),
+                TextWidget(self,'lacre_saida', label="Lacre de saída")
+            ],
+            [
+                TextWidget(self,'pics_folder', label="Pasta com fotos", converter=PathConverter(type_="dir"))
+            ]
+        ]

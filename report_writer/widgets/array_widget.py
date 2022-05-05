@@ -1,4 +1,7 @@
-from typing import Any, Optional, Tuple
+from typing import Any, Optional, Tuple, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from report_writer.base_web_form import BaseWebForm
 
 from report_writer.widgets import Widget
 from report_writer.types import ConverterType, ErrorsType, ValidatorType, WidgetAttributesType, ValidationError, WidgetMatrixType
@@ -8,13 +11,15 @@ from report_writer.widgets.composite_widget import CompositeWidget
 
 class ArrayWidget:
 
-    def __init__(self, name: str,
+    def __init__(self, form: 'BaseWebForm',
+                 name: str,
                  widgets: list[list[Widget]],
                  label: str | None = None,
                  col: int = 0,
                  required: bool = False,
                  validators: list[ValidatorType] = [],
                  converter: Optional[ConverterType] = None) -> None:
+        self.form = form
         self.name = name
         self.col = col
         self.required = required
@@ -41,8 +46,8 @@ class ArrayWidget:
         for row in self.widgets:
             r: list[WidgetAttributesType] = []
             for w in row:
-                defaul_item_data[w.name] = w.get_default_data()   
-                r.append(w.get_layout())     
+                defaul_item_data[w.name] = w.get_default_data()
+                r.append(w.get_layout())
             widgets.append(r)
         return {
             'field_name': self.name,
@@ -52,7 +57,7 @@ class ArrayWidget:
             'widget_props': {
                 'default_item_data': defaul_item_data,
                 'widgets': widgets
-                },
+            },
         }
 
     def get_default_data(self) -> Any:

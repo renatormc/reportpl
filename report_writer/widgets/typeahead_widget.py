@@ -1,23 +1,25 @@
 from typing import Any, Optional, Tuple, TYPE_CHECKING
 if TYPE_CHECKING:
     from report_writer.base_web_form import BaseWebForm
-from report_writer.types import ConverterType, ErrorsType, ValidatorType, WidgetAttributesType, ValidationError
+from report_writer.types import ConverterType, ErrorsType, ModelListItem, ValidatorType, WidgetAttributesType, ValidationError
 import stringcase
 
 
-class TextAreaWidget:
+class TypeAheadWidget:
 
     def __init__(self, form: 'BaseWebForm',
                  name: str,
+                 options: list[str] | list[ModelListItem],
                  label: str | None = None,
                  col: int = 0, default="",
                  placeholder: str = "",
                  required: bool = False,
                  validators: list[ValidatorType] = [],
-                 converter: Optional[ConverterType] = None,
-                 rows: int = 5) -> None:
+                 converter: Optional[ConverterType] = None) -> None:
         self.form = form
         self.name = name
+        self.options = options
+        self.ajax = isinstance(self.options, str)
         self.col = col
         self.default = default
         self.placeholder = placeholder
@@ -25,7 +27,6 @@ class TextAreaWidget:
         self.label = label or stringcase.capitalcase(name)
         self.validators = validators
         self.converter = converter
-        self.rows = rows
 
     def convert_data(self, raw_data: Any) -> Tuple[Any, ErrorsType]:
         text = str(raw_data).strip()
@@ -45,10 +46,13 @@ class TextAreaWidget:
     def get_layout(self) -> WidgetAttributesType:
         return {
             'field_name': self.name,
-            'widget_type': "text_area_widget",
+            'widget_type': "text_widget",
             'label': self.label,
             'col': self.col,
-            'widget_props': {'placeholder': self.placeholder, 'rows': self.rows},
+            'widget_props': {
+                'placeholder': self.placeholder,
+                'options': self.options
+            },
         }
 
     def get_default_data(self) -> Any:

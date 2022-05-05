@@ -1,16 +1,21 @@
-from typing import Any, Optional, Tuple
+from typing import Any, Optional, Tuple, TYPE_CHECKING
+if TYPE_CHECKING:
+    from report_writer.base_web_form import BaseWebForm
 from report_writer.types import ConverterType, ErrorsType, ValidatorType, WidgetAttributesType, ValidationError
 import stringcase
 
+
 class TextWidget:
 
-    def __init__(self, name: str,
+    def __init__(self, form: 'BaseWebForm',
+                 name: str,
                  label: str | None = None,
                  col: int = 0, default="",
                  placeholder: str = "",
                  required: bool = False,
                  validators: list[ValidatorType] = [],
                  converter: Optional[ConverterType] = None) -> None:
+        self.form = form
         self.name = name
         self.col = col
         self.default = default
@@ -35,7 +40,6 @@ class TextWidget:
                 return None, str(e)
         return self.data, None
 
-
     def get_layout(self) -> WidgetAttributesType:
         return {
             'field_name': self.name,
@@ -44,7 +48,6 @@ class TextWidget:
             'col': self.col,
             'widget_props': {'placeholder': self.placeholder},
         }
-
 
     def get_default_data(self) -> Any:
         return self.default

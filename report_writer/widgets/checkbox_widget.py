@@ -1,15 +1,19 @@
-from typing import Any, Optional, Tuple
+from typing import Any, Optional, Tuple, TYPE_CHECKING
+if TYPE_CHECKING:
+    from report_writer.base_web_form import BaseWebForm
 from report_writer.types import ConverterType, ErrorsType, ValidatorType, WidgetAttributesType, ValidationError
 import stringcase
 
 
 class CheckBoxWidget:
 
-    def __init__(self, name: str,
+    def __init__(self, form: 'BaseWebForm',
+                 name: str,
                  label: str | None = None,
                  col: int = 0, default: bool = False,
                  validators: list[ValidatorType] = [],
                  converter: Optional[ConverterType] = None) -> None:
+        self.form = form
         self.name = name
         self.col = col
         self.default = default
@@ -19,7 +23,8 @@ class CheckBoxWidget:
 
     def convert_data(self, raw_data: Any) -> Tuple[Any, ErrorsType]:
         try:
-            self.data = self.converter(raw_data) if self.converter else raw_data
+            self.data = self.converter(
+                raw_data) if self.converter else raw_data
         except ValidationError as e:
             return None, str(e)
         for v in self.validators:
