@@ -68,24 +68,25 @@ function App(props: Props) {
         <Row>
           <Col>
             <Form onSubmit={e => e.preventDefault()}>
-             
-                <CompositeWidget
-                  widgetMatrix={widgetMatrix}
-                  errors={errors}
-                  data={data}
-                  updateFormValue={updateFormValue} />
-                <Row className="mt-3">
-                  <Col className="text-center">
 
-                    <div className="d-inline-flex p-2 bd-highlight gap-3">
-                      <Button variant="secondary" onClick={clearForm}><i className="fa fa-broom"></i> Limpar</Button>
-                      <Button variant="primary" onClick={submitForm}><i className="fa fa-file-word"></i> Gerar docx</Button>
-                    </div>
+              <CompositeWidget
+                model_name={props.model_name}
+                widgetMatrix={widgetMatrix}
+                errors={errors}
+                data={data}
+                updateFormValue={updateFormValue} />
+              <Row className="mt-3">
+                <Col className="text-center">
 
-                  </Col>
-                </Row>
-                {/* <p className='text-center'>{JSON.stringify(data)}</p>
-              <p className='text-center'>{JSON.stringify(errors)}</p> */}
+                  <div className="d-inline-flex p-2 bd-highlight gap-3">
+                    <Button variant="secondary" onClick={clearForm}><i className="fa fa-broom"></i> Limpar</Button>
+                    <Button variant="primary" onClick={submitForm}><i className="fa fa-file-word"></i> Gerar docx</Button>
+                  </div>
+
+                </Col>
+              </Row>
+              <p className='text-center'>{JSON.stringify(data)}</p>
+              <p className='text-center'>{JSON.stringify(errors)}</p>
 
             </Form>
           </Col>

@@ -34,3 +34,8 @@ export const renderDoc = async (model_name: string, data: any): Promise<ErrorsTy
         throw error;
     }
 }
+
+
+export const getListItemsAjax = async (model_name: string, list_name: string, query: string) => {
+    
+}

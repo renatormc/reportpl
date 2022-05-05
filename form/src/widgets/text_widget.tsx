@@ -2,6 +2,7 @@ import React from 'react';
 import { Form } from 'react-bootstrap';
 
 type Props = {
+  model_name: string,
   widget_props: any,
   data: string,
   errors: any,

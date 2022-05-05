@@ -2,9 +2,10 @@ import React from 'react';
 import TextWidget from './text_widget';
 import ArrayWidget from './array_widget';
 import TextAreaWidget from './text_area_widget';
-import TypeAheadWidget from './typeahead_widget';
+import TypeAheadObjWidget from './typeahead_obj_widget';
 
 type Props = {
+  model_name: string,
   widget_props: any,
   data: any,
   errors: any,
@@ -18,6 +19,7 @@ function SwitchWidget(props: Props) {
   switch (props.widget_type) {
     case "text_widget":
       return <TextWidget
+        model_name={props.model_name}
         updateFormValue={props.updateFormValue}
         widget_props={props.widget_props}
         data={props.data}
@@ -26,6 +28,7 @@ function SwitchWidget(props: Props) {
         label={props.label} />
     case "array_widget":
       return <ArrayWidget
+        model_name={props.model_name}
         widget_props={props.widget_props}
         data={props.data}
         field_name={props.field_name}
@@ -34,14 +37,16 @@ function SwitchWidget(props: Props) {
         label={props.label} />
     case "text_area_widget":
       return <TextAreaWidget
+        model_name={props.model_name}
         updateFormValue={props.updateFormValue}
         widget_props={props.widget_props}
         data={props.data}
         field_name={props.field_name}
         errors={props.errors}
         label={props.label} />
-    case "autocomplete_widget":
-      return <TypeAheadWidget
+    case "typeahead_obj_widget":
+      return <TypeAheadObjWidget
+        model_name={props.model_name}
         updateFormValue={props.updateFormValue}
         widget_props={props.widget_props}
         data={props.data}

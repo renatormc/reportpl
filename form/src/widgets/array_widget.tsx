@@ -4,6 +4,7 @@ import CompositeWidget from './composite_widget';
 import { Row, Col, Button, Form, Container } from 'react-bootstrap';
 
 type Props = {
+  model_name: string,
   widget_props: any,
   data: Array<DataType>,
   field_name: string,
@@ -113,6 +114,7 @@ function ArrayWidget(props: Props) {
                 </Button>
               </div>
               <CompositeWidget
+                model_name={props.model_name}
                 widgetMatrix={widgetMatrix}
                 errors={errors[index]}
                 data={item}

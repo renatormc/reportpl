@@ -1,9 +1,10 @@
 import React from 'react';
 import { DataType, ErrorsType, WidgetMatrixType } from '../types/custom_types';
 import SwitchWidget from './switch_widget';
-import { Row, Col} from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 
 type Props = {
+  model_name: string,
   widgetMatrix: WidgetMatrixType,
   errors: ErrorsType,
   data: DataType,
@@ -33,15 +34,16 @@ function CompositeWidget(props: Props) {
           <Row key={index}>
             {row.map(w => {
               return (
-                <Col   sm={w.col > 0 ? w.col : undefined}>
-                    <SwitchWidget
-                      widget_props={w.widget_props}
-                      data={props.data[w.field_name]}
-                      field_name={w.field_name}
-                      widget_type={w.widget_type}
-                      updateFormValue={updateFormValue}
-                      errors={errors[w.field_name]}
-                      label={w.label} />
+                <Col sm={w.col > 0 ? w.col : undefined}>
+                  <SwitchWidget
+                    model_name={props.model_name}
+                    widget_props={w.widget_props}
+                    data={props.data[w.field_name]}
+                    field_name={w.field_name}
+                    widget_type={w.widget_type}
+                    updateFormValue={updateFormValue}
+                    errors={errors[w.field_name]}
+                    label={w.label} />
                 </Col>
               );
             })}

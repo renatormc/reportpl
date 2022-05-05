@@ -2,6 +2,7 @@ from typing import Any
 from flask import Flask, jsonify, request, abort, render_template
 from report_writer import ReportWriter, get_file_names
 from report_writer.api import config
+from report_writer.api
 
 app = Flask(__name__)
 
@@ -50,6 +51,7 @@ def render_doc(model_name: str):
     print(rw.context)
     rw.render_docx("./compilado.docx")
     return jsonify(errors)
+
 
 # @app.route("/api/save-data")
 # def save_data(model_name: str):
