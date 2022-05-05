@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
+import 'react-bootstrap-typeahead/css/Typeahead.bs5.css';
 import MsgBox from './components/msgbox';
 import { getFormDefaultData, getFormLayout, renderDoc } from './services/api';
 import { DataType, ErrorsType, WidgetMatrixType } from './types/custom_types';

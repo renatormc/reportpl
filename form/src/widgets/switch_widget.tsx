@@ -2,6 +2,7 @@ import React from 'react';
 import TextWidget from './text_widget';
 import ArrayWidget from './array_widget';
 import TextAreaWidget from './text_area_widget';
+import AutoCompleteWidget from './autocomplete_widget';
 
 type Props = {
   widget_props: any,
@@ -29,16 +30,24 @@ function SwitchWidget(props: Props) {
         data={props.data}
         field_name={props.field_name}
         errors={props.errors}
-        updateFormValue={props.updateFormValue} 
-        label={props.label}/>
+        updateFormValue={props.updateFormValue}
+        label={props.label} />
     case "text_area_widget":
-          return <TextAreaWidget
-            updateFormValue={props.updateFormValue}
-            widget_props={props.widget_props}
-            data={props.data}
-            field_name={props.field_name}
-            errors={props.errors}
-            label={props.label} />
+      return <TextAreaWidget
+        updateFormValue={props.updateFormValue}
+        widget_props={props.widget_props}
+        data={props.data}
+        field_name={props.field_name}
+        errors={props.errors}
+        label={props.label} />
+    case "autocomplete_widget":
+      return <AutoCompleteWidget
+        updateFormValue={props.updateFormValue}
+        widget_props={props.widget_props}
+        data={props.data}
+        field_name={props.field_name}
+        errors={props.errors}
+        label={props.label} />
     default:
       return <p>Widget of type "{props.widget_type}" doesn't exist.</p>;
   }
