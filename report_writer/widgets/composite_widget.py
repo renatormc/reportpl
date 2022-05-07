@@ -13,9 +13,12 @@ class CompositeWidget:
         errors: dict = {}
         for row in self.widgets:
             for w in row:
-                context[w.name], e = w.convert_data(raw_data[w.name])
-                if e is not None:
-                    errors[w.name] = e
+                try:
+                    context[w.name], e = w.convert_data(raw_data[w.name])
+                    if e is not None:
+                        errors[w.name] = e
+                except KeyError:
+                    errors[w.name] = "missing field"
         e = errors if errors != {} else None
         return context, e
 

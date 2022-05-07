@@ -5,3 +5,18 @@ GET {{baseurl}}/api/form-layout/example
 
 ###
 GET {{baseurl}}/api/form-default-data/example
+
+###
+GET {{baseurl}}/api/list-items/example/cidades
+content-type: application/json
+
+
+###
+POST {{baseurl}}/api/render-doc/example
+content-type: application/json
+X-CSRFToken: token_csrf
+
+{
+    "nome": "João",
+    "profissao": "Pedreiro"
+}

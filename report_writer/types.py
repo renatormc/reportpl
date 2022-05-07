@@ -8,6 +8,10 @@ if TYPE_CHECKING:
 class ValidationError(Exception):
     pass
 
+
+class ModelNotFoundError(Exception):
+    pass
+
 class ModelListItem(TypedDict):
     key: str
     value: Any

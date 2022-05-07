@@ -7,7 +7,7 @@ from report_writer.widgets.composite_widget import CompositeWidget
 from .widgets import Widget
 from .doc_handler import DocxHandler
 from .html_render import render_pre_html
-from .types import ErrorsType, ModelList, ModelListItem, WidgetAttributesType
+from .types import ErrorsType, ModelList, ModelListItem, ModelNotFoundError, WidgetAttributesType
 import json
 import json
 import os
@@ -37,7 +37,7 @@ class ModuleModel:
         self.model_name = model_name
         self.path = Path(models_folder) / model_name / "__init__.py"
         if not self.path.exists():
-            raise Exception(f"Model \"{model_name}\" not found")
+            raise ModelNotFoundError(f"Model \"{model_name}\" not found")
         self.module = SourceFileLoader(
             model_name, str(self.path)).load_module()
 
@@ -75,8 +75,7 @@ class ReportWriter:
 
     def set_model(self, model_name: str) -> None:
         self._current_model_folder = self.models_folder / model_name
-        self._current_module_model = ModuleModel(
-            self.models_folder, model_name)
+        self._current_module_model = ModuleModel(self.models_folder, model_name)
 
     def get_form_layout(self) -> list[list[WidgetAttributesType]]:
         """Return the layout description of the form in a json form"""

@@ -3,6 +3,7 @@ from flask import Flask, jsonify, request, abort, render_template
 from report_writer import ReportWriter, get_file_names
 from report_writer.api import config
 from report_writer.api.database import repo
+from report_writer.types import ModelNotFoundError
 
 
 app = Flask(__name__)
@@ -18,8 +19,11 @@ def index(model_name: str):
 def form_layout(model_name: str):
     if not model_name:
         abort(404)
-    rw = ReportWriter("./models")
-    rw.set_model(model_name)
+    try:
+        rw = ReportWriter("./models")
+        rw.set_model(model_name)
+    except ModelNotFoundError:
+        abort(404)
     layout = rw.get_form_layout()
     return jsonify(layout)
 
