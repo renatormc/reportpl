@@ -1,5 +1,8 @@
 from pathlib import Path
-from typing import Any, Callable, Literal, TypedDict
+from typing import Any, Callable, Literal, TypedDict, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from report_writer.base_web_form import BaseWebForm
 
 
 class ValidationError(Exception):
@@ -30,8 +33,9 @@ class WidgetAttributesType(TypedDict):
 
 WidgetMatrixType = list[list[WidgetAttributesType]]
 
-ValidatorType = Callable[[Any], None]
-ConverterType = Callable[[Any], Any]
+ValidatorType = Callable[['BaseWebForm', Any], None]
+
+ConverterType = Callable[['BaseWebForm', Any], Any]
 ErrorsType = dict[str, str]|str|list[str]| None
 # FormDataType = dict[str, Any]
 

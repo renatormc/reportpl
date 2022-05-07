@@ -23,13 +23,13 @@ class CheckBoxWidget:
 
     def convert_data(self, raw_data: Any) -> Tuple[Any, ErrorsType]:
         try:
-            self.data = self.converter(
+            self.data = self.converter(self.form, 
                 raw_data) if self.converter else raw_data
         except ValidationError as e:
             return None, str(e)
         for v in self.validators:
             try:
-                v(self.data)
+                v(self.form, self.data)
             except ValidationError as e:
                 return None, str(e)
         return self.data, None

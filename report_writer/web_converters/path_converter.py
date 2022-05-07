@@ -1,12 +1,16 @@
 from pathlib import Path
 from typing import Literal
 from report_writer.types import ValidationError
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from report_writer.base_web_form import BaseWebForm
 
 class PathConverter:
     def __init__(self, type_:Literal['dir', 'file'] = 'file') -> None:
         self.type_ =  type_
     
-    def __call__(self, value: str) -> Path|None:
+    def __call__(self, form: 'BaseWebForm', value: str) -> Path|None:
         text = str(value).strip()
         if text == "":
             return None

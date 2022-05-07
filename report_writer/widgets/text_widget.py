@@ -30,12 +30,12 @@ class TextWidget:
         if self.required and text == "":
             return None, "Campo obrigatório"
         try:
-            self.data = self.converter(text) if self.converter else text
+            self.data = self.converter(self.form, text) if self.converter else text
         except ValidationError as e:
             return None, str(e)
         for v in self.validators:
             try:
-                v(self.data)
+                v(self.form, self.data)
             except ValidationError as e:
                 return None, str(e)
         return self.data, None

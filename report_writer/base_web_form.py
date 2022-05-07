@@ -18,3 +18,6 @@ class BaseWebForm:
                 for w in row:
                     self._widgets_map[w.name] = w
         return self._widgets_map
+
+    def get_widget(self, field_name: str) -> Widget:
+        return self.widgets_map[field_name]

@@ -12,7 +12,7 @@ import json
 import json
 import os
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 script_dir = Path(os.path.dirname(os.path.realpath(__file__)))
 

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "report_writer"
-version = "0.1.1"
+version = "0.1.2"
 description = ""
 authors = ["renatormc <renatomartinsrmc@gmail.com>"]
 
@@ -19,6 +19,7 @@ pytest = "^7.1"
 types-Pillow = "^9.0.11"
 types-beautifulsoup4 = "^4.10.18"
 autopep8 = "^1.6.0"
+sqlalchemy-stubs = "^0.4"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
