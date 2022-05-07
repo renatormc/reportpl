@@ -16,8 +16,3 @@ export interface TypeAheadItem {
     key: string,
     value: any
 }
-
-export interface FormLayoutResponse {
-    layout: WidgetMatrixType
-    default_data: DataType
-}

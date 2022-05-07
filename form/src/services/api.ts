@@ -1,11 +1,11 @@
 import { AxiosError } from 'axios';
-import { WidgetMatrixType, ErrorsType, TypeAheadItem, FormLayoutResponse } from './../types/custom_types';
+import { WidgetMatrixType, ErrorsType, TypeAheadItem } from './../types/custom_types';
 import axios from './axios'
 import { getCookie } from './cookies';
 
 
-export const getFormLayout = async (model_name: string): Promise<FormLayoutResponse> => {
-    const resp = await axios.get<FormLayoutResponse>("/api/form-layout/" + model_name);
+export const getFormLayout = async (model_name: string): Promise<WidgetMatrixType> => {
+    const resp = await axios.get<WidgetMatrixType>("/api/form-layout/" + model_name);
     return resp.data;
 }
 

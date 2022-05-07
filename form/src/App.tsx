@@ -61,15 +61,15 @@ function App(props: Props) {
   }
 
   useEffect(() => {
+    getFormDefaultData(props.model_name).then((data) => {
+      setData(data);
+    })
     getFormLayout(props.model_name).then((data) => {
-      setData(data.default_data);
-      setWidgetMatrix(data.layout);
+      setWidgetMatrix(data);
     }).catch(error => {
       console.log(error.response.data);
     });
-    // getFormDefaultData(props.model_name).then((data) => {
-    //   setData(data);
-    // })
+   
   }, [])
 
   return (

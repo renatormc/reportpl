@@ -21,11 +21,7 @@ def form_layout(model_name: str):
     rw = ReportWriter("./models")
     rw.set_model(model_name)
     layout = rw.get_form_layout()
-    default_data = rw.get_default_data()
-    return jsonify({
-        "layout": layout,
-        "default_data": default_data
-    })
+    return jsonify(layout)
 
 
 @app.route("/api/form-default-data/<model_name>")

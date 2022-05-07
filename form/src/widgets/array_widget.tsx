@@ -93,7 +93,7 @@ function ArrayWidget(props: Props) {
 
         {props.data.map((item, index) => {
           return (
-            <div className='array-widget-item'>
+            <div className='array-widget-item' key={index}>
               <div className='d-flex flex-row justify-content-end gap-1'>
                 <Button variant="secondary"
                   size="sm"
