@@ -15,7 +15,7 @@ function TextAreaWidget(props: Props) {
 
   return (
     <div>
-      <Form.Label>{props.label}</Form.Label>
+      <strong><Form.Label>{props.label}</Form.Label></strong>
       <Form.Control as="textarea"
         rows={props.widget_props.rows}
         value={props.data}

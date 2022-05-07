@@ -1,11 +1,11 @@
 import { AxiosError } from 'axios';
-import { WidgetMatrixType, ErrorsType } from './../types/custom_types';
+import { WidgetMatrixType, ErrorsType, TypeAheadItem, FormLayoutResponse } from './../types/custom_types';
 import axios from './axios'
 import { getCookie } from './cookies';
 
 
-export const getFormLayout = async (model_name: string): Promise<WidgetMatrixType> => {
-    const resp = await axios.get<WidgetMatrixType>("/api/form-layout/" + model_name);
+export const getFormLayout = async (model_name: string): Promise<FormLayoutResponse> => {
+    const resp = await axios.get<FormLayoutResponse>("/api/form-layout/" + model_name);
     return resp.data;
 }
 
@@ -36,6 +36,7 @@ export const renderDoc = async (model_name: string, data: any): Promise<ErrorsTy
 }
 
 
-export const getListItemsAjax = async (model_name: string, list_name: string, query: string) => {
-    
+export const getListItemsAjax = async (model_name: string, list_name: string, query: string): Promise<Array<TypeAheadItem>> => {
+    const resp = await axios.get<Array<TypeAheadItem>>(`/api/list-items/${model_name}/${list_name}?query=${query}`);
+    return resp.data;
 }

@@ -15,7 +15,8 @@ function TextWidget(props: Props) {
 
   return (
     <div>
-      <Form.Label>{props.label}</Form.Label>
+      <strong><Form.Label>{props.label}</Form.Label></strong>
+      
       <Form.Control
         type="text"
         placeholder={props.widget_props.placeholder}

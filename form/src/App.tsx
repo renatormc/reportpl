@@ -7,6 +7,7 @@ import { getFormDefaultData, getFormLayout, renderDoc } from './services/api';
 import { DataType, ErrorsType, WidgetMatrixType } from './types/custom_types';
 import CompositeWidget from './widgets/composite_widget';
 import { Button, Row, Col, Container, Form } from 'react-bootstrap';
+import { getSavedFormData, saveFormData } from './services/storage';
 
 
 type Props = {
@@ -29,6 +30,7 @@ function App(props: Props) {
   }
 
   const submitForm = async () => {
+    saveFormData(props.model_name, data);
     const errors = await renderDoc(props.model_name, data);
     console.log(errors);
     setErrors(errors);
@@ -37,7 +39,15 @@ function App(props: Props) {
     }
   }
 
+  const loadSavedForm = async () => {
+    const data = getSavedFormData(props.model_name);
+    if(data !== null){
+      setData(data);
+    }
+  }
+
   const clearForm = () => {
+    saveFormData(props.model_name, data);
     getFormDefaultData(props.model_name).then((data) => {
       setData(data);
     })
@@ -52,13 +62,14 @@ function App(props: Props) {
 
   useEffect(() => {
     getFormLayout(props.model_name).then((data) => {
-      setWidgetMatrix(data);
+      setData(data.default_data);
+      setWidgetMatrix(data.layout);
     }).catch(error => {
       console.log(error.response.data);
     });
-    getFormDefaultData(props.model_name).then((data) => {
-      setData(data);
-    })
+    // getFormDefaultData(props.model_name).then((data) => {
+    //   setData(data);
+    // })
   }, [])
 
   return (
@@ -81,12 +92,13 @@ function App(props: Props) {
                   <div className="d-inline-flex p-2 bd-highlight gap-3">
                     <Button variant="secondary" onClick={clearForm}><i className="fa fa-broom"></i> Limpar</Button>
                     <Button variant="primary" onClick={submitForm}><i className="fa fa-file-word"></i> Gerar docx</Button>
+                    <Button variant="warning" onClick={loadSavedForm}><i className="fas fa-archive"></i> Carregar último preenchimento</Button>
                   </div>
 
                 </Col>
               </Row>
-              <p className='text-center'>{JSON.stringify(data)}</p>
-              <p className='text-center'>{JSON.stringify(errors)}</p>
+              {/* <p className='text-center'>{JSON.stringify(data)}</p>
+              <p className='text-center'>{JSON.stringify(errors)}</p> */}
 
             </Form>
           </Col>

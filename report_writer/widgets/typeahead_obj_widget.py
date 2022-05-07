@@ -28,6 +28,7 @@ class TypeAheadObjWidget:
         self.label = label or stringcase.capitalcase(name)
         self.validators = validators
         self.converter = converter
+        self.list_name: str = str(self.options) if self.ajax else ""
 
     def convert_data(self, raw_data: Any) -> Tuple[Any, ErrorsType]:
         print(type(raw_data))
@@ -63,7 +64,8 @@ class TypeAheadObjWidget:
             'widget_props': {
                 'placeholder': self.placeholder,
                 'options': options,
-                'ajax': self.ajax
+                'ajax': self.ajax,
+                'list_name': self.list_name
             },
         }
 

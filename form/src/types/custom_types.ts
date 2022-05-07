@@ -11,3 +11,13 @@ export type WidgetMatrixType = Array<Array<WidgetAttributesType>>
 export type ErrorsType = { [key: string]: any }
 
 export type DataType  = { [key: string]: any }
+
+export interface TypeAheadItem {
+    key: string,
+    value: any
+}
+
+export interface FormLayoutResponse {
+    layout: WidgetMatrixType
+    default_data: DataType
+}

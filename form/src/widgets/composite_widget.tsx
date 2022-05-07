@@ -32,9 +32,9 @@ function CompositeWidget(props: Props) {
       {props.widgetMatrix.map((row, index) => {
         return (
           <Row key={index}>
-            {row.map(w => {
+            {row.map((w, index2) => {
               return (
-                <Col sm={w.col > 0 ? w.col : undefined}>
+                <Col sm={w.col > 0 ? w.col : undefined} key={index2}>
                   <SwitchWidget
                     model_name={props.model_name}
                     widget_props={w.widget_props}

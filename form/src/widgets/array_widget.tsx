@@ -60,7 +60,7 @@ function ArrayWidget(props: Props) {
 
   return (
     <div>
-      <Form.Label>{props.label}</Form.Label>
+      <strong><Form.Label>{props.label}</Form.Label></strong>
       <Container fluid className="array-container">
         <Row>
           <Col>
@@ -79,13 +79,12 @@ function ArrayWidget(props: Props) {
                 onClick={addItems}>
                 <i className="fas fa-plus"></i>
               </Button>
-
-
               <Button variant="danger"
                 data-bs-toggle="tooltip"
                 data-bs-placement="top"
                 title="Deletar todos"
-                onClick={removeAll}>
+                onClick={removeAll}
+                disabled={props.data.length === 0? true: false}>
                 <i className="fas fa-trash-alt"></i>
               </Button>
             </div>

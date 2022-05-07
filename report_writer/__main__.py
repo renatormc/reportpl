@@ -6,6 +6,7 @@ from report_writer.copy_spa import copy_spa
 import os
 import subprocess
 import json
+from report_writer.api.helpers import reacreate_db
 
 script_dir =  Path(os.path.dirname(os.path.realpath(__file__)))
 
@@ -14,6 +15,7 @@ subparsers = parser.add_subparsers(dest="command", required=True, help='Command 
 parser.add_argument("-v", "--verbose", help="Verbose")
 
 p_dev = subparsers.add_parser("dev")
+p_dev.add_argument("--no-build-db", action="store_true", help="Do not recreate the dev db")
 
 p_copy_spa = subparsers.add_parser("copy-spa")
 p_copy_spa.add_argument("folder_to")
@@ -22,6 +24,8 @@ p_build_spa = subparsers.add_parser("build-spa")
 
 args = parser.parse_args()
 if args.command == "dev":
+    if not args.no_build_db:
+        reacreate_db()
     run_app()
 elif args.command == "copy-spa":
     copy_spa(args.folder_to)

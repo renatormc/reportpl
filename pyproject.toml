@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "report_writer"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = ["renatormc <renatomartinsrmc@gmail.com>"]
 
@@ -11,6 +11,7 @@ docxtpl = "^0.16.0"
 beautifulsoup4 = "*"
 Pillow = "^9.1.0"
 Flask = "^2.1.2"
+SQLAlchemy = "^1.4.36"
 
 [tool.poetry.dev-dependencies]
 mypy = "^0.950"

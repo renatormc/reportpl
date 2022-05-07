@@ -2,7 +2,8 @@ from typing import Any
 from flask import Flask, jsonify, request, abort, render_template
 from report_writer import ReportWriter, get_file_names
 from report_writer.api import config
-from report_writer.api
+from report_writer.api.database import repo
+
 
 app = Flask(__name__)
 
@@ -19,8 +20,12 @@ def form_layout(model_name: str):
         abort(404)
     rw = ReportWriter("./models")
     rw.set_model(model_name)
-    data = rw.get_form_layout()
-    return jsonify(data)
+    layout = rw.get_form_layout()
+    default_data = rw.get_default_data()
+    return jsonify({
+        "layout": layout,
+        "default_data": default_data
+    })
 
 
 @app.route("/api/form-default-data/<model_name>")
@@ -51,6 +56,15 @@ def render_doc(model_name: str):
     print(rw.context)
     rw.render_docx("./compilado.docx")
     return jsonify(errors)
+
+
+@app.route("/api/list-items/<model_name>/<list_name>")
+def list_items(model_name: str, list_name: str):
+    q = request.args.get("query", default="")
+    items = repo.search_list_items(model_name, list_name, q, limit=50)
+    its = [{'key': item.key, 'value': item.value}
+           for item in items] if items else []
+    return jsonify(its)
 
 
 # @app.route("/api/save-data")
