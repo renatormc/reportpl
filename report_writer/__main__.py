@@ -56,7 +56,7 @@ elif args.command == "build-spa":
     with (folder_to / "filenames.json").open("w", encoding="utf-8") as f:
         f.write(json.dumps(filenames, ensure_ascii=False, indent=4))
 elif args.command == "update":
-    path = Path(sys.executable).parent.parent / "src/report_writer"
+    path = Path(sys.executable).parent.parent / "src/report-writer"
     os.chdir(path)
     os.system("git reset --hard")
     os.system(f"git checkout {args.branch}")
