@@ -57,6 +57,7 @@ elif args.command == "build-spa":
         f.write(json.dumps(filenames, ensure_ascii=False, indent=4))
 elif args.command == "update":
     path = Path(sys.executable).parent.parent / "src/report_writer"
+    os.chdir(path)
     os.system("git reset --hard")
     os.system(f"git checkout {args.branch}")
     os.system(f"git pull origin {args.branch}")
