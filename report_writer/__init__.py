@@ -13,7 +13,7 @@ import os
 
 __version__ = '0.1.4'
 
-__test__ = 'teste1'
+__test__ = 'teste2'
 
 script_dir = Path(os.path.dirname(os.path.realpath(__file__)))
 
