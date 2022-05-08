@@ -1,17 +1,16 @@
 # Install
 
 ```
-pip install git+ssh://git@github.com/renatormc/report_writer.git@master
+pip install -e git+ssh://git@github.com/renatormc/report_writer.git@master#egg=report_writer
 ```
 ou
 ```
-pip install git+https://git@github.com/renatormc/report_writer.git@master
+pip install -e git+https://git@github.com/renatormc/report_writer.git@master#egg=report_writer
 ```
 
 # Update
 ```
-pip uninstall report_writer
-pip install --upgrade git+https://git@github.com/renatormc/report_writer.git@master
+python -m report_writer update master
 ```
 
 
