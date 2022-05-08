@@ -7,6 +7,7 @@ import os
 import subprocess
 import json
 from report_writer.api.helpers import reacreate_db
+import sys
 
 script_dir =  Path(os.path.dirname(os.path.realpath(__file__)))
 
@@ -21,6 +22,9 @@ p_copy_spa = subparsers.add_parser("copy-spa")
 p_copy_spa.add_argument("folder_to")
 
 p_build_spa = subparsers.add_parser("build-spa")
+
+p_update = subparsers.add_parser("update")
+p_update.add_argument("branch")
 
 args = parser.parse_args()
 if args.command == "dev":
@@ -51,6 +55,11 @@ elif args.command == "build-spa":
             filenames['js_filename'] = name
     with (folder_to / "filenames.json").open("w", encoding="utf-8") as f:
         f.write(json.dumps(filenames, ensure_ascii=False, indent=4))
+elif args.command == "update":
+    path = Path(sys.executable).parent.parent / "src/report_writer"
+    os.system("git reset --hard")
+    os.system(f"git checkout {args.branch}")
+    os.system(f"git pull origin {args.branch}")
 
 
 
