@@ -8,6 +8,13 @@ ou
 pip install git+https://git@github.com/renatormc/report_writer.git@master
 ```
 
+# Update
+```
+pip uninstall report_writer
+pip install --upgrade git+https://git@github.com/renatormc/report_writer.git@master
+```
+
+
 
 # Como desenvolver docmodels
 Para desenvolver docmodels o desenvolvedor poderá utilizar apenas a lib report_writer em si. Para isto basta instala no seu python.

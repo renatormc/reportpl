@@ -1,10 +1,9 @@
 from pathlib import Path
-from typing import Any, Optional, Tuple, Type, Union
+from typing import Any, Optional, Tuple,  Union
 from importlib.machinery import SourceFileLoader
 from report_writer.base_web_form import BaseWebForm
 
 from report_writer.widgets.composite_widget import CompositeWidget
-from .widgets import Widget
 from .doc_handler import DocxHandler
 from .html_render import render_pre_html
 from .types import ErrorsType, ModelList, ModelListItem, ModelNotFoundError, WidgetAttributesType
@@ -12,7 +11,7 @@ import json
 import json
 import os
 
-__version__ = '0.1.2'
+__version__ = '0.1.4'
 
 script_dir = Path(os.path.dirname(os.path.realpath(__file__)))
 
@@ -75,17 +74,20 @@ class ReportWriter:
 
     def set_model(self, model_name: str) -> None:
         self._current_model_folder = self.models_folder / model_name
-        self._current_module_model = ModuleModel(self.models_folder, model_name)
+        self._current_module_model = ModuleModel(
+            self.models_folder, model_name)
 
     def get_form_layout(self) -> list[list[WidgetAttributesType]]:
         """Return the layout description of the form in a json form"""
         form = self.current_module_model.get_web_form()
+        form.set_report_writer(self)
         form.define_widgets()
         widgets = form.widgets
         return [[w.get_layout() for w in row] for row in widgets]
 
     def get_default_data(self) -> dict[str, Any]:
         form = self.current_module_model.get_web_form()
+        form.set_report_writer(self)
         form.define_widgets()
         data = {}
         for row in form.widgets:
@@ -103,6 +105,7 @@ class ReportWriter:
         """Receive data serialized, validate and convert types
         Returns errors"""
         form = self.current_module_model.get_web_form()
+        form.set_report_writer(self)
         form.define_widgets()
         widgets = form.widgets
         composite = CompositeWidget(widgets)
@@ -120,6 +123,25 @@ class ReportWriter:
             data = json.load(f)
         return data
 
+    def get_list(self, list_name: str) -> list[ModelListItem]:
+        folder = self.current_model_folder / "lists"
+        path = folder / f"{list_name}.txt"
+        if not path.exists():
+            path = folder / f"{list_name}.json"
+            if not path.exists():
+                return []
+
+        items: list[ModelListItem] = []
+        if path.suffix == ".txt":
+            text = path.read_text(encoding="utf-8")
+            lines = text.split("\n")
+            items = [{'key': line, 'value': line}
+                     for line in lines]
+        elif path.suffix == ".json":
+            with path.open("r", encoding="utf-8") as f:
+                items = json.load(f)
+        return items
+
     def get_lists(self) -> list[ModelList]:
         folder = self.current_model_folder / "lists"
         lists: list[ModelList] = []
@@ -127,15 +149,18 @@ class ReportWriter:
             for entry in folder.iterdir():
                 if entry.is_dir():
                     continue
-                l: ModelList = {'name': entry.stem, 'items': []}
-                if entry.suffix == ".txt":
-                    text = entry.read_text(encoding="utf-8")
-                    lines = text.split("\n")
-                    l["items"] = [{'key': line, 'value': line}
-                                  for line in lines]
-                elif entry.suffix == ".json":
-                    with entry.open("r", encoding="utf-8") as f:
-                        l["items"] = json.load(f)
+                l: ModelList = {
+                    'name': entry.stem,
+                    'items': self.get_list(entry.stem)
+                }
+                # if entry.suffix == ".txt":
+                #     text = entry.read_text(encoding="utf-8")
+                #     lines = text.split("\n")
+                #     l["items"] = [{'key': line, 'value': line}
+                #                   for line in lines]
+                # elif entry.suffix == ".json":
+                #     with entry.open("r", encoding="utf-8") as f:
+                #         l["items"] = json.load(f)
                 lists.append(l)
         return lists
 

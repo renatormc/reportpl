@@ -9,10 +9,13 @@ from report_writer.types import ModelNotFoundError
 app = Flask(__name__)
 
 
-@app.route("/<model_name>")
-def index(model_name: str):
+@app.route("/")
+def index():
+    model_name = request.args.get("model_name")
     filenames = get_file_names()
-    return render_template('base.html', model_name=model_name, filenames=filenames)
+    rw = ReportWriter("./models")
+    models = rw.list_models()
+    return render_template('base.html', model_name=model_name, filenames=filenames, models=models)
 
 
 @app.route("/api/form-layout/<model_name>")

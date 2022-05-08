@@ -7,7 +7,7 @@ GET {{baseurl}}/api/form-layout/example
 GET {{baseurl}}/api/form-default-data/example
 
 ###
-GET {{baseurl}}/api/list-items/example/cidades
+GET {{baseurl}}/api/list-items/example/cidades?query=a
 content-type: application/json
 
 
@@ -17,6 +17,14 @@ content-type: application/json
 X-CSRFToken: token_csrf
 
 {
-    "nome": "João",
-    "profissao": "Pedreiro"
+    "nome": "João Pereira", 
+    "date": "12/12/2021",
+    "float_value": "12,3", 
+    "pessoas": 
+    [
+        {"nome": "Gape Gomes", "profissao": "Perito Criminal"},
+        {"nome": "Gape Steven", "profissao": "Auxiliar de Autopsia"}
+    ], 
+    "texto_long": "Texte de texto longo no widget TextAreaWidget", 
+    "test_typeahead": {"key": "Goiânia", "value": "Goiânia"}
 }

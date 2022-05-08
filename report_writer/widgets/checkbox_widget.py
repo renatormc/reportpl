@@ -37,7 +37,7 @@ class CheckBoxWidget:
     def get_layout(self) -> WidgetAttributesType:
         return {
             'field_name': self.name,
-            'widget_type': "check_widget",
+            'widget_type': "checkbox_widget",
             'label': self.label,
             'col': self.col,
             'widget_props': {},

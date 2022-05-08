@@ -31,14 +31,10 @@ class TypeAheadObjWidget:
         self.list_name: str = str(self.options) if self.ajax else ""
 
     def convert_data(self, raw_data: Any) -> Tuple[Any, ErrorsType]:
-        print(type(raw_data))
         if raw_data is None:
-            return None, "Valor incorreto"
-        text = str(raw_data).strip()
-        if self.required and text == "":
             return None, "Campo obrigatório"
         try:
-            self.data = self.converter(self.form, text) if self.converter else text
+            self.data = self.converter(self.form, raw_data['value']) if self.converter else raw_data['value']
         except ValidationError as e:
             return None, str(e)
         for v in self.validators:
@@ -55,7 +51,6 @@ class TypeAheadObjWidget:
 
     def get_layout(self) -> WidgetAttributesType:
         options = [] if self.ajax else [self._convert_item_list(item) for item in self.options]
-        print(options)
         return {
             'field_name': self.name,
             'widget_type': "typeahead_obj_widget",

@@ -16,3 +16,7 @@ export interface TypeAheadItem {
     key: string,
     value: any
 }
+
+export interface DictType {
+    [key: string]: number;
+ }
