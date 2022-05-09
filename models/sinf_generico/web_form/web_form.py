@@ -3,12 +3,12 @@ from report_writer.widgets import TextWidget, Widget
 from report_writer.types import ValidationError
 from report_writer.web_converters import DateConverter, PathConverter
 
-def convert_pericia(value):
+def convert_pericia(form, value):
     parts = value.split("/")
     return {"seq": int(parts[0]), "rg": int(parts[1]), "ano": int(parts[2])}
 
 
-def convert_relatores(value):
+def convert_relatores(form, value):
     return [item.strip() for item in value.split(",")]
 
 class Form(BaseWebForm):
