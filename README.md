@@ -140,5 +140,6 @@ rw.delete_model("docmodel_name")
 
 ```python
 rw = ReportWriter("/caminho/pasta/models")
-rw.model_exists("docmodel_name")
+if rw.model_exists("docmodel_name"):
+  print("Existe")
 ```
