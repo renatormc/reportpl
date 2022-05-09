@@ -113,3 +113,25 @@ lists = rw.get_lists()
 rw = ReportWriter("/caminho/pasta/models")
 models = rw.list_models()
 ```
+
+## Exportar docmodel
+
+```python
+rw = ReportWriter("/caminho/pasta/models")
+rw.set_model("docmodel_name")
+models = rw.export_model("docmodel_name.zip")
+```
+
+## Importar docmodel
+
+```python
+rw = ReportWriter("/caminho/pasta/models")
+models = rw.import_model("docmodel_name.zip")
+```
+
+## Deletar docmodel
+
+```python
+rw = ReportWriter("/caminho/pasta/models")
+rw.delete_model("docmodel_name")
+```

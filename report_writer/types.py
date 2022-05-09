@@ -110,3 +110,9 @@ class CaseObjectsType:
 
     def __str__(self) -> str:
         return (f"alias: {self.alias}, n_objetos: {len(self.objects)}, n_pics_not_classified: {len(self.pics_not_classified)}, folder: {self.folder}")
+
+
+class ModelMetaType(TypedDict):
+    full_name: str
+    has_qt_form: bool
+    has_web_form: bool

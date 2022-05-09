@@ -6,7 +6,7 @@ from report_writer.copy_spa import copy_spa
 import os
 import subprocess
 import json
-from report_writer.api.helpers import reacreate_db
+from report_writer.api.helpers import reacreate_db, ReportWriter
 import sys
 
 script_dir =  Path(os.path.dirname(os.path.realpath(__file__)))
@@ -25,6 +25,16 @@ p_build_spa = subparsers.add_parser("build-spa")
 
 p_update = subparsers.add_parser("update")
 p_update.add_argument("branch")
+
+p_export_model = subparsers.add_parser("export-model")
+p_export_model.add_argument("model_name")
+p_export_model.add_argument("zipfile")
+
+p_import_model = subparsers.add_parser("import-model")
+p_import_model.add_argument("zipfile")
+
+p_delete_model = subparsers.add_parser("delete-model")
+p_delete_model.add_argument("model_name")
 
 args = parser.parse_args()
 if args.command == "dev":
@@ -61,6 +71,16 @@ elif args.command == "update":
     os.system("git reset --hard")
     os.system(f"git checkout {args.branch}")
     os.system(f"git pull origin {args.branch}")
+elif args.command == "export-model":
+    rw = ReportWriter("./models")
+    rw.set_model(args.model_name)
+    rw.export_model(args.zipfile)
+elif args.command == "import-model":
+    rw = ReportWriter("./models")
+    rw.import_model(args.zipfile)
+elif args.command == "delete-model":
+    rw = ReportWriter("./models")
+    rw.delete_model(args.model_name)
 
 
 

@@ -1,7 +1,9 @@
 from pathlib import Path
+import shutil
 from typing import Any, Optional, Tuple,  Union
 from importlib.machinery import SourceFileLoader
 from report_writer.base_web_form import BaseWebForm
+from report_writer.model_info import ModelInfo
 
 from report_writer.widgets.composite_widget import CompositeWidget
 from .doc_handler import DocxHandler
@@ -10,6 +12,7 @@ from .types import ErrorsType, ModelList, ModelListItem, ModelNotFoundError, Wid
 import json
 import json
 import os
+from report_writer.zipmodel import zip_folder, unzip_file
 
 __version__ = '0.1.4'
 
@@ -35,8 +38,9 @@ class Renderer:
 
 class ModuleModel:
     def __init__(self, models_folder: str | Path, model_name: str) -> None:
+        self.model_folder = Path(models_folder) / model_name
         self.model_name = model_name
-        self.path = Path(models_folder) / model_name / "__init__.py"
+        self.path = self.model_folder / "__init__.py"
         if not self.path.exists():
             raise ModelNotFoundError(f"Model \"{model_name}\" not found")
         self.module = SourceFileLoader(
@@ -44,6 +48,9 @@ class ModuleModel:
 
     def get_web_form(self) -> BaseWebForm:
         return self.module.web_form.Form()
+
+    def get_model_meta(self) -> ModelInfo:
+        return ModelInfo(self.model_folder)
 
 
 class ReportWriter:
@@ -75,7 +82,7 @@ class ReportWriter:
         return [entry.name for entry in self.models_folder.iterdir() if entry.is_dir()]
 
     def set_model(self, model_name: str) -> None:
-        self._current_model_folder = self.models_folder / model_name
+        self._current_model_folder = (self.models_folder / model_name).absolute()
         self._current_module_model = ModuleModel(
             self.models_folder, model_name)
 
@@ -155,16 +162,44 @@ class ReportWriter:
                     'name': entry.stem,
                     'items': self.get_list(entry.stem)
                 }
-                # if entry.suffix == ".txt":
-                #     text = entry.read_text(encoding="utf-8")
-                #     lines = text.split("\n")
-                #     l["items"] = [{'key': line, 'value': line}
-                #                   for line in lines]
-                # elif entry.suffix == ".json":
-                #     with entry.open("r", encoding="utf-8") as f:
-                #         l["items"] = json.load(f)
                 lists.append(l)
         return lists
+
+    def fix_imports(self):
+        lines = []
+        for m in self.list_models():
+            lines.append(f"from . import {m}")
+        text = "\n".join(lines)
+        path = self.models_folder / "__init__.py"
+        path.write_text(text, encoding="utf-8")
+
+    def model_exists(self, model_name: str) -> bool:
+        return (self.models_folder / model_name).exists()
+
+
+    def export_model(self, destfile: Path|str) -> None:
+        destfile = Path(destfile)
+        zip_folder(self.current_model_folder, destfile)
+
+
+    def import_model(self, zipfile: Path|str, overwrite = False) -> None:
+        zipfile = Path(zipfile)
+        folder = self.models_folder / zipfile.stem
+        if folder.exists() and not overwrite:
+            raise Exception(f"Model \"{zipfile.stem}\" already exists")
+        unzip_file(zipfile, folder)
+        self.fix_imports()
+
+    def delete_model(self, model_name: str) -> None:
+        folder = self.models_folder / model_name
+        try:
+            shutil.rmtree(folder)
+            self.fix_imports()
+        except FileNotFoundError:
+            raise Exception("model not found")
+
+
+
 
 
 def get_file_names() -> dict[str, str]:
