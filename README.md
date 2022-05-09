@@ -51,7 +51,7 @@ from report_writer import get_file_names
 filenames = get_file_names()
 ```
 
-Importe os arquivos js e css e deixe um div de id "root" passando o nome do modelo no atributo "model_name"
+Importe os arquivos js e css e deixe um div de id "root" passando o nome do modelo no atributo "model_name" e o prefixo da url da api no parâmetro "api_prefix".
 
 ```html
 <!DOCTYPE html>
@@ -63,7 +63,7 @@ Importe os arquivos js e css e deixe um div de id "root" passando o nome do mode
     ...
   </head>
   <body>
-    <div id="root" model_name="{{ model_name }}"></div>
+    <div id="root" model_name="{{ model_name }}" url_prefix="api"></div>
   </body>
 </html>
 ```
@@ -105,4 +105,11 @@ As listas de  autocomplete deverão ser salvas em banco para futura filtragem. P
 rw = ReportWriter("/caminho/pasta/models")
 rw.set_model("docmodel_name")
 lists = rw.get_lists()
+```
+
+## Pegar lista de todos os models existentes
+
+```python
+rw = ReportWriter("/caminho/pasta/models")
+models = rw.list_models()
 ```

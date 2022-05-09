@@ -5,20 +5,20 @@ import { getCookie } from './cookies';
 
 
 export const getFormLayout = async (model_name: string): Promise<WidgetMatrixType> => {
-    const resp = await axios.get<WidgetMatrixType>("/api/form-layout/" + model_name);
+    const resp = await axios.get<WidgetMatrixType>("/form-layout/" + model_name);
     return resp.data;
 }
 
 
 export const getFormDefaultData = async (model_name: string): Promise<{ [key: string]: any }> => {
-    const resp = await axios.get<WidgetMatrixType>("/api/form-default-data/" + model_name);
+    const resp = await axios.get<WidgetMatrixType>("/form-default-data/" + model_name);
     return resp.data;
 }
 
 export const renderDoc = async (model_name: string, data: any): Promise<ErrorsType> => {
     try {
         const csrftoken = getCookie('csrftoken') || "";
-        const resp = await axios.post<ErrorsType>("/api/render-doc/" + model_name,
+        const resp = await axios.post<ErrorsType>("/render-doc/" + model_name,
             data,
             {
                 headers: {
@@ -37,6 +37,6 @@ export const renderDoc = async (model_name: string, data: any): Promise<ErrorsTy
 
 
 export const getListItemsAjax = async (model_name: string, list_name: string, query: string): Promise<Array<TypeAheadItem>> => {
-    const resp = await axios.get<Array<TypeAheadItem>>(`/api/list-items/${model_name}/${list_name}?query=${query}`);
+    const resp = await axios.get<Array<TypeAheadItem>>(`/list-items/${model_name}/${list_name}?query=${query}`);
     return resp.data;
 }
