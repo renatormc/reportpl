@@ -135,3 +135,10 @@ models = rw.import_model("docmodel_name.zip")
 rw = ReportWriter("/caminho/pasta/models")
 rw.delete_model("docmodel_name")
 ```
+
+## Verificar existência de um docmodel
+
+```python
+rw = ReportWriter("/caminho/pasta/models")
+rw.model_exists("docmodel_name")
+```
