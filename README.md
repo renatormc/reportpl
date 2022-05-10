@@ -58,8 +58,8 @@ Importe os arquivos js e css e deixe um div de id "root" passando o nome do mode
 <html lang="pt-BR">
   <head>
     ...
-    <script defer="defer" src="{% static 'front/js/' + filenames.js_filename %}"></script>
-    <link href="{% static 'front/css/' + filenames.css_filename %}" rel="stylesheet" />
+    <script defer="defer" src="{% static 'report_writer_form/js/' %}{{ filenames.js_filename }}"></script>
+    <link href="{% static 'report_writer_form/css/' %}{{ filenames.css_filename }}" rel="stylesheet" />
     ...
   </head>
   <body>
