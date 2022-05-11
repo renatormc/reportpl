@@ -3,16 +3,19 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import {v4 as uuidv4} from 'uuid';
 
 const rootEl = document.getElementById('root') as HTMLElement;
 const modelName = rootEl.getAttribute("model_name") || "";
+const randomID = rootEl.getAttribute("random_id") || uuidv4();
+console.log(randomID);
 
 const root = ReactDOM.createRoot(
   rootEl
 );
 root.render(
   <React.StrictMode>
-    <App model_name={modelName}/>
+    <App model_name={modelName} randomID={randomID}/>
   </React.StrictMode>
 );
 

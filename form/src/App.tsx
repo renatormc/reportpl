@@ -11,7 +11,8 @@ import { getSavedFormData, saveFormData } from './services/storage';
 
 
 type Props = {
-  model_name: string
+  model_name: string,
+  randomID: string
 }
 
 function App(props: Props) {
@@ -31,8 +32,7 @@ function App(props: Props) {
 
   const submitForm = async () => {
     saveFormData(props.model_name, data);
-    const errors = await renderDoc(props.model_name, data);
-    console.log(errors);
+    const errors = await renderDoc(props.model_name, data, props.randomID);
     setErrors(errors);
     if (errors === null) {
       showModal("Renderização", "Arquivo renderizado com sucesso");
