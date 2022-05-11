@@ -13,6 +13,8 @@ import json
 import json
 import os
 from report_writer.zipmodel import zip_folder, unzip_file
+import tempfile
+import markdown
 
 __version__ = '0.1.4'
 
@@ -54,11 +56,26 @@ class ModuleModel:
 
 
 class ReportWriter:
-    def __init__(self, models_folder: str | Path) -> None:
+    def __init__(self, models_folder: str | Path,
+                 tempfolder: str | Path | None = None,
+                 random_id: str | None = None,
+                 model_name: str | None = None) -> None:
         self.models_folder = Path(models_folder)
+        self.tempfolder = Path(tempfolder) if tempfolder else self._gen_tempfolder()
+        if not self.tempfolder.exists() or not self.tempfolder.is_dir():
+            raise Exception(f"folder \"{self.tempfolder}\" not found")
         self._current_module_model: None | ModuleModel = None
         self._current_model_folder: Path | None = None
+        if model_name is not None:
+            self.set_model(model_name)
         self._context: dict | None = None
+        self._random_id: str | None = random_id
+
+    @property
+    def random_id(self) -> str:
+        if self._random_id is None:
+            raise Exception("random_id was not set")
+        return self._random_id
 
     @property
     def current_model_folder(self) -> Path:
@@ -77,6 +94,15 @@ class ReportWriter:
         if self._context is None:
             raise Exception("validate was not called")
         return self._context
+
+    def set_random_id(self, value: str) -> None:
+        self._random_id = value
+
+    def _gen_tempfolder(self) -> Path:
+        folder = Path(tempfile.gettempdir(), "report_writer")
+        if not folder.exists():
+            folder.mkdir()
+        return folder
 
     def list_models(self) -> list[str]:
         return [entry.name for entry in self.models_folder.iterdir() if entry.is_dir()]
@@ -176,13 +202,11 @@ class ReportWriter:
     def model_exists(self, model_name: str) -> bool:
         return (self.models_folder / model_name).exists()
 
-
-    def export_model(self, destfile: Path|str) -> None:
+    def export_model(self, destfile: Path | str) -> None:
         destfile = Path(destfile)
         zip_folder(self.current_model_folder, destfile)
 
-
-    def import_model(self, zipfile: Path|str, overwrite = False) -> None:
+    def import_model(self, zipfile: Path | str, overwrite=False) -> None:
         zipfile = Path(zipfile)
         folder = self.models_folder / zipfile.stem
         if folder.exists() and not overwrite:
@@ -198,8 +222,11 @@ class ReportWriter:
         except FileNotFoundError:
             raise Exception("model not found")
 
-
-
+    def get_instructions_html(self) -> str:
+        path = self.current_model_folder / "instructions.md"
+        if path.exists():
+            return markdown.markdown(path.read_text())
+        return ""
 
 
 def get_file_names() -> dict[str, str]:

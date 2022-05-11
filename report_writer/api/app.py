@@ -70,6 +70,16 @@ def list_items(model_name: str, list_name: str):
     return jsonify(its)
 
 
+@app.route("/api/model-instructions/<model_name>")
+def model_instructions(model_name: str):
+    rw = ReportWriter("./models")
+    rw.set_model(model_name)
+    return jsonify({
+        "html": rw.get_instructions_html()
+    })
+
+
+
 # @app.route("/api/save-data")
 # def save_data(model_name: str):
 #     name_id = request.args.get("name_id")

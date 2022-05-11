@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { WidgetMatrixType, ErrorsType, TypeAheadItem } from './../types/custom_types';
+import { WidgetMatrixType, ErrorsType, TypeAheadItem, ModelInstructionsResponse } from './../types/custom_types';
 import axios from './axios'
 import { getCookie } from './cookies';
 
@@ -38,5 +38,10 @@ export const renderDoc = async (model_name: string, data: any, randomID: string)
 
 export const getListItemsAjax = async (model_name: string, list_name: string, query: string): Promise<Array<TypeAheadItem>> => {
     const resp = await axios.get<Array<TypeAheadItem>>(`/list-items/${model_name}/${list_name}?query=${query}`);
+    return resp.data;
+}
+
+export const getModelInstructions = async (model_name: string): Promise<ModelInstructionsResponse> => {
+    const resp = await axios.get<ModelInstructionsResponse>("/model-instructions/" + model_name);
     return resp.data;
 }

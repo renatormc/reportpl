@@ -3,10 +3,10 @@ import './App.css';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import 'react-bootstrap-typeahead/css/Typeahead.bs5.css';
 import MsgBox from './components/msgbox';
-import { getFormDefaultData, getFormLayout, renderDoc } from './services/api';
+import { getFormDefaultData, getFormLayout, getModelInstructions, renderDoc } from './services/api';
 import { DataType, ErrorsType, WidgetMatrixType } from './types/custom_types';
 import CompositeWidget from './widgets/composite_widget';
-import { Button, Row, Col, Container, Form } from 'react-bootstrap';
+import { Button, Row, Col, Container, Form, Card } from 'react-bootstrap';
 import { getSavedFormData, saveFormData } from './services/storage';
 
 
@@ -23,6 +23,8 @@ function App(props: Props) {
   const [modalText, setModalText] = useState("");
 
   const [data, setData] = useState<DataType>({});
+
+  const [modelInstructions, setModelInstructions] = useState("");
 
   const [errors, setErrors] = useState<ErrorsType>({});
 
@@ -41,7 +43,7 @@ function App(props: Props) {
 
   const loadSavedForm = async () => {
     const data = getSavedFormData(props.model_name);
-    if(data !== null){
+    if (data !== null) {
       setData(data);
     }
   }
@@ -63,19 +65,36 @@ function App(props: Props) {
   useEffect(() => {
     getFormDefaultData(props.model_name).then((data) => {
       setData(data);
+      getFormLayout(props.model_name).then((data) => {
+        setWidgetMatrix(data);
+      }).catch(error => {
+        console.log(error.response.data);
+      });
     })
-    getFormLayout(props.model_name).then((data) => {
-      setWidgetMatrix(data);
-    }).catch(error => {
-      console.log(error.response.data);
+
+    getModelInstructions(props.model_name).then(data => {
+      setModelInstructions(data.html);
     });
-   
+
   }, [])
 
   return (
     <div className="App">
 
       <Container fluid>
+        {modelInstructions !== "" && <Row>
+          <Col>
+            <Card>
+            <Card.Header as="h5">Instruções</Card.Header>
+              <Card.Body>
+                <div dangerouslySetInnerHTML={{ __html: modelInstructions }} />
+              </Card.Body>
+
+            </Card>
+
+          </Col>
+        </Row>}
+
         <Row>
           <Col>
             <Form onSubmit={e => e.preventDefault()}>
@@ -97,6 +116,7 @@ function App(props: Props) {
 
                 </Col>
               </Row>
+
               {/* <p className='text-center'>{JSON.stringify(data)}</p>
               <p className='text-center'>{JSON.stringify(errors)}</p> */}
 
