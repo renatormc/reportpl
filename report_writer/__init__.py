@@ -18,7 +18,7 @@ import markdown
 
 __version__ = '0.1.4'
 
-__test__ = 'teste2'
+__test__ = 'teste3'
 
 script_dir = Path(os.path.dirname(os.path.realpath(__file__)))
 
