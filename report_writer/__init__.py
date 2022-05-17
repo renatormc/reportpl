@@ -225,7 +225,7 @@ class ReportWriter:
     def get_instructions_html(self) -> str:
         path = self.current_model_folder / "instructions.md"
         if path.exists():
-            return markdown.markdown(path.read_text())
+            return markdown.markdown(path.read_text(encoding="utf-8"))
         return ""
 
 
