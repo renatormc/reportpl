@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 from pathlib import Path
-from typing import Union
+from typing import BinaryIO, Union
 import os
 import zipfile
 import shutil
@@ -8,7 +8,7 @@ from report_writer.config import TEMPFOLDER
 from uuid import uuid4
 
 
-def zip_folder(folder_path: str|Path, output_path: str|Path) -> None:
+def zip_folder(folder_path: str | Path, output_path: str | Path) -> None:
     folder_path, output_path = str(folder_path), str(output_path)
     print(folder_path, output_path)
     contents = os.walk(folder_path)
@@ -32,17 +32,18 @@ def zip_folder(folder_path: str|Path, output_path: str|Path) -> None:
         zip_file.close()
 
 
-def unzip_file(file: Path | str, dest: Path | str | None = None, subfolder=False) -> Path:
+def unzip_file(file: Path | str | BinaryIO, dest: Path | str | None = None, subfolder=False) -> Path:
     """Unzip a zip file to a folder. If dest is not especified it will be extracted to a temporary folder"""
     if dest is None:
         dest = TEMPFOLDER / str(uuid4())
-    file, dest = Path(file), Path(dest)
+    dest = Path(dest)
     if dest.exists():
         shutil.rmtree(dest)
     if subfolder:
         dest = dest / file.name
     dest.mkdir(parents=True)
-
-    with zipfile.ZipFile(str(file)) as zip_ref:
+    if isinstance(file, (Path, str)):
+        file = str(file)
+    with zipfile.ZipFile(file) as zip_ref:
         zip_ref.extractall(str(dest))
     return dest

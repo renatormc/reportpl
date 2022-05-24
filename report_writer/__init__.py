@@ -214,18 +214,21 @@ class ReportWriter:
         return (self.models_folder / model_name).exists()
 
     def export_model(self, destfile: Path | str) -> None:
+        """Exports a model from models folder to the destination especified in 'destfile' param"""
         destfile = Path(destfile)
         zip_folder(self.current_model_folder, destfile)
 
-    def import_model(self, zipfile: Path | str, overwrite=False) -> None:
-        zipfile = Path(zipfile)
-        folder = self.models_folder / zipfile.stem
+    def import_model(self, zipfile: Path | str | BinaryIO, overwrite=False, filename: str | None = None) -> None:
+        """Import zip file to models. If filename is not provided the name of the zipfile without extension will be used"""
+        filename = filename or Path(zipfile).stem 
+        folder = self.models_folder / filename
         if folder.exists() and not overwrite:
-            raise Exception(f"Model \"{zipfile.stem}\" already exists")
+            raise FileExistsError(f"Model \"{filename}\" already exists")
         unzip_file(zipfile, folder)
         self.fix_imports()
 
     def delete_model(self, model_name: str) -> None:
+        """Deletes a model by its name"""
         folder = self.models_folder / model_name
         try:
             shutil.rmtree(folder)
@@ -234,6 +237,7 @@ class ReportWriter:
             raise Exception("model not found")
 
     def get_instructions_html(self) -> str:
+        """Get the instructions especified in instructions.md in model folder"""
         path = self.current_model_folder / "instructions.md"
         if path.exists():
             return markdown.markdown(path.read_text(encoding="utf-8"))
@@ -273,7 +277,7 @@ class ReportWriter:
             return None
         return folder.iterdir()
 
-    def delete_old_temp_files(self, ref: timedelta|datetime|None = None) -> None:
+    def delete_old_temp_files(self, ref: timedelta | datetime | None = None) -> None:
         """Deletes temp folders that has date of modification before the reference date. The reference date will be the value passed in param ref
         if it is of type datetime, if it is of type timedelta the reference date will be the current date subtracted by the ref value.
         If delta is None it will delete all temp folder regardless the date of modification."""
