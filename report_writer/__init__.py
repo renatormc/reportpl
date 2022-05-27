@@ -1,6 +1,6 @@
 from pathlib import Path
 import shutil
-from typing import Any, Optional, Tuple,  Union
+from typing import Any, Iterator, Optional, Tuple,  Union, BinaryIO
 from importlib.machinery import SourceFileLoader
 from report_writer.base_web_form import BaseWebForm
 from report_writer.model_info import ModelInfo
@@ -15,10 +15,9 @@ import os
 from report_writer.zipmodel import zip_folder, unzip_file
 import tempfile
 import markdown
+from datetime import timedelta, datetime
 
-__version__ = '0.1.4'
-
-__test__ = 'teste3'
+__version__ = '0.1.7'
 
 script_dir = Path(os.path.dirname(os.path.realpath(__file__)))
 
@@ -61,15 +60,21 @@ class ReportWriter:
                  random_id: str | None = None,
                  model_name: str | None = None) -> None:
         self.models_folder = Path(models_folder)
-        self.tempfolder = Path(tempfolder) if tempfolder else self._gen_tempfolder()
-        if not self.tempfolder.exists() or not self.tempfolder.is_dir():
-            raise Exception(f"folder \"{self.tempfolder}\" not found")
+        self._tempfolder = None
+        if tempfolder is not None:
+            self.set_tempfolder(tempfolder)
         self._current_module_model: None | ModuleModel = None
         self._current_model_folder: Path | None = None
         if model_name is not None:
             self.set_model(model_name)
         self._context: dict | None = None
         self._random_id: str | None = random_id
+
+    @property
+    def tempfolder(self) -> Path:
+        if self._tempfolder is None:
+            raise Exception(f"tempfolder was not set")
+        return self._tempfolder
 
     @property
     def random_id(self) -> str:
@@ -98,6 +103,11 @@ class ReportWriter:
     def set_random_id(self, value: str) -> None:
         self._random_id = value
 
+    def set_tempfolder(self, folder: Path | str) -> None:
+        self._tempfolder = Path(folder)
+        if not self._tempfolder.is_dir():
+            raise Exception(f"\"{folder}\" is not a valid folder")
+
     def _gen_tempfolder(self) -> Path:
         folder = Path(tempfile.gettempdir(), "report_writer")
         if not folder.exists():
@@ -108,7 +118,8 @@ class ReportWriter:
         return [entry.name for entry in self.models_folder.iterdir() if entry.is_dir()]
 
     def set_model(self, model_name: str) -> None:
-        self._current_model_folder = (self.models_folder / model_name).absolute()
+        self._current_model_folder = (
+            self.models_folder / model_name).absolute()
         self._current_module_model = ModuleModel(
             self.models_folder, model_name)
 
@@ -203,18 +214,21 @@ class ReportWriter:
         return (self.models_folder / model_name).exists()
 
     def export_model(self, destfile: Path | str) -> None:
+        """Exports a model from models folder to the destination especified in 'destfile' param"""
         destfile = Path(destfile)
         zip_folder(self.current_model_folder, destfile)
 
-    def import_model(self, zipfile: Path | str, overwrite=False) -> None:
-        zipfile = Path(zipfile)
-        folder = self.models_folder / zipfile.stem
+    def import_model(self, zipfile: Path | str | BinaryIO, overwrite=False, filename: str | None = None) -> None:
+        """Import zip file to models. If filename is not provided the name of the zipfile without extension will be used"""
+        filename = filename or Path(zipfile).stem 
+        folder = self.models_folder / filename
         if folder.exists() and not overwrite:
-            raise Exception(f"Model \"{zipfile.stem}\" already exists")
+            raise FileExistsError(f"Model \"{filename}\" already exists")
         unzip_file(zipfile, folder)
         self.fix_imports()
 
     def delete_model(self, model_name: str) -> None:
+        """Deletes a model by its name"""
         folder = self.models_folder / model_name
         try:
             shutil.rmtree(folder)
@@ -223,10 +237,60 @@ class ReportWriter:
             raise Exception("model not found")
 
     def get_instructions_html(self) -> str:
+        """Get the instructions especified in instructions.md in model folder"""
         path = self.current_model_folder / "instructions.md"
         if path.exists():
-            return markdown.markdown(path.read_text())
+            return markdown.markdown(path.read_text(encoding="utf-8"))
         return ""
+
+    def save_widget_asset(self, file: str | Path | BinaryIO, filename: str, field_name: str, overwrite=False) -> None:
+        """Save an file asset to the widget temp folder"""
+        to_path = self.tempfolder / self.random_id / "widgets" / field_name / filename
+        if overwrite:
+            try:
+                to_path.unlink()
+            except FileNotFoundError:
+                pass
+        try:
+            to_path.parent.mkdir(parents=True)
+        except FileExistsError:
+            pass
+        if isinstance(file, str) or isinstance(file, Path):
+            from_path = Path(file)
+            shutil.copy(from_path, to_path)
+            return
+        if not overwrite and to_path.exists():
+            raise FileExistsError(f"file \"{to_path}\" already exists")
+        with to_path.open("wb") as f:
+            shutil.copyfileobj(file, f)
+
+    def get_widget_asset(self, field_name: str, filename: str) -> Path | None:
+        """Returns an asset path associated with a widget by it's filename"""
+        path = self.tempfolder / self.random_id / "widgets" / field_name / filename
+        if path.exists():
+            return path
+
+    def get_widget_assets(self, field_name: str) -> Iterator[Path] | None:
+        """Returns an iterator to the assets associated with a widget"""
+        folder = self.tempfolder / self.random_id / "widgets" / field_name
+        if not folder.is_dir():
+            return None
+        return folder.iterdir()
+
+    def delete_old_temp_files(self, ref: timedelta | datetime | None = None) -> None:
+        """Deletes temp folders that has date of modification before the reference date. The reference date will be the value passed in param ref
+        if it is of type datetime, if it is of type timedelta the reference date will be the current date subtracted by the ref value.
+        If delta is None it will delete all temp folder regardless the date of modification."""
+        for entry in self.tempfolder.iterdir():
+            if ref is not None:
+                st = entry.stat().st_mtime
+                d = ref if isinstance(ref, datetime) else datetime.now() - ref
+                if (st - d.timestamp()) > 0:
+                    continue
+            if entry.is_dir():
+                shutil.rmtree(entry)
+            else:
+                entry.unlink()
 
 
 def get_file_names() -> dict[str, str]:

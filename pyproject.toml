@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "report_writer"
-version = "0.1.5"
+version = "0.1.7"
 description = ""
 authors = ["renatormc <renatomartinsrmc@gmail.com>"]
 
