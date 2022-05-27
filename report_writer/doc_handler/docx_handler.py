@@ -1,26 +1,29 @@
 from pathlib import Path
 from typing import Optional, Union
 from docxtpl import DocxTemplate, InlineImage
+from docxtpl.subdoc import Subdoc
 from report_writer.doc_handler.jenv import make_jinja_env
 from docx.shared import Mm
 from uuid import uuid4
+from report_writer.doc_handler.subdoc_html import SubdocHtmlFunction
+from report_writer.module_model import ModuleModel
 
 
 class SubdocFunction:
-    def __init__(self, tpl, templates_folder):
+    def __init__(self, tpl, module_model: ModuleModel):
         self.tpl = tpl
-        self.templates_folder = templates_folder
+        self.module_model = module_model
 
     def __call__(self, template, context):
         if not isinstance(context, dict):
             context = {'data': context}
-        path = self.templates_folder / f"{template}.docx"
+        path = self.module_model.docx_templates_folder / f"{template}.docx"
         if not path.exists():
             print(f"Não foi encontrado o arquivo {path}")
             return
         subtpl = DocxTemplate(str(path))
         subtpl.render(context)
-        sd = self.tpl.new_subdoc()
+        sd: Subdoc = self.tpl.new_subdoc()
         sd.subdocx = subtpl.docx
         return sd
 
@@ -37,14 +40,15 @@ class SInlineImage:
 
 
 class DocxHandler:
-    def __init__(self, model):
-        self.model = model
-        self.templates_folder = Path(model.__file__).parent / "templates"
-        self.jinja_env = make_jinja_env(model)
+    def __init__(self, module_model: ModuleModel):
+        self.module_model = module_model
+        self.templates_folder = self.module_model.docx_templates_folder
+        self.jinja_env = make_jinja_env(self.module_model)
 
-    def prepare_jinja_env(self, tpl):
-        self.jinja_env.globals['subdoc'] = SubdocFunction(
-            tpl, self.templates_folder)
+    def prepare_jinja_env(self, tpl: DocxTemplate):
+        self.jinja_env.globals['subdoc'] = SubdocFunction(tpl, self.module_model)
+        jinja_env2 = make_jinja_env(self.module_model, self.module_model.html_templates_folder)
+        self.jinja_env.globals['subdoc_html'] = SubdocHtmlFunction(tpl, self.module_model, jinja_env2)
         self.jinja_env.globals['image'] = SInlineImage(tpl)
         return self.jinja_env
 

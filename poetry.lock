@@ -406,6 +406,14 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "types-markdown"
+version = "3.3.23"
+description = "Typing stubs for Markdown"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "types-pillow"
 version = "9.0.14"
 description = "Typing stubs for Pillow"
@@ -435,7 +443,7 @@ watchdog = ["watchdog"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "b0ccde3fee93b33e783c17f889ae6ff89853df6260d43d51f51ed208e716bd8c"
+content-hash = "ddf1ea14f2c2cfdc320ecc85c93ca70f123fdd480931d32cc6f2040216ef78c4"
 
 [metadata.files]
 atomicwrites = [
@@ -811,6 +819,10 @@ tomli = [
 types-beautifulsoup4 = [
     {file = "types-beautifulsoup4-4.10.20.tar.gz", hash = "sha256:856ddb741576a94764392cba81b9dcf07fc0fe005fc753e487e2e9e0db2324ca"},
     {file = "types_beautifulsoup4-4.10.20-py3-none-any.whl", hash = "sha256:0be4be522ce340ff3f5540c416adfda305bbb4d14f3fecadc2a9086c1dbd4b32"},
+]
+types-markdown = [
+    {file = "types-Markdown-3.3.23.tar.gz", hash = "sha256:5b9e3d08b74aab195145ffec5399ec0f5108cba52d5a023f597dcfbee895a2fb"},
+    {file = "types_Markdown-3.3.23-py3-none-any.whl", hash = "sha256:e9351a9d8dc04dc8215fbd2ffc8853866d2993945ea825475c76ca06b117fd25"},
 ]
 types-pillow = [
     {file = "types-Pillow-9.0.14.tar.gz", hash = "sha256:d551fb223d70b1adf7605bc09bdc5de4ffd88183b0dd7cd1536f5403781624d1"},

@@ -1,10 +1,6 @@
 from pathlib import Path
 import shutil
 from typing import Any, Iterator, Optional, Tuple,  Union, BinaryIO
-from importlib.machinery import SourceFileLoader
-from report_writer.base_web_form import BaseWebForm
-from report_writer.model_info import ModelInfo
-
 from report_writer.widgets.composite_widget import CompositeWidget
 from .doc_handler import DocxHandler
 from .html_render import render_pre_html
@@ -16,6 +12,7 @@ from report_writer.zipmodel import zip_folder, unzip_file
 import tempfile
 import markdown
 from datetime import timedelta, datetime
+from report_writer.module_model import ModuleModel
 
 __version__ = '0.1.7'
 
@@ -23,35 +20,17 @@ script_dir = Path(os.path.dirname(os.path.realpath(__file__)))
 
 
 class Renderer:
-    def __init__(self, model):
-        self.model = model
-        self.model_folder = Path(model.__file__).parent
+    def __init__(self, module_model: ModuleModel):
+        self.module_model = module_model
 
     def pre(self, context):
-        self.model.pre.pre(context)
+        self.module_model.pre(context)
 
     def render(self, context, dest_file: Union[Path, str], type_="docx") -> Tuple[Any, Optional[Path]]:
         self.pre(context)
-        render_pre_html(self.model, context)
-        self.engine = DocxHandler(self.model)
+        render_pre_html(self.module_model, context)
+        self.engine = DocxHandler(self.module_model)
         return context, self.engine.render("Main.docx", context, dest_file)
-
-
-class ModuleModel:
-    def __init__(self, models_folder: str | Path, model_name: str) -> None:
-        self.model_folder = Path(models_folder) / model_name
-        self.model_name = model_name
-        self.path = self.model_folder / "__init__.py"
-        if not self.path.exists():
-            raise ModelNotFoundError(f"Model \"{model_name}\" not found")
-        self.module = SourceFileLoader(
-            model_name, str(self.path)).load_module()
-
-    def get_web_form(self) -> BaseWebForm:
-        return self.module.web_form.Form()
-
-    def get_model_meta(self) -> ModelInfo:
-        return ModelInfo(self.model_folder)
 
 
 class ReportWriter:
@@ -60,7 +39,7 @@ class ReportWriter:
                  random_id: str | None = None,
                  model_name: str | None = None) -> None:
         self.models_folder = Path(models_folder)
-        self._tempfolder = None
+        self._tempfolder: Path | None = None
         if tempfolder is not None:
             self.set_tempfolder(tempfolder)
         self._current_module_model: None | ModuleModel = None
@@ -144,7 +123,7 @@ class ReportWriter:
     def render_docx(self, dest_file: str | Path) -> Tuple[Any, Optional[Path]]:
         """Render the docx document in the path specified on dest_file param
         Returns a tuple (context, file_renderized)"""
-        r = Renderer(self.current_module_model.module)
+        r = Renderer(self.current_module_model)
         return r.render(self.context, dest_file)
 
     def validate(self,  data: dict) -> ErrorsType:
@@ -220,7 +199,11 @@ class ReportWriter:
 
     def import_model(self, zipfile: Path | str | BinaryIO, overwrite=False, filename: str | None = None) -> None:
         """Import zip file to models. If filename is not provided the name of the zipfile without extension will be used"""
-        filename = filename or Path(zipfile).stem 
+        if not isinstance(zipfile, (Path, str)):
+            if filename is None:
+                raise Exception("filename was not provided")
+        else:
+            filename =  Path(zipfile).stem
         folder = self.models_folder / filename
         if folder.exists() and not overwrite:
             raise FileExistsError(f"Model \"{filename}\" already exists")
@@ -269,6 +252,7 @@ class ReportWriter:
         path = self.tempfolder / self.random_id / "widgets" / field_name / filename
         if path.exists():
             return path
+        return None
 
     def get_widget_assets(self, field_name: str) -> Iterator[Path] | None:
         """Returns an iterator to the assets associated with a widget"""

@@ -1,13 +1,18 @@
+from pathlib import Path
 import jinja2
+
+from report_writer.module_model import ModuleModel
 from .filters import filters
 from .jinja_env_functions import global_functions
 
 
-def make_jinja_env(model, folder_templates=None):
-    Filters = model.filters.Filters
-    custom_filters = [getattr(Filters, func) for func in dir(Filters) if callable(getattr(Filters, func)) and not func.startswith("__")]
-    Functions = model.functions.Functions
-    custom_functions = [getattr(Functions, func) for func in dir(Functions) if callable(getattr(Functions, func)) and not func.startswith("__")]
+def make_jinja_env(module_model: ModuleModel, folder_templates: str | Path | None = None) -> jinja2.Environment:
+    Filters = module_model.filters
+    custom_filters = [getattr(Filters, func) for func in dir(Filters)
+                      if callable(getattr(Filters, func)) and not func.startswith("__")]
+    Functions = module_model.functions
+    custom_functions = [getattr(Functions, func) for func in dir(Functions)
+                        if callable(getattr(Functions, func)) and not func.startswith("__")]
     if folder_templates is not None:
         jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(folder_templates))
     else:
