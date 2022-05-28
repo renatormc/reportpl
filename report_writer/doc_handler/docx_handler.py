@@ -1,31 +1,13 @@
 from pathlib import Path
 from typing import Optional, Union
 from docxtpl import DocxTemplate, InlineImage
-from docxtpl.subdoc import Subdoc
 from report_writer.doc_handler.jenv import make_jinja_env
 from docx.shared import Mm
 from uuid import uuid4
 from report_writer.doc_handler.subdoc_html import SubdocHtmlFunction
 from report_writer.module_model import ModuleModel
+from report_writer.doc_handler.subdoc import SubdocFunction
 
-
-class SubdocFunction:
-    def __init__(self, tpl, module_model: ModuleModel):
-        self.tpl = tpl
-        self.module_model = module_model
-
-    def __call__(self, template, context):
-        if not isinstance(context, dict):
-            context = {'data': context}
-        path = self.module_model.docx_templates_folder / f"{template}.docx"
-        if not path.exists():
-            print(f"Não foi encontrado o arquivo {path}")
-            return
-        subtpl = DocxTemplate(str(path))
-        subtpl.render(context)
-        sd: Subdoc = self.tpl.new_subdoc()
-        sd.subdocx = subtpl.docx
-        return sd
 
 
 class SInlineImage:
