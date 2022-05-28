@@ -22,8 +22,7 @@ class SubdocHtmlFunction:
             raise FileNotFoundError(f"the template \"{path}\" was not found")
         tp = self.jinja_env.get_template(template)
         text = tp.render(**context)
-        print(text)
         soup = BeautifulSoup(text, 'html.parser')
-        for e in soup.find_all():
+        for e in soup.find_all(recursive=False):
             parse_element(sd, e)
         return sd
