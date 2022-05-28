@@ -5,7 +5,7 @@ from . run import add_run
 
 def parse_paragraph(sd: Subdoc, el: Tag):
     p = sd.add_paragraph('')
-    class_ = el['class'][0] if el.has_attr('class') else "Normal"
+    class_ = " ".join(el['class']) if el.has_attr('class') else "Normal"
     p.style = class_
     els = list(el.find_all("div", recursive=False))
     if len(els) > 0:

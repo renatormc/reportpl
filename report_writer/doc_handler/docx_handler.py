@@ -26,11 +26,12 @@ class DocxHandler:
         self.module_model = module_model
         self.templates_folder = self.module_model.docx_templates_folder
         self.jinja_env = make_jinja_env(self.module_model)
+        self.context = None
 
     def prepare_jinja_env(self, tpl: DocxTemplate):
         self.jinja_env.globals['subdoc'] = SubdocFunction(tpl, self.module_model)
         jinja_env2 = make_jinja_env(self.module_model, self.module_model.html_templates_folder)
-        self.jinja_env.globals['subdoc_html'] = SubdocHtmlFunction(tpl, self.module_model, jinja_env2)
+        self.jinja_env.globals['subdoc_html'] = SubdocHtmlFunction(self, tpl, self.module_model, jinja_env2)
         self.jinja_env.globals['image'] = SInlineImage(tpl)
         return self.jinja_env
 
@@ -45,6 +46,7 @@ class DocxHandler:
             return tempfile
 
     def render(self, template: str, context, dest_file: Union[Path, str]) -> Optional[Path]:
+        self.context = context
         dest_file = Path(dest_file)
         path = self.templates_folder / template
         if path.exists():

@@ -4,7 +4,7 @@ from typing import Any, Iterator, Optional, Tuple,  Union, BinaryIO
 from report_writer.widgets.composite_widget import CompositeWidget
 from .doc_handler import DocxHandler
 from .html_render import render_pre_html
-from .types import ErrorsType, ModelList, ModelListItem, ModelNotFoundError, WidgetAttributesType
+from .types import ErrorsType, ModelList, ModelListItem,  WidgetAttributesType
 import json
 import json
 import os
