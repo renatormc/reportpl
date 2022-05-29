@@ -23,7 +23,7 @@ class SubdocFunction:
     def __call__(self, template, context):
         if not isinstance(context, dict):
             context = {'data': context}
-        path = self.module_model.docx_templates_folder / f"{template}.docx"
+        path = self.module_model.docx_templates_folder / template
         try:
             return add_subdoc_from_template(self.tpl, path, context)
         except FileNotFoundError:
