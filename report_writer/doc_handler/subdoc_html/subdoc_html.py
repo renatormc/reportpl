@@ -1,6 +1,5 @@
 from typing import Any, TYPE_CHECKING
 from bs4 import BeautifulSoup
-from docx import Document
 from docxtpl import DocxTemplate, Subdoc
 import jinja2
 from report_writer.module_model import ModuleModel
