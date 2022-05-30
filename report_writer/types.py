@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Any, Callable, Literal, TypedDict, TYPE_CHECKING
+from typing import IO, Any, Callable, Literal, TypedDict, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from report_writer.base_web_form import BaseWebForm
@@ -116,3 +116,11 @@ class ModelMetaType(TypedDict):
     full_name: str
     has_qt_form: bool
     has_web_form: bool
+
+
+class FileType:
+    def __init__(self, file: str|Path|IO[bytes], filename: str) -> None:
+        pass
+
+    def save(self, dest: Path) -> None:
+        pass
