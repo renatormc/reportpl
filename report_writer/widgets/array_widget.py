@@ -31,7 +31,7 @@ class ArrayWidget:
         self.composite = CompositeWidget(self.widgets)
 
     @staticmethod
-    def save_widget_asset(widget_folder: Path, file: Path | str | IO[bytes], filename: str | None = None) -> None:
+    def save_widget_asset(widget_folder: Path, file: Path | str | IO[bytes], filename: str | None = None) -> Any:
         pass
 
     def convert_data(self, raw_data: Any) -> Tuple[list, ErrorsType]:

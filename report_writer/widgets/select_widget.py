@@ -29,7 +29,7 @@ class SelectWidget:
         self.converter = converter
 
     @staticmethod
-    def save_widget_asset(widget_folder: Path, file: Path | str | IO[bytes], filename: str | None = None) -> None:
+    def save_widget_asset(widget_folder: Path, file: Path | str | IO[bytes], filename: str | None = None) -> Any:
         pass
 
     @property

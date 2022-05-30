@@ -25,5 +25,5 @@ class Widget(Protocol):
         pass
 
     @staticmethod
-    def save_widget_asset(widget_folder: Path, file: str | Path | IO[bytes], filename: str) -> None:
+    def save_widget_asset(widget_folder: Path, file: str | Path | IO[bytes], filename: str) -> Any:
         pass

@@ -3,6 +3,8 @@ import { WidgetMatrixType, ErrorsType, TypeAheadItem, ModelInstructionsResponse 
 import axios from './axios'
 import { getCookie } from './cookies';
 
+const rootEl = document.getElementById('root') as HTMLElement;
+const urlPrefix = rootEl.getAttribute("url_prefix") || "";
 
 export const getFormLayout = async (model_name: string): Promise<WidgetMatrixType> => {
     const resp = await axios.get<WidgetMatrixType>("/form-layout/" + model_name);
@@ -57,4 +59,12 @@ export const uploadWidgetAsset = async (
         }
     });
     return resp.data;
+}
+
+export const urlFor = (path: string): string => {
+    return urlPrefix + "/" + path;
+}
+
+export const urlForWidgetAsset = (randomID:string, fieldName: string, path: string): string => {
+    return `${urlPrefix}/widget-asset/${randomID}/${fieldName}/${path}`
 }

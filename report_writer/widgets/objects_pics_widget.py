@@ -35,20 +35,48 @@ class ObjectsPicsWidget:
         self.validators = validators
         self.converter = converter
 
+    @staticmethod
+    def get_data_from_folder(widget_folder: Path) -> Any:
+        folder2 = widget_folder / "not_classified"
+        try:
+            folder2.mkdir()
+        except FileExistsError:
+            pass
+        pics = [
+            f"not_classified/{e.name}" for e in folder2.iterdir() if e.is_file()]
+        objs: list[ObjectData] = []
+        folder2 = widget_folder / "objects"
+        try:
+            folder2.mkdir()
+        except FileExistsError:
+            pass
+        for entry in folder2.iterdir():
+            if entry.is_file():
+                continue
+            objdata: ObjectData = {
+                'name': entry.name,
+                'pics': [f"objects/{entry.name}/{e.name}" for e in entry.iterdir() if e.is_file()]
+            }
+            objs.append(objdata)
+        return {
+            "not_classified": pics,
+            "objects": objs
+        }
 
     @staticmethod
-    def save_widget_asset(widget_folder: Path, file: Path | str | IO[bytes], filename: str) -> None:
+    def save_widget_asset(widget_folder: Path, file: Path | str | IO[bytes], filename: str) -> Any:
         folder = widget_folder / "not_classified"
         path = folder / filename
         if isinstance(file, (str, Path)):
             file = Path(file).open("wb")
-        with path.open("wb") as fd:       
+        with path.open("wb") as fd:
             copyfileobj(file, fd)
-        
+        return ObjectsPicsWidget.get_data_from_folder(widget_folder)
 
     def convert_data(self, raw_data: Any) -> Tuple[Any, ErrorsType]:
         d: ObjectsPicsData = raw_data
-        folder = self.form.report_writer.get_widget_assets_folder(self.name, create=True)
+        folder = self.form.report_writer.get_widget_assets_folder(
+            self.name, create=True)
 
         data: ObjectsPicsData = {
             "not_classified": [],
@@ -69,7 +97,8 @@ class ObjectsPicsWidget:
                 objdata["pics"].append(str(path))
             data["objects"].append(objdata)
         try:
-            self.data = self.converter(self.form, data) if self.converter else data
+            self.data = self.converter(
+                self.form, data) if self.converter else data
         except ValidationError as e:
             return None, str(e)
         for v in self.validators:
@@ -89,28 +118,6 @@ class ObjectsPicsWidget:
         }
 
     def get_default_data(self) -> ObjectsPicsData:
-        folder = self.form.report_writer.get_widget_assets_folder(self.name, create=True)
-        folder2 = folder / "not_classified"
-        try:
-            folder2.mkdir()
-        except FileExistsError:
-            pass
-        pics = [e.name for e in folder2.iterdir() if e.is_file()]
-        objs: list[ObjectData] = []
-        folder2 = folder / "objects"
-        try:
-            folder2.mkdir()
-        except FileExistsError:
-            pass
-        for entry in folder2.iterdir():
-            if entry.is_file():
-                continue
-            objdata: ObjectData = {
-                'name': entry.name,
-                'pics': [e.name for e in entry.iterdir() if e.is_file()]
-            }
-            objs.append(objdata)
-        return {
-            "not_classified": pics,
-            "objects": objs
-        }
+        folder = self.form.report_writer.get_widget_assets_folder(
+            self.name, create=True)
+        return self.get_data_from_folder(folder)

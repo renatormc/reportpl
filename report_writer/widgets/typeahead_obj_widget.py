@@ -32,7 +32,7 @@ class TypeAheadObjWidget:
         self.list_name: str = str(self.options) if self.ajax else ""
 
     @staticmethod
-    def save_widget_asset(widget_folder: Path, file: Path | str | IO[bytes], filename: str | None = None) -> None:
+    def save_widget_asset(widget_folder: Path, file: Path | str | IO[bytes], filename: str | None = None) -> Any:
         pass
 
     def convert_data(self, raw_data: Any) -> Tuple[Any, ErrorsType]:

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Form } from 'react-bootstrap';
-import { uploadWidgetAsset } from '../services/api';
+import React from 'react';
+import { Form, Image } from 'react-bootstrap';
+import { uploadWidgetAsset, urlForWidgetAsset } from '../services/api';
 
 type Props = {
   model_name: string,
@@ -35,6 +35,9 @@ function ObjectsPicsWidget(props: Props) {
         type="file"
         multiple
         onChange={uploadHandler} />
+        <Image
+        src={ urlForWidgetAsset(props.randomID, props.field_name, "not_classified/celular1.jfif")}
+        />
       {props.errors && <div className="error-message">{props.errors}</div>}
     </div >
   );

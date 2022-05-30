@@ -221,7 +221,7 @@ class ReportWriter:
             raise Exception("model not found")
 
     def save_widget_asset(
-            self, widget_type: str, field_name: str, file: str | Path | IO[bytes], filename: str | None = None) -> None:
+            self, widget_type: str, field_name: str, file: str | Path | IO[bytes], filename: str | None = None) -> Any:
         class_ = get_widget_class_by_widget_type(widget_type)
 
         if not isinstance(file, (Path, str)):
@@ -229,7 +229,7 @@ class ReportWriter:
                 raise Exception("filename was not provided")
         else:
             filename = Path(file).stem
-        class_.save_widget_asset(self.get_widget_assets_folder(field_name), file, filename)
+        return class_.save_widget_asset(self.get_widget_assets_folder(field_name), file, filename)
 
     def get_instructions_html(self) -> str:
         """Get the instructions especified in instructions.md in model folder"""

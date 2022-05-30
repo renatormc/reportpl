@@ -4,7 +4,7 @@
 GET {{baseurl}}/api/form-layout/example
 
 ###
-GET {{baseurl}}/api/form-default-data/example
+GET {{baseurl}}/api/form-default-data/RG123_2021/sinf_generico
 
 ###
 GET {{baseurl}}/api/list-items/example/cidades?query=a
@@ -30,5 +30,5 @@ X-CSRFToken: token_csrf
 }
 
 ###
-GET {{baseurl}}/api/widget-asset/12456asdf/fotos/teste/teste2
+GET {{baseurl}}/api/widget-asset/RG123_2021/fotos/not_classified/celular1.jfif
 content-type: application/json

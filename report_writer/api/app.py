@@ -15,7 +15,8 @@ def index():
     filenames = get_file_names()
     rw = ReportWriter("./models")
     models = rw.list_models()
-    return render_template('base.html', model_name=model_name, filenames=filenames, models=models)
+    random_id = "RG123_2021"
+    return render_template('base.html', model_name=model_name, filenames=filenames, models=models, random_id=random_id)
 
 
 @app.route("/api/form-layout/<model_name>")
@@ -102,22 +103,6 @@ def upload_widget_assets(random_id: str, widget_type:str, field_name: str):
     rw = ReportWriter("./models", random_id=random_id, tempfolder=config.TEMPFOLDER)
     files = request.files.getlist("file[]")
     for f in files:
-        rw.save_widget_asset(widget_type, field_name, f.stream, filename=f.filename)
+        data = rw.save_widget_asset(widget_type, field_name, f.stream, filename=f.filename)
     return jsonify({"msg": "ok"})
 
-
-
-# @app.route("/api/save-data")
-# def save_data(model_name: str):
-#     name_id = request.args.get("name_id")
-#     if name_id is None:
-#         return "No name_id was informed", 404
-#     json_data = request.json
-#     if not isinstance(json_data, dict):
-#         return "Incorrect data format", 401
-#     model_folder = config.saved_data_dir / model_name
-#     try:
-#         model_folder.mkdir()
-#     except FileExistsError:
-#         pass
-#     path = model_folder / f""
