@@ -5,7 +5,7 @@ if TYPE_CHECKING:
     from report_writer.base_web_form import BaseWebForm
 
 from report_writer.widgets import Widget
-from report_writer.types import ConverterType, ErrorsType, ValidatorType, WidgetAttributesType, ValidationError, WidgetMatrixType
+from report_writer.types import ConverterType, ErrorsType, FileType, ValidatorType, WidgetAttributesType, ValidationError, WidgetMatrixType
 import stringcase
 from report_writer.widgets.composite_widget import CompositeWidget
 
@@ -31,7 +31,7 @@ class ArrayWidget:
         self.composite = CompositeWidget(self.widgets)
 
     @staticmethod
-    def save_widget_asset(widget_folder: Path, file: Path | str | IO[bytes], filename: str | None = None) -> Any:
+    def save_widget_assets(widget_folder: Path, files: list[FileType]) -> Any:
         pass
 
     def convert_data(self, raw_data: Any) -> Tuple[list, ErrorsType]:

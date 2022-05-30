@@ -4,7 +4,7 @@ from typing import Any, IO,  Optional, Protocol, Tuple, TYPE_CHECKING
 if TYPE_CHECKING:
     from report_writer.base_web_form import BaseWebForm
 
-from report_writer.types import ConverterType, ErrorsType, ValidatorType, WidgetAttributesType
+from report_writer.types import ConverterType, ErrorsType, FileType, ValidatorType, WidgetAttributesType
 
 
 class Widget(Protocol):
@@ -25,5 +25,5 @@ class Widget(Protocol):
         pass
 
     @staticmethod
-    def save_widget_asset(widget_folder: Path, file: str | Path | IO[bytes], filename: str) -> Any:
+    def save_widget_assets(widget_folder: Path, files: list[FileType]) -> Any:
         pass

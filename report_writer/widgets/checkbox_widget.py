@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import IO, Any, Optional, Tuple, TYPE_CHECKING
 if TYPE_CHECKING:
     from report_writer.base_web_form import BaseWebForm
-from report_writer.types import ConverterType, ErrorsType, ValidatorType, WidgetAttributesType, ValidationError
+from report_writer.types import ConverterType, ErrorsType, FileType, ValidatorType, WidgetAttributesType, ValidationError
 import stringcase
 
 
@@ -23,7 +23,7 @@ class CheckBoxWidget:
         self.converter = converter
 
     @staticmethod
-    def save_widget_asset(widget_folder: Path, file: Path | str | IO[bytes], filename: str | None = None) -> Any:
+    def save_widget_assets(widget_folder: Path, files: list[FileType]) -> Any:
         pass
 
     def convert_data(self, raw_data: Any) -> Tuple[Any, ErrorsType]:

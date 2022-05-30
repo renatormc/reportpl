@@ -6,7 +6,7 @@ from pathlib import Path
 from report_writer.zipmodel import unzip_file
 if TYPE_CHECKING:
     from report_writer.base_web_form import BaseWebForm
-from report_writer.types import ConverterType, ErrorsType, ValidatorType, WidgetAttributesType, ValidationError
+from report_writer.types import ConverterType, ErrorsType, FileType, ValidatorType, WidgetAttributesType, ValidationError
 import stringcase
 
 
@@ -64,13 +64,10 @@ class ObjectsPicsWidget:
         }
 
     @staticmethod
-    def save_widget_asset(widget_folder: Path, file: Path | str | IO[bytes], filename: str) -> Any:
+    def save_widget_assets(widget_folder: Path, files: list[FileType]) -> Any:
         folder = widget_folder / "not_classified"
-        path = folder / filename
-        if isinstance(file, (str, Path)):
-            file = Path(file).open("wb")
-        with path.open("wb") as fd:
-            copyfileobj(file, fd)
+        for f in files:
+            f.save(folder)
         return ObjectsPicsWidget.get_data_from_folder(widget_folder)
 
     def convert_data(self, raw_data: Any) -> Tuple[Any, ErrorsType]:

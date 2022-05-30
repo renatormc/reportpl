@@ -5,7 +5,7 @@ from report_writer.widgets.composite_widget import CompositeWidget
 from report_writer.widgets import get_widget_class_by_widget_type
 from .doc_handler import DocxHandler
 from .html_render import render_pre_html
-from .types import ErrorsType, ModelList, ModelListItem,  WidgetAttributesType
+from .types import ErrorsType, FileType, ModelList, ModelListItem,  WidgetAttributesType
 import json
 import json
 import os
@@ -220,16 +220,15 @@ class ReportWriter:
         except FileNotFoundError:
             raise Exception("model not found")
 
-    def save_widget_asset(
-            self, widget_type: str, field_name: str, file: str | Path | IO[bytes], filename: str | None = None) -> Any:
+    def save_widget_assets(self, widget_type: str, field_name: str, files: list[FileType]) -> Any:
         class_ = get_widget_class_by_widget_type(widget_type)
 
-        if not isinstance(file, (Path, str)):
-            if filename is None:
-                raise Exception("filename was not provided")
-        else:
-            filename = Path(file).stem
-        return class_.save_widget_asset(self.get_widget_assets_folder(field_name), file, filename)
+        # if not isinstance(file, (Path, str)):
+        #     if filename is None:
+        #         raise Exception("filename was not provided")
+        # else:
+        #     filename = Path(file).stem
+        return class_.save_widget_assets(self.get_widget_assets_folder(field_name), files)
 
     def get_instructions_html(self) -> str:
         """Get the instructions especified in instructions.md in model folder"""

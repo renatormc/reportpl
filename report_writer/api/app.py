@@ -3,7 +3,7 @@ from flask import Flask, jsonify, request, abort, render_template, send_from_dir
 from report_writer import ReportWriter, get_file_names
 from report_writer.api import config
 from report_writer.api.database import repo
-from report_writer.types import ModelNotFoundError
+from report_writer.types import FileType, ModelNotFoundError
 
 
 app = Flask(__name__)
@@ -102,7 +102,7 @@ def delete_widget_asset(random_id: str, field_name: str, relpath: str):
 def upload_widget_assets(random_id: str, widget_type:str, field_name: str):
     rw = ReportWriter("./models", random_id=random_id, tempfolder=config.TEMPFOLDER)
     files = request.files.getlist("file[]")
-    for f in files:
-        data = rw.save_widget_asset(widget_type, field_name, f.stream, filename=f.filename)
-    return jsonify({"msg": "ok"})
+    files_ = [FileType(f.stream, str(f.filename)) for f in files]
+    data = rw.save_widget_assets(widget_type, field_name, files_)
+    return jsonify(data)
 

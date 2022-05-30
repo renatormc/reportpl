@@ -1,5 +1,6 @@
 from pathlib import Path
 from typing import IO, Any, Callable, Literal, TypedDict, TYPE_CHECKING
+from shutil import copyfileobj
 
 if TYPE_CHECKING:
     from report_writer.base_web_form import BaseWebForm
@@ -12,9 +13,11 @@ class ValidationError(Exception):
 class ModelNotFoundError(Exception):
     pass
 
+
 class ModelListItem(TypedDict):
     key: str
     value: Any
+
 
 class ModelList(TypedDict):
     name: str
@@ -40,7 +43,7 @@ WidgetMatrixType = list[list[WidgetAttributesType]]
 ValidatorType = Callable[['BaseWebForm', Any], None]
 
 ConverterType = Callable[['BaseWebForm', Any], Any]
-ErrorsType = dict[str, str]|str|list[str]| None
+ErrorsType = dict[str, str] | str | list[str] | None
 # FormDataType = dict[str, Any]
 
 
@@ -119,8 +122,11 @@ class ModelMetaType(TypedDict):
 
 
 class FileType:
-    def __init__(self, file: str|Path|IO[bytes], filename: str) -> None:
-        pass
+    def __init__(self, file: IO[bytes], filename: str) -> None:
+        self.file = file
+        self.filename = filename
 
-    def save(self, dest: Path) -> None:
-        pass
+    def save(self, destdir: str | Path, buffer_size: int = 0) -> None:
+        path = Path(destdir) / self.filename
+        with path.open("wb") as fd:
+            copyfileobj(self.file, fd, buffer_size)
