@@ -8,6 +8,7 @@ type Props = {
   widgetMatrix: WidgetMatrixType,
   errors: ErrorsType,
   data: DataType,
+  randomID: string,
   field_name?: string,
   updateFormValue: (field: string, value: any) => void
 }
@@ -38,6 +39,7 @@ function CompositeWidget(props: Props) {
                   <SwitchWidget
                     model_name={props.model_name}
                     widget_props={w.widget_props}
+                    randomID={props.randomID}
                     data={props.data[w.field_name]}
                     field_name={w.field_name}
                     widget_type={w.widget_type}

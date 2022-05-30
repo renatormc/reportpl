@@ -28,3 +28,7 @@ X-CSRFToken: token_csrf
     "texto_long": "Texte de texto longo no widget TextAreaWidget", 
     "test_typeahead": {"key": "Goiânia", "value": "Goiânia"}
 }
+
+###
+GET {{baseurl}}/api/widget-asset/12456asdf/fotos/teste/teste2
+content-type: application/json

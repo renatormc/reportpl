@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Union
 
 
-class DB:
+class DB(object):
     def __init__(self, uri: str) -> None:
         self.database_uri: str = uri
         self.database_type: str = uri.split(":")[0]

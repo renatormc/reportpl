@@ -1,4 +1,5 @@
-from typing import Any,  Optional, Protocol, Tuple, TYPE_CHECKING
+from pathlib import Path
+from typing import Any, IO,  Optional, Protocol, Tuple, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from report_writer.base_web_form import BaseWebForm
@@ -23,4 +24,6 @@ class Widget(Protocol):
     def get_layout(self) -> WidgetAttributesType:
         pass
 
-
+    @staticmethod
+    def save_widget_asset(widget_folder: Path, file: str | Path | IO[bytes], filename: str) -> None:
+        pass

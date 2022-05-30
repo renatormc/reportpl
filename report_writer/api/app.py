@@ -1,5 +1,5 @@
-from typing import Any
-from flask import Flask, jsonify, request, abort, render_template
+from typing import IO
+from flask import Flask, jsonify, request, abort, render_template, send_from_directory
 from report_writer import ReportWriter, get_file_names
 from report_writer.api import config
 from report_writer.api.database import repo
@@ -31,11 +31,11 @@ def form_layout(model_name: str):
     return jsonify(layout)
 
 
-@app.route("/api/form-default-data/<model_name>")
-def form_default_data(model_name: str):
+@app.route("/api/form-default-data/<random_id>/<model_name>")
+def form_default_data(random_id: str, model_name: str):
     if not model_name:
         abort(404)
-    rw = ReportWriter("./models")
+    rw = ReportWriter("./models", random_id=random_id, tempfolder=config.TEMPFOLDER)
     rw.set_model(model_name)
     data = rw.get_default_data()
     return jsonify(data)
@@ -72,11 +72,38 @@ def list_items(model_name: str, list_name: str):
 
 @app.route("/api/model-instructions/<model_name>")
 def model_instructions(model_name: str):
-    rw = ReportWriter("./models")
-    rw.set_model(model_name)
+    rw = ReportWriter("./models", model_name=model_name)
     return jsonify({
         "html": rw.get_instructions_html()
     })
+
+
+@app.route("/api/widget-asset/<random_id>/<field_name>/<path:relpath>")
+def widget_asset(random_id: str, field_name: str, relpath: str):
+    rw = ReportWriter("./models", random_id=random_id, tempfolder=config.TEMPFOLDER)
+    path = rw.get_widget_asset(field_name, relpath)
+    if path is None:
+        return "file not found", 404
+    return send_from_directory(path.parent, path.name)
+
+
+@app.route("/api/widget-asset/<random_id>/<field_name>/<path:relpath>", methods=("DELETE",))
+def delete_widget_asset(random_id: str, field_name: str, relpath: str):
+    rw = ReportWriter("./models", random_id=random_id, tempfolder=config.TEMPFOLDER)
+    try:
+        rw.delete_widget_asset(field_name, relpath)
+    except FileNotFoundError:
+        return "file not found", 404
+    return jsonify({"msg": "ok"})
+
+
+@app.route("/api/upload-widget-assets/<random_id>/<widget_type>/<field_name>", methods=("POST",))
+def upload_widget_assets(random_id: str, widget_type:str, field_name: str):
+    rw = ReportWriter("./models", random_id=random_id, tempfolder=config.TEMPFOLDER)
+    files = request.files.getlist("file[]")
+    for f in files:
+        rw.save_widget_asset(widget_type, field_name, f.stream, filename=f.filename)
+    return jsonify({"msg": "ok"})
 
 
 

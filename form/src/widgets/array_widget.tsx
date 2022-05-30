@@ -10,6 +10,7 @@ type Props = {
   field_name: string,
   errors: Array<ErrorsType>,
   label: string,
+  randomID: string,
   updateFormValue: (field: string, value: any) => void
 }
 
@@ -117,6 +118,7 @@ function ArrayWidget(props: Props) {
                 widgetMatrix={widgetMatrix}
                 errors={errors[index]}
                 data={item}
+                randomID={props.randomID}
                 updateFormValue={(field: string, value: any) => {
                   updateFormValue(index, field, value);
                 }} />

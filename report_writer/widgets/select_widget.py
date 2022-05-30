@@ -1,4 +1,5 @@
-from typing import Any, Optional, Tuple, TYPE_CHECKING
+from pathlib import Path
+from typing import Any, IO, Optional, Tuple, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from report_writer.base_web_form import BaseWebForm
@@ -26,6 +27,10 @@ class SelectWidget:
         self.label = label or stringcase.capitalcase(name)
         self.validators = validators
         self.converter = converter
+
+    @staticmethod
+    def save_widget_asset(widget_folder: Path, file: Path | str | IO[bytes], filename: str | None = None) -> None:
+        pass
 
     @property
     def options_obj(self)->list[ModelListItem]:

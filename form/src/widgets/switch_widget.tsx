@@ -5,6 +5,7 @@ import TextAreaWidget from './text_area_widget';
 import TypeAheadObjWidget from './typeahead_obj_widget';
 import SelectWidget from './select_widget';
 import CheckboxWidget from './checkbox_widget';
+import ObjectsPicsWidget from './objects_pics_widget';
 
 type Props = {
   model_name: string,
@@ -14,6 +15,7 @@ type Props = {
   field_name: string,
   widget_type: string,
   label: string,
+  randomID: string,
   updateFormValue: (field: string, value: any) => void
 }
 
@@ -36,7 +38,8 @@ function SwitchWidget(props: Props) {
         field_name={props.field_name}
         errors={props.errors}
         updateFormValue={props.updateFormValue}
-        label={props.label} />
+        label={props.label}
+        randomID={props.randomID} />
     case "text_area_widget":
       return <TextAreaWidget
         model_name={props.model_name}
@@ -70,6 +73,16 @@ function SwitchWidget(props: Props) {
         updateFormValue={props.updateFormValue}
         widget_props={props.widget_props}
         data={props.data}
+        field_name={props.field_name}
+        errors={props.errors}
+        label={props.label} />
+    case "objects_pics_widget":
+      return <ObjectsPicsWidget
+        model_name={props.model_name}
+        updateFormValue={props.updateFormValue}
+        widget_props={props.widget_props}
+        data={props.data}
+        randomID={props.randomID}
         field_name={props.field_name}
         errors={props.errors}
         label={props.label} />

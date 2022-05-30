@@ -1,7 +1,8 @@
 from pathlib import Path
 import shutil
-from typing import Any, Iterator, Optional, Tuple,  Union, BinaryIO
+from typing import Any, Iterator, Optional, Tuple,  Union, IO
 from report_writer.widgets.composite_widget import CompositeWidget
+from report_writer.widgets import get_widget_class_by_widget_type
 from .doc_handler import DocxHandler
 from .html_render import render_pre_html
 from .types import ErrorsType, ModelList, ModelListItem,  WidgetAttributesType
@@ -197,13 +198,13 @@ class ReportWriter:
         destfile = Path(destfile)
         zip_folder(self.current_model_folder, destfile)
 
-    def import_model(self, zipfile: Path | str | BinaryIO, overwrite=False, filename: str | None = None) -> None:
+    def import_model(self, zipfile: Path | str | IO[bytes], overwrite=False, filename: str | None = None) -> None:
         """Import zip file to models. If filename is not provided the name of the zipfile without extension will be used"""
         if not isinstance(zipfile, (Path, str)):
             if filename is None:
                 raise Exception("filename was not provided")
         else:
-            filename =  Path(zipfile).stem
+            filename = Path(zipfile).stem
         folder = self.models_folder / filename
         if folder.exists() and not overwrite:
             raise FileExistsError(f"Model \"{filename}\" already exists")
@@ -219,6 +220,17 @@ class ReportWriter:
         except FileNotFoundError:
             raise Exception("model not found")
 
+    def save_widget_asset(
+            self, widget_type: str, field_name: str, file: str | Path | IO[bytes], filename: str | None = None) -> None:
+        class_ = get_widget_class_by_widget_type(widget_type)
+
+        if not isinstance(file, (Path, str)):
+            if filename is None:
+                raise Exception("filename was not provided")
+        else:
+            filename = Path(file).stem
+        class_.save_widget_asset(self.get_widget_assets_folder(field_name), file, filename)
+
     def get_instructions_html(self) -> str:
         """Get the instructions especified in instructions.md in model folder"""
         path = self.current_model_folder / "instructions.md"
@@ -226,37 +238,54 @@ class ReportWriter:
             return markdown.markdown(path.read_text(encoding="utf-8"))
         return ""
 
-    def save_widget_asset(self, file: str | Path | BinaryIO, filename: str, field_name: str, overwrite=False) -> None:
-        """Save an file asset to the widget temp folder"""
-        to_path = self.tempfolder / self.random_id / "widgets" / field_name / filename
-        if overwrite:
-            try:
-                to_path.unlink()
-            except FileNotFoundError:
-                pass
-        try:
-            to_path.parent.mkdir(parents=True)
-        except FileExistsError:
-            pass
-        if isinstance(file, str) or isinstance(file, Path):
-            from_path = Path(file)
-            shutil.copy(from_path, to_path)
-            return
-        if not overwrite and to_path.exists():
-            raise FileExistsError(f"file \"{to_path}\" already exists")
-        with to_path.open("wb") as f:
-            shutil.copyfileobj(file, f)
+    # def save_widget_asset(self, file: str | Path | IO[bytes], filename: str, field_name: str, overwrite=False) -> None:
+    #     """Save an file asset to the widget temp folder"""
+    #     to_path = self.tempfolder / self.random_id / "widgets" / field_name / filename
+    #     if overwrite:
+    #         try:
+    #             to_path.unlink()
+    #         except FileNotFoundError:
+    #             pass
+    #     try:
+    #         to_path.parent.mkdir(parents=True)
+    #     except FileExistsError:
+    #         pass
+    #     if isinstance(file, str) or isinstance(file, Path):
+    #         from_path = Path(file)
+    #         shutil.copy(from_path, to_path)
+    #         return
+    #     if not overwrite and to_path.exists():
+    #         raise FileExistsError(f"file \"{to_path}\" already exists")
+    #     with to_path.open("wb") as f:
+    #         shutil.copyfileobj(file, f)
 
-    def get_widget_asset(self, field_name: str, filename: str) -> Path | None:
-        """Returns an asset path associated with a widget by it's filename"""
-        path = self.tempfolder / self.random_id / "widgets" / field_name / filename
+    def get_widget_assets_folder(self, field_name: str, create=False) -> Path:
+        folder = self.tempfolder / self.random_id / "widgets" / field_name
+        if create:
+            try:
+                folder.mkdir(parents=True)
+            except FileExistsError:
+                pass
+        return folder
+
+    def get_widget_asset(self, field_name: str, relpath: str) -> Path | None:
+        """Returns an asset path associated with a widget by it's relative path"""
+        path = self.get_widget_assets_folder(field_name) / relpath
         if path.exists():
             return path
         return None
 
-    def get_widget_assets(self, field_name: str) -> Iterator[Path] | None:
+    def delete_widget_asset(self, field_name: str, relpath: str) -> None:
+        """Returns an asset path associated with a widget by it's relative path"""
+        path = self.get_widget_assets_folder(field_name) / relpath
+        if path.exists():
+            path.unlink()
+
+    def get_widget_assets(self, field_name: str, subfolder: str | None = None) -> Iterator[Path] | None:
         """Returns an iterator to the assets associated with a widget"""
-        folder = self.tempfolder / self.random_id / "widgets" / field_name
+        folder = self.get_widget_assets_folder(field_name)
+        if subfolder is not None:
+            folder = folder / subfolder
         if not folder.is_dir():
             return None
         return folder.iterdir()

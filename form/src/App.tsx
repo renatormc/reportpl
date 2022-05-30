@@ -50,7 +50,7 @@ function App(props: Props) {
 
   const clearForm = () => {
     saveFormData(props.model_name, data);
-    getFormDefaultData(props.model_name).then((data) => {
+    getFormDefaultData(props.randomID, props.model_name).then((data) => {
       setData(data);
     })
   }
@@ -63,7 +63,7 @@ function App(props: Props) {
   }
 
   useEffect(() => {
-    getFormDefaultData(props.model_name).then((data) => {
+    getFormDefaultData(props.randomID, props.model_name).then((data) => {
       setData(data);
       getFormLayout(props.model_name).then((data) => {
         setWidgetMatrix(data);
@@ -104,6 +104,7 @@ function App(props: Props) {
                 widgetMatrix={widgetMatrix}
                 errors={errors}
                 data={data}
+                randomID={props.randomID}
                 updateFormValue={updateFormValue} />
               <Row className="mt-3">
                 <Col className="text-center">

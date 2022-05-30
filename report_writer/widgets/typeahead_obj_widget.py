@@ -1,4 +1,5 @@
-from typing import Any, Optional, Tuple, TYPE_CHECKING
+from pathlib import Path
+from typing import Any, IO, Optional, Tuple, TYPE_CHECKING
 if TYPE_CHECKING:
     from report_writer.base_web_form import BaseWebForm
 from report_writer.types import ConverterType, ErrorsType, ModelListItem, ValidatorType, WidgetAttributesType, ValidationError
@@ -29,6 +30,10 @@ class TypeAheadObjWidget:
         self.validators = validators
         self.converter = converter
         self.list_name: str = str(self.options) if self.ajax else ""
+
+    @staticmethod
+    def save_widget_asset(widget_folder: Path, file: Path | str | IO[bytes], filename: str | None = None) -> None:
+        pass
 
     def convert_data(self, raw_data: Any) -> Tuple[Any, ErrorsType]:
         if raw_data is None:

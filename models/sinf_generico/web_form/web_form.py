@@ -1,5 +1,5 @@
 from report_writer.base_web_form import BaseWebForm
-from report_writer.widgets import TextWidget, Widget
+from report_writer.widgets import TextWidget, ObjectsPicsWidget
 from report_writer.types import ValidationError
 from report_writer.web_converters import DateConverter, PathConverter
 
@@ -40,6 +40,6 @@ class Form(BaseWebForm):
                 TextWidget(self,'lacre_saida', label="Lacre de saída")
             ],
             [
-                TextWidget(self,'pics_folder', label="Pasta com fotos", converter=PathConverter(type_="dir"))
+                ObjectsPicsWidget(self, 'fotos', label="Fotos")
             ]
         ]

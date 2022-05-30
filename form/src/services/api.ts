@@ -10,8 +10,8 @@ export const getFormLayout = async (model_name: string): Promise<WidgetMatrixTyp
 }
 
 
-export const getFormDefaultData = async (model_name: string): Promise<{ [key: string]: any }> => {
-    const resp = await axios.get<WidgetMatrixType>("/form-default-data/" + model_name);
+export const getFormDefaultData = async (random_id: string, model_name: string): Promise<{ [key: string]: any }> => {
+    const resp = await axios.get<WidgetMatrixType>(`/form-default-data/${random_id}/${model_name}`);
     return resp.data;
 }
 
@@ -43,5 +43,18 @@ export const getListItemsAjax = async (model_name: string, list_name: string, qu
 
 export const getModelInstructions = async (model_name: string): Promise<ModelInstructionsResponse> => {
     const resp = await axios.get<ModelInstructionsResponse>("/model-instructions/" + model_name);
+    return resp.data;
+}
+
+export const uploadWidgetAsset = async (
+    random_id: string,
+    widget_type: string,
+    field_name: string,
+    formData: FormData): Promise<any> => {
+    const resp = await axios.post<any>(`/upload-widget-assets/${random_id}/${widget_type}/${field_name}`, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        }
+    });
     return resp.data;
 }
