@@ -20,5 +20,29 @@
 }
 
 .ObjectsPicsImage {
-  width: 150px;
+  height: 200px;
+}
+
+.ObjectsPicsImageContainer {
+  display: inline-block;
+  padding: 5px 5px 5px 5px;
+  margin: 5px  5px 5px 5px;
+  position: relative;
+}
+
+.ObjectsPicsImageContainerSelected {
+  background-color: rgb(221, 220, 220);
+}
+
+.ObjectsPicsImageTrash {
+  position: absolute;
+  right: 7px;
+  top: 7px;
+  color: rgb(109, 8, 8);
+  font-size: 15pt;
+}
+
+.ObjectsPicsImageTrash:hover {
+ cursor: pointer;
+ color: rgb(150, 12, 12);
 }
