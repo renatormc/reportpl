@@ -42,11 +42,11 @@ def form_default_data(random_id: str, model_name: str):
     return jsonify(data)
 
 
-@app.route("/api/render-doc/<model_name>", methods=("POST",))
-def render_doc(model_name: str):
+@app.route("/api/render-doc/<model_name>/<random_id>", methods=("POST",))
+def render_doc(model_name: str, random_id: str):
     if not model_name:
         abort(404)
-    rw = ReportWriter("./models")
+    rw = ReportWriter("./models", random_id=random_id, tempfolder=config.TEMPFOLDER)
     rw.set_model(model_name)
     json_data = request.json
     if not isinstance(json_data, dict):

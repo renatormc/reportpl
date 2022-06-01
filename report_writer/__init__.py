@@ -270,6 +270,7 @@ class ReportWriter:
     def get_widget_asset(self, field_name: str, relpath: str) -> Path | None:
         """Returns an asset path associated with a widget by it's relative path"""
         path = self.get_widget_assets_folder(field_name) / relpath
+        print(path)
         if path.exists():
             return path
         return None

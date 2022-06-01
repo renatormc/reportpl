@@ -5,7 +5,7 @@ import { uploadWidgetAsset, urlForWidgetAsset } from '../services/api';
 type Props = {
   model_name: string,
   widget_props: any,
-  data: string,
+  data: any,
   errors: any,
   field_name: string,
   label: string,
@@ -23,7 +23,7 @@ function ObjectsPicsWidget(props: Props) {
       for (var i = 0; i < files.length; i++) {
         formData.append("file[]", files[i])
       }
-      
+
       uploadWidgetAsset(props.randomID, 'objects_pics_widget', props.field_name, formData)
     }
   }
@@ -35,9 +35,15 @@ function ObjectsPicsWidget(props: Props) {
         type="file"
         multiple
         onChange={uploadHandler} />
-        <Image
-        src={ urlForWidgetAsset(props.randomID, props.field_name, "not_classified/celular1.jfif")}
-        />
+      {props.data.not_classified.map((item: string, index: number) => {
+        return (
+          <Image
+          key={index}
+          className='ObjectsPicsImage'
+            src={urlForWidgetAsset(props.randomID, props.field_name, item)}/>
+          )
+      })}
+            
       {props.errors && <div className="error-message">{props.errors}</div>}
     </div >
   );

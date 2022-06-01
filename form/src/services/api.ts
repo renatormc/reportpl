@@ -20,7 +20,7 @@ export const getFormDefaultData = async (random_id: string, model_name: string):
 export const renderDoc = async (model_name: string, data: any, randomID: string): Promise<ErrorsType> => {
     try {
         const csrftoken = getCookie('csrftoken') || "";
-        const resp = await axios.post<ErrorsType>("/render-doc/" + model_name + `?random_id=${randomID}`,
+        const resp = await axios.post<ErrorsType>(`/render-doc/${model_name}/${randomID}`,
             data,
             {
                 headers: {

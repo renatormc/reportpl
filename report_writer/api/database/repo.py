@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Optional
 from unicodedata import name
 from report_writer.api.database import db
-from report_writer.api.database.models import *
+from report_writer.api.database.models import JsonValue, ItemList
 
 
 def get_json_value(key):
