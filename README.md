@@ -144,6 +144,3 @@ if rw.model_exists("docmodel_name"):
   print("Existe")
 ```
 
-
-# Notes
-yarn remove react-sortable-hoc

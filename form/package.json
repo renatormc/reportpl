@@ -16,7 +16,6 @@
     "react-bootstrap-typeahead": "^6.0.0-alpha.11",
     "react-dom": "^18.1.0",
     "react-scripts": "5.0.1",
-    "react-sortable-hoc": "^2.0.0",
     "typescript": "^4.4.2",
     "uuid": "^8.3.2",
     "web-vitals": "^2.1.0"

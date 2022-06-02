@@ -61,6 +61,11 @@ export const uploadWidgetAsset = async (
     return resp.data;
 }
 
+export const deleteAsset = async (randomID: string, fieldName: string, relPath: string):Promise<any> => {
+    const resp = await axios.delete<any>(`/widget-asset/${randomID}/${fieldName}/${relPath}`);
+    return resp.data;
+}
+
 export const urlFor = (path: string): string => {
     return urlPrefix + "/" + path;
 }

@@ -1,12 +1,16 @@
 import React, { useRef } from 'react';
 import { Form, Image } from 'react-bootstrap';
-import { uploadWidgetAsset, urlForWidgetAsset } from '../services/api';
+import { deleteAsset, uploadWidgetAsset, urlForWidgetAsset } from '../services/api';
 
+type ObjectData = {
+  name: string,
+  pics: Array<string>
+}
 
 type Props = {
   model_name: string,
   widget_props: any,
-  data: any,
+  data: Array<ObjectData>,
   errors: any,
   field_name: string,
   label: string,
@@ -15,15 +19,16 @@ type Props = {
 }
 
 type DragItem = {
-  index: number,
-  container: number
+  picIndex: number,
+  objIndex: number
 }
+
 
 
 function ObjectsPicsWidget(props: Props) {
 
-  const dragItem = useRef<DragItem>({ index: -1, container: -1 });
-  const dragOverItem = useRef<DragItem>({ index: -1, container: -1 });
+  const dragItem = useRef<DragItem>({ picIndex: -1, objIndex: -1 });
+  const dragOverItem = useRef<DragItem>({ picIndex: -1, objIndex: -1 });
 
   const uploadHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     let formData = new FormData()
@@ -40,44 +45,45 @@ function ObjectsPicsWidget(props: Props) {
     }
   }
 
-  const dragStart = (e: React.DragEvent<HTMLDivElement>, position: number, container: number) => {
+  const dragStart = (e: React.DragEvent<HTMLDivElement>, picIndex: number, objIndex: number) => {
     dragItem.current = {
-      index: position,
-      container: container
+      picIndex: picIndex,
+      objIndex: objIndex
     };
   };
 
-  const dragEnter = (e: React.DragEvent<HTMLDivElement>, position: number, container: number) => {
+  const dragEnter = (e: React.DragEvent<HTMLDivElement>, picIndex: number, objIndex: number) => {
     dragOverItem.current = {
-      index: position,
-      container: container
+      picIndex: picIndex,
+      objIndex: objIndex
     };
   };
 
   const drop = (e: React.DragEvent<HTMLDivElement>) => {
-    if (dragItem.current.container !== dragOverItem.current.container) {
+    if (dragItem.current.objIndex !== dragOverItem.current.objIndex) {
       return
     }
-    const copyListItems = [...props.data.not_classified];
-    const objects = [...props.data.objects]
-    const items = dragItem.current.container === -1 ? copyListItems : objects[dragOverItem.current.container].pics
-    const dragItemContent = items[dragItem.current.index];
-    items.splice(dragItem.current.index, 1);
-    items.splice(dragOverItem.current.index, 0, dragItemContent);
-    dragItem.current = { index: -1, container: -1 };
-    dragOverItem.current = { index: -1, container: -1 };
-    props.updateFormValue(props.field_name, { not_classified: copyListItems, objects: objects })
+    const copyListItems = [...props.data[dragItem.current.objIndex].pics];
+    const dragItemContent = copyListItems[dragItem.current.picIndex];
+    copyListItems.splice(dragItem.current.picIndex, 1);
+    copyListItems.splice(dragOverItem.current.picIndex, 0, dragItemContent);
+    const objects = [...props.data]
+    objects[dragItem.current.objIndex].pics = copyListItems
+    props.updateFormValue(props.field_name, objects)
+    dragItem.current = { picIndex: -1, objIndex: -1 };
+    dragOverItem.current = { picIndex: -1, objIndex: -1 };
   };
 
-  const deletePic = (content: number, index: number) => {
-    if(content === -1){
-      console.log(props.data.not_classified[index])
-    }
+  const deletePic = (picIndex: number, objIndex: number, relPath: string) => {
+    deleteAsset(props.randomID, props.field_name, relPath).then(data => {
+      const objects = [...props.data]
+      objects[objIndex].pics.splice(picIndex, 1)
+      props.updateFormValue(props.field_name, objects)
+    })
   }
 
   return (
     <div>
-      <p>{JSON.stringify(props.data)}</p>
       <strong><Form.Label>{props.label}</Form.Label></strong>
       <Form.Control
         type="file"
@@ -85,51 +91,36 @@ function ObjectsPicsWidget(props: Props) {
         onChange={uploadHandler} />
       <div className='ObjectsPicsImagesContainer'>
 
-        {props.data.not_classified.map((item: string, index: number) => {
+        {props.data.map((object: ObjectData, objIndex: number) => {
           return (
             <div
-              className='ObjectsPicsImageContainer ObjectsPicsImageContainerSelected'
-              onDragStart={(e) => dragStart(e, index, -1)}
-              onDragEnter={(e) => dragEnter(e, index, -1)}
-              onDragEnd={drop}
-              key={index}
-              draggable>
-              <i className="fas fa-trash-alt ObjectsPicsImageTrash" onClick={() => {deletePic(-1, index)}}></i>
+              className='ObjectsPicsImagesContainer'
+              key={objIndex}
+            >
 
-              <Image
-                className='ObjectsPicsImage'
-                src={urlForWidgetAsset(props.randomID, props.field_name, item)} />
+              {object.pics.map((item: string, picIndex: number) => {
+                return (
+                  <div
+                    className='ObjectsPicsImageContainer ObjectsPicsImageContainerSelected'
+                    onDragStart={(e) => dragStart(e, picIndex, objIndex)}
+                    onDragEnter={(e) => dragEnter(e, picIndex, objIndex)}
+                    onDragEnd={drop}
+                    key={picIndex}
+                    draggable>
+                    <i
+                      className="fas fa-trash-alt ObjectsPicsImageTrash"
+                      onClick={() => { deletePic(picIndex, objIndex, item) }}
+                    ></i>
+                    <Image
+                      className='ObjectsPicsImage'
+                      src={urlForWidgetAsset(props.randomID, props.field_name, item)} />
+                  </div>
+                )
+              })}
             </div>
           )
         })}
       </div>
-
-      {props.data.objects.map((object: any, objIndex: number) => {
-        return (
-          <div
-            className='ObjectsPicsImagesContainer'
-            key={objIndex}
-          >
-
-            {object.pics.map((item: string, index: number) => {
-              return (
-                <div
-                  className='ObjectsPicsImageContainer ObjectsPicsImageContainerSelected'
-                  onDragStart={(e) => dragStart(e, index, objIndex)}
-                  onDragEnter={(e) => dragEnter(e, index, objIndex)}
-                  onDragEnd={drop}
-                  key={index}
-                  draggable>
-                  <i className="fas fa-trash-alt ObjectsPicsImageTrash"></i>
-                  <Image
-                    className='ObjectsPicsImage'
-                    src={urlForWidgetAsset(props.randomID, props.field_name, item)} />
-                </div>
-              )
-            })}
-          </div>
-        )
-      })}
       {props.errors && <div className="error-message">{props.errors}</div>}
     </div >
   );
