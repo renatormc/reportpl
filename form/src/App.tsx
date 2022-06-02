@@ -118,8 +118,8 @@ function App(props: Props) {
                 </Col>
               </Row>
 
-              {/* <p className='text-center'>{JSON.stringify(data)}</p>
-              <p className='text-center'>{JSON.stringify(errors)}</p> */}
+              <p className='text-center'>{JSON.stringify(data)}</p>
+              <p className='text-center'>{JSON.stringify(errors)}</p>
 
             </Form>
           </Col>

@@ -1,19 +1,21 @@
-from shutil import copyfileobj
 import shutil
 from typing import IO, Any, Optional, Tuple, TYPE_CHECKING, TypedDict
 
 from pathlib import Path
 
-from report_writer.zipmodel import unzip_file
 if TYPE_CHECKING:
     from report_writer.base_web_form import BaseWebForm
 from report_writer.types import ConverterType, ErrorsType, FileType, ValidatorType, WidgetAttributesType, ValidationError
 import stringcase
 
 
+class PicData(TypedDict):
+    path: str
+    selected: bool
+
 class ObjectData(TypedDict):
     name: str
-    pics: list[str]
+    pics: list[PicData]
 
 
 class ObjectsPicsWidget:
@@ -38,7 +40,7 @@ class ObjectsPicsWidget:
            widget_folder.mkdir(parents=True)
         except FileExistsError:
             pass
-        pics = [f"{entry.name}" for entry in folder.iterdir() if entry.is_file()]
+        pics = [{'path': f"{entry.name}", 'selected': False} for entry in folder.iterdir() if entry.is_file()]
         return [{'name': '0', 'pics': pics}]
 
     @staticmethod
@@ -57,7 +59,7 @@ class ObjectsPicsWidget:
         data: list[ObjectData] = raw_data
         folder = self.form.report_writer.get_widget_assets_folder(self.name, create=True)
         for i, obj in enumerate(data):
-            data[i]['pics'] = [str(folder / pic) for pic in obj]
+            data[i]['pics'] = [{'path': str(folder / pic['path']), 'selected': pic['selected']} for pic in obj['pics']]
         try:
             self.data = self.converter(
                 self.form, data) if self.converter else data

@@ -1,10 +1,15 @@
 import React, { useRef } from 'react';
-import { Form, Image } from 'react-bootstrap';
+import { Button, Form, Image } from 'react-bootstrap';
 import { deleteAsset, uploadWidgetAsset, urlForWidgetAsset } from '../services/api';
+
+type PicData = {
+  path: string,
+  selected: boolean
+}
 
 type ObjectData = {
   name: string,
-  pics: Array<string>
+  pics: Array<PicData>
 }
 
 type Props = {
@@ -82,6 +87,18 @@ function ObjectsPicsWidget(props: Props) {
     })
   }
 
+  const addObjects = (n: number) => {
+    const objects = [...props.data]
+    objects.push({ name: "Teste", pics: [] });
+    props.updateFormValue(props.field_name, objects)
+  }
+
+  const toggleSelected = (objIndex: number, picIndex: number) => {
+    const objects = [...props.data]
+    objects[objIndex].pics[picIndex].selected = !objects[objIndex].pics[picIndex].selected
+    props.updateFormValue(props.field_name, objects)
+  }
+
   return (
     <div>
       <strong><Form.Label>{props.label}</Form.Label></strong>
@@ -89,38 +106,39 @@ function ObjectsPicsWidget(props: Props) {
         type="file"
         multiple
         onChange={uploadHandler} />
-      <div className='ObjectsPicsImagesContainer'>
+      <Button onClick={() => { addObjects(1) }}>Teste</Button>
 
-        {props.data.map((object: ObjectData, objIndex: number) => {
-          return (
-            <div
-              className='ObjectsPicsImagesContainer'
-              key={objIndex}
-            >
+      {props.data.map((object: ObjectData, objIndex: number) => {
+        return (
+          <div
+            className='ObjectsPicsImagesContainer'
+            key={objIndex}
+          >
+            {object.pics.map((item: PicData, picIndex: number) => {
+              return (
+                <div
+                  className={`ObjectsPicsImageContainer ${item.selected ? "ObjectsPicsImageContainerSelected" : ""}`}
+                  // className='ObjectsPicsImageContainer ObjectsPicsImageContainerSelected'
+                  onDragStart={(e) => dragStart(e, picIndex, objIndex)}
+                  onDragEnter={(e) => dragEnter(e, picIndex, objIndex)}
+                  onDragEnd={drop}
+                  key={picIndex}
+                  draggable>
+                  <i
+                    className="fas fa-trash-alt ObjectsPicsImageTrash"
+                    onClick={() => { deletePic(picIndex, objIndex, item.path) }}
+                  ></i>
+                  <Image
+                    onClick={() => { toggleSelected(objIndex, picIndex) }}
+                    className='ObjectsPicsImage'
+                    src={urlForWidgetAsset(props.randomID, props.field_name, item.path)} />
+                </div>
+              )
+            })}
+          </div>
+        )
+      })}
 
-              {object.pics.map((item: string, picIndex: number) => {
-                return (
-                  <div
-                    className='ObjectsPicsImageContainer ObjectsPicsImageContainerSelected'
-                    onDragStart={(e) => dragStart(e, picIndex, objIndex)}
-                    onDragEnter={(e) => dragEnter(e, picIndex, objIndex)}
-                    onDragEnd={drop}
-                    key={picIndex}
-                    draggable>
-                    <i
-                      className="fas fa-trash-alt ObjectsPicsImageTrash"
-                      onClick={() => { deletePic(picIndex, objIndex, item) }}
-                    ></i>
-                    <Image
-                      className='ObjectsPicsImage'
-                      src={urlForWidgetAsset(props.randomID, props.field_name, item)} />
-                  </div>
-                )
-              })}
-            </div>
-          )
-        })}
-      </div>
       {props.errors && <div className="error-message">{props.errors}</div>}
     </div >
   );

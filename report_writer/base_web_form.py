@@ -4,7 +4,6 @@ if TYPE_CHECKING:
     from report_writer import ReportWriter
    
 
-
 class BaseWebForm:
 
     def __init__(self) -> None:
