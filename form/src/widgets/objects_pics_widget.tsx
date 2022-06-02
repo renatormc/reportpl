@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Button, Form, Image } from 'react-bootstrap';
+import { Form, Image, Container, Row, Col, Dropdown } from 'react-bootstrap';
 import { deleteAsset, uploadWidgetAsset, urlForWidgetAsset } from '../services/api';
 
 type PicData = {
@@ -27,8 +27,6 @@ type DragItem = {
   picIndex: number,
   objIndex: number
 }
-
-
 
 function ObjectsPicsWidget(props: Props) {
 
@@ -87,11 +85,53 @@ function ObjectsPicsWidget(props: Props) {
     })
   }
 
-  const addObjects = (n: number) => {
+  const moveToNewObjects = () => {
     const objects = [...props.data]
-    objects.push({ name: "Teste", pics: [] });
+    const newObj: ObjectData = { name: props.widget_props.new_object_name, pics: [] }
+    for (let objIndex = 0; objIndex < objects.length; objIndex++) {
+      let selPics = objects[objIndex].pics.filter((pic) => {
+        return pic.selected
+      })
+      newObj.pics = [...newObj.pics, ...selPics]
+      objects[objIndex].pics = objects[objIndex].pics.filter((pic) => {
+        return !pic.selected
+      })
+    }
+    objects.push(newObj)
     props.updateFormValue(props.field_name, objects)
   }
+
+  const movePicToObject = (toIndex: number) => {
+    const objects = [...props.data]
+    for (let objIndex = 0; objIndex < objects.length; objIndex++) {
+      let selPics = objects[objIndex].pics.filter((pic) => {
+        return pic.selected
+      })
+      objects[objIndex].pics = objects[objIndex].pics.filter((pic) => {
+        return !pic.selected
+      })
+      objects[toIndex].pics = [...objects[toIndex].pics, ...selPics]
+    }
+    props.updateFormValue(props.field_name, objects)
+  }
+
+  const selectUnselectAll = (value: boolean) => {
+    const objects = [...props.data]
+    for (let objIndex = 0; objIndex < objects.length; objIndex++) {
+      for (let picIndex = 0; picIndex < objects[objIndex].pics.length; picIndex++) {
+        objects[objIndex].pics[picIndex].selected = value;
+      }
+    }
+    props.updateFormValue(props.field_name, objects)
+  }
+
+  const removeObject = (objIndex: number) => {
+    const objects = [...props.data]
+    objects[0].pics = [...objects[0].pics, ...objects[objIndex].pics]
+    objects.splice(objects.length - 1, 1);
+    props.updateFormValue(props.field_name, objects)
+  }
+
 
   const toggleSelected = (objIndex: number, picIndex: number) => {
     const objects = [...props.data]
@@ -99,14 +139,50 @@ function ObjectsPicsWidget(props: Props) {
     props.updateFormValue(props.field_name, objects)
   }
 
+  const renameObject = (objIndex: number, newName: string) => {
+    const objects = [...props.data]
+    objects[objIndex].name = newName
+    props.updateFormValue(props.field_name, objects)
+  }
+
   return (
     <div>
       <strong><Form.Label>{props.label}</Form.Label></strong>
-      <Form.Control
-        type="file"
-        multiple
-        onChange={uploadHandler} />
-      <Button onClick={() => { addObjects(1) }}>Teste</Button>
+      <Container fluid>
+        <Row >
+          <Col xs={10}>
+            <Form.Control
+              type="file"
+              multiple
+              onChange={uploadHandler} />
+          </Col>
+          <Col className="text-end" xs={2}>
+            <Dropdown>
+              <Dropdown.Toggle variant="success" id="dropdown-basic">
+                Ações
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu>
+                <Dropdown.Item as="button">
+                  <div onClick={() => { selectUnselectAll(true) }}>Selecionar todas</div>
+                </Dropdown.Item>
+                <Dropdown.Item as="button">
+                  <div onClick={() => { selectUnselectAll(false) }}>Remover seleção de todas</div>
+                </Dropdown.Item>
+                {props.widget_props.multiple &&  <div>
+                  <Dropdown.Item as="button">
+                    <div onClick={moveToNewObjects}>Mover selecionadas para novo objeto</div>
+                  </Dropdown.Item>
+                  <Dropdown.Item as="button">
+                    <div onClick={() => { movePicToObject(0) }}>Remover selecionadas dos objetos</div>
+                  </Dropdown.Item>
+                </div>}
+
+              </Dropdown.Menu>
+            </Dropdown>
+          </Col>
+        </Row>
+      </Container>
 
       {props.data.map((object: ObjectData, objIndex: number) => {
         return (
@@ -114,11 +190,19 @@ function ObjectsPicsWidget(props: Props) {
             className='ObjectsPicsImagesContainer'
             key={objIndex}
           >
+            {objIndex > 0 && <i
+              className="fas fa-trash-alt ObjectsPicsTrash"
+              onClick={() => { removeObject(objIndex) }}
+            ></i>}
+            {objIndex > 0 && <Form.Control
+              type="text"
+              value={object.name}
+              onChange={(e) => { renameObject(objIndex, e.target.value) }}
+            />}
             {object.pics.map((item: PicData, picIndex: number) => {
               return (
                 <div
                   className={`ObjectsPicsImageContainer ${item.selected ? "ObjectsPicsImageContainerSelected" : ""}`}
-                  // className='ObjectsPicsImageContainer ObjectsPicsImageContainerSelected'
                   onDragStart={(e) => dragStart(e, picIndex, objIndex)}
                   onDragEnter={(e) => dragEnter(e, picIndex, objIndex)}
                   onDragEnd={drop}

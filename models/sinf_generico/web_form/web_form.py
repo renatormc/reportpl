@@ -40,6 +40,6 @@ class Form(BaseWebForm):
                 TextWidget(self,'lacre_saida', label="Lacre de saída")
             ],
             [
-                ObjectsPicsWidget(self, 'fotos', label="Fotos")
+                ObjectsPicsWidget(self, 'fotos', label="Fotos", new_object_name="Celular", multiple=True)
             ]
         ]

@@ -13,6 +13,7 @@ class PicData(TypedDict):
     path: str
     selected: bool
 
+
 class ObjectData(TypedDict):
     name: str
     pics: list[PicData]
@@ -25,11 +26,15 @@ class ObjectsPicsWidget:
                  label: str | None = None,
                  col: int = 0,
                  validators: list[ValidatorType] = [],
-                 converter: Optional[ConverterType] = None) -> None:
+                 converter: Optional[ConverterType] = None,
+                 new_object_name: str = "Sem nome",
+                 multiple=False) -> None:
         self.col = col
         self.form = form
         self.name = name
+        self.multiple = multiple
         self.label = label or stringcase.capitalcase(name)
+        self.new_object_name = new_object_name
         self.validators = validators
         self.converter = converter
 
@@ -37,10 +42,11 @@ class ObjectsPicsWidget:
     def get_data_from_folder(widget_folder: Path) -> Any:
         folder = widget_folder
         try:
-           widget_folder.mkdir(parents=True)
+            widget_folder.mkdir(parents=True)
         except FileExistsError:
             pass
-        pics = [{'path': f"{entry.name}", 'selected': False} for entry in folder.iterdir() if entry.is_file()]
+        pics = [{'path': f"{entry.name}", 'selected': False}
+                for entry in folder.iterdir() if entry.is_file()]
         return [{'name': '0', 'pics': pics}]
 
     @staticmethod
@@ -57,9 +63,11 @@ class ObjectsPicsWidget:
 
     def convert_data(self, raw_data: Any) -> Tuple[Any, ErrorsType]:
         data: list[ObjectData] = raw_data
-        folder = self.form.report_writer.get_widget_assets_folder(self.name, create=True)
+        folder = self.form.report_writer.get_widget_assets_folder(
+            self.name, create=True)
         for i, obj in enumerate(data):
-            data[i]['pics'] = [{'path': str(folder / pic['path']), 'selected': pic['selected']} for pic in obj['pics']]
+            data[i]['pics'] = [{'path': str(
+                folder / pic['path']), 'selected': pic['selected']} for pic in obj['pics']]
         try:
             self.data = self.converter(
                 self.form, data) if self.converter else data
@@ -78,7 +86,10 @@ class ObjectsPicsWidget:
             'widget_type': "objects_pics_widget",
             'label': self.label,
             'col': self.col,
-            'widget_props': {},
+            'widget_props': {
+                'new_object_name': self.new_object_name,
+                'multiple': self.multiple
+            },
         }
 
     def get_default_data(self) -> list[list[ObjectData]]:
