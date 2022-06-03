@@ -49,21 +49,19 @@ function ObjectsPicsWidget(props: Props) {
   }
 
   const dragStart = (e: React.DragEvent<HTMLDivElement>, picIndex: number, objIndex: number) => {
+    e.stopPropagation()
     dragItem.current = {
       picIndex: picIndex,
       objIndex: objIndex
     };
   };
 
-  const dragEnter = (e: React.DragEvent<HTMLDivElement>, picIndex: number, objIndex: number) => {
-    dragOverItem.current = {
-      picIndex: picIndex,
-      objIndex: objIndex
-    };
-    // console.log("Drag over pic")
-  };
+
 
   const drop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.stopPropagation()
+    console.log(dragOverItem.current)
+    console.log(dragItem.current)
     if (dragItem.current.objIndex !== dragOverItem.current.objIndex) {
       return
     }
@@ -78,18 +76,39 @@ function ObjectsPicsWidget(props: Props) {
     dragOverItem.current = { picIndex: -1, objIndex: -1 };
   };
 
-  const dragEnterOnOtherObject =(e: React.DragEvent<HTMLDivElement>, objIndex: number) =>{
-    if (e.currentTarget != e.target) {
-      console.log("Diferente")
-    }else{
-      console.log("Igual")
+  const dragEnter = (e: React.DragEvent<HTMLDivElement>, picIndex: number, objIndex: number) => {
+    e.stopPropagation()
+    dragOverItem.current = {
+      picIndex: picIndex,
+      objIndex: objIndex
+    };
+  };
+
+  const onDragEnterOtherObject = (e: React.DragEvent<HTMLDivElement>, objIndex: number) => {
+    console.log("Entrando")
+    e.stopPropagation()
+    dragOverItem.current = {
+      picIndex: -1,
+      objIndex: objIndex
+    };
+  }
+
+  const onDragLeaveObjects = (e: React.DragEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      console.log("Saindo")
+      console.log(e.target)
+      console.log(e.currentTarget)
+      dragOverItem.current = {
+        picIndex: -1,
+        objIndex: -1
+      };
     }
-    // console.log("Drag over object")
-  }
-
-  const dropOnOtherObject =(e: React.DragEvent<HTMLDivElement>) =>{
 
   }
+
+  // const dropOnOtherObject =(e: React.DragEvent<HTMLDivElement>) =>{
+  //   console.log("Drop on object")
+  // }
 
   const deletePic = (picIndex: number, objIndex: number, relPath: string) => {
     deleteAsset(props.randomID, props.field_name, relPath).then(data => {
@@ -160,7 +179,9 @@ function ObjectsPicsWidget(props: Props) {
   }
 
   return (
-    <div>
+    <div
+      onDragLeave={onDragLeaveObjects}
+    >
       <strong><Form.Label>{props.label}</Form.Label></strong>
       <Container fluid>
         <Row >
@@ -183,7 +204,7 @@ function ObjectsPicsWidget(props: Props) {
                 <Dropdown.Item as="button">
                   <div onClick={() => { selectUnselectAll(false) }}>Remover seleção de todas</div>
                 </Dropdown.Item>
-                {props.widget_props.multiple &&  <div>
+                {props.widget_props.multiple && <div>
                   <Dropdown.Item as="button">
                     <div onClick={moveToNewObjects}>Mover selecionadas para novo objeto</div>
                   </Dropdown.Item>
@@ -204,10 +225,9 @@ function ObjectsPicsWidget(props: Props) {
             className='ObjectsPicsImagesContainer'
             key={objIndex}
             // onDragEnter={(e)=>{dragEnterOnOtherObject(e, objIndex)}}
-            onDragEnter={(e)=>{
-              dragEnterOnOtherObject(e, objIndex)
-            }}
-            onDragEnd={dropOnOtherObject}
+            onDragEnter={(e) => { onDragEnterOtherObject(e, objIndex) }}
+
+          // onDragEnd={drop}
           >
             {objIndex > 0 && <i
               className="fas fa-trash-alt ObjectsPicsTrash"
