@@ -15,7 +15,7 @@ import markdown
 from datetime import timedelta, datetime
 from report_writer.module_model import ModuleModel
 
-__version__ = '0.1.7'
+__version__ = '0.1.8'
 
 script_dir = Path(os.path.dirname(os.path.realpath(__file__)))
 
