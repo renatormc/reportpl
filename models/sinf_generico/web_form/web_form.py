@@ -1,5 +1,5 @@
 from report_writer.base_web_form import BaseWebForm
-from report_writer.widgets import TextWidget, ObjectsPicsWidget
+from report_writer.widgets import TextWidget, ObjectsPicsWidget, TypeAheadWidget
 from report_writer.types import ValidationError
 from report_writer.web_converters import DateConverter, PathConverter
 
@@ -41,5 +41,8 @@ class Form(BaseWebForm):
             ],
             [
                 ObjectsPicsWidget(self, 'fotos', label="Fotos", new_object_name="Celular", multiple=True)
+            ],
+            [
+                TypeAheadWidget(self, 'test_typeahead', label="Test Typeahead", options='tipos_objetos')
             ]
         ]

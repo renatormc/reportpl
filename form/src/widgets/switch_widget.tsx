@@ -3,6 +3,7 @@ import TextWidget from './text_widget';
 import ArrayWidget from './array_widget';
 import TextAreaWidget from './text_area_widget';
 import TypeAheadObjWidget from './typeahead_obj_widget';
+import TypeAheadWidget from './typeahead_widget'
 import SelectWidget from './select_widget';
 import CheckboxWidget from './checkbox_widget';
 import ObjectsPicsWidget from './objects_pics_widget';
@@ -42,6 +43,15 @@ function SwitchWidget(props: Props) {
         randomID={props.randomID} />
     case "text_area_widget":
       return <TextAreaWidget
+        model_name={props.model_name}
+        updateFormValue={props.updateFormValue}
+        widget_props={props.widget_props}
+        data={props.data}
+        field_name={props.field_name}
+        errors={props.errors}
+        label={props.label} />
+    case "typeahead_widget":
+      return <TypeAheadWidget
         model_name={props.model_name}
         updateFormValue={props.updateFormValue}
         widget_props={props.widget_props}

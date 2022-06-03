@@ -1,8 +1,8 @@
-from report_writer.widgets import TextWidget, ArrayWidget, TextAreaWidget, TypeAheadObjWidget, SelectWidget, CheckBoxWidget
+from typing_extensions import Required
+from report_writer.widgets import TextWidget, ArrayWidget, TextAreaWidget, TypeAheadObjWidget, TypeAheadWidget, SelectWidget, CheckBoxWidget, ObjectsPicsWidget
 from report_writer.types import ValidationError
 from report_writer.web_converters import DateConverter, FloatConverter
 from report_writer.base_web_form import BaseWebForm
-
 
 
 class Form(BaseWebForm):
@@ -26,8 +26,14 @@ class Form(BaseWebForm):
                 TextAreaWidget(self, 'texto_long',label='Texto longo', rows=10)
             ],
             [
-                TypeAheadObjWidget(self, 'test_typeahead', options='cidades', label='Typeahead'),
+                TypeAheadObjWidget(self, 'test_typeahead_obj', options='cidades', label='TypeaheadObjWidget'),
                 SelectWidget(self, 'test_select', options='cidades', default="Goiânia", label="Test Select"),
                 CheckBoxWidget(self, 'test_checkbox', label="Test Checkbox", default=True)
+            ]   ,
+            [
+                TypeAheadWidget(self, 'test_typeahead', options=['Goiania', "Patrocinio", ], label='TypeaheadWidget', default="Valor default"),
+            ]   ,
+            [
+                ObjectsPicsWidget(self, 'fotos', label='Fotos', multiple=True),
             ]   
         ]

@@ -89,16 +89,12 @@ function App(props: Props) {
               <Card.Body>
                 <div dangerouslySetInnerHTML={{ __html: modelInstructions }} />
               </Card.Body>
-
             </Card>
-
           </Col>
         </Row>}
-
         <Row>
           <Col>
             <Form onSubmit={e => e.preventDefault()}>
-
               <CompositeWidget
                 model_name={props.model_name}
                 widgetMatrix={widgetMatrix}
@@ -114,13 +110,10 @@ function App(props: Props) {
                     <Button variant="primary" onClick={submitForm}><i className="fa fa-file-word"></i> Gerar docx</Button>
                     <Button variant="warning" onClick={loadSavedForm}><i className="fas fa-archive"></i> Carregar último preenchimento</Button>
                   </div>
-
                 </Col>
               </Row>
-
-              <p className='text-center'>{JSON.stringify(data)}</p>
-              <p className='text-center'>{JSON.stringify(errors)}</p>
-
+              {/* <p className='text-center'>{JSON.stringify(data)}</p>
+              <p className='text-center'>{JSON.stringify(errors)}</p> */}
             </Form>
           </Col>
         </Row>

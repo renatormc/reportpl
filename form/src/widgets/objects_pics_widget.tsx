@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { Form, Image, Container, Row, Col, Dropdown } from 'react-bootstrap';
 import { deleteAsset, uploadWidgetAsset, urlForWidgetAsset } from '../services/api';
 
@@ -23,15 +23,9 @@ type Props = {
   updateFormValue: (field: string, value: any) => void
 }
 
-type DragItem = {
-  picIndex: number,
-  objIndex: number
-}
 
 function ObjectsPicsWidget(props: Props) {
 
-  const dragItem = useRef<DragItem>({ picIndex: -1, objIndex: -1 });
-  const dragOverItem = useRef<DragItem>({ picIndex: -1, objIndex: -1 });
 
   const uploadHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     let formData = new FormData()
@@ -50,65 +44,39 @@ function ObjectsPicsWidget(props: Props) {
 
   const dragStart = (e: React.DragEvent<HTMLDivElement>, picIndex: number, objIndex: number) => {
     e.stopPropagation()
-    dragItem.current = {
+    const data = {
       picIndex: picIndex,
       objIndex: objIndex
-    };
+    }
+    e.dataTransfer.setData("Text", JSON.stringify(data));
   };
 
 
-
-  const drop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.stopPropagation()
-    console.log(dragOverItem.current)
-    console.log(dragItem.current)
-    if (dragItem.current.objIndex !== dragOverItem.current.objIndex) {
-      return
-    }
-    const copyListItems = [...props.data[dragItem.current.objIndex].pics];
-    const dragItemContent = copyListItems[dragItem.current.picIndex];
-    copyListItems.splice(dragItem.current.picIndex, 1);
-    copyListItems.splice(dragOverItem.current.picIndex, 0, dragItemContent);
+  const onDropInObject = (e: React.DragEvent<HTMLDivElement>, objIndex: number) => {
+    e.preventDefault()
+    const dataStr = e.dataTransfer.getData("Text")
+    const data = JSON.parse(dataStr)
+    
     const objects = [...props.data]
-    objects[dragItem.current.objIndex].pics = copyListItems
+    const dragItemContent = objects[data.objIndex].pics[data.picIndex]
+    objects[data.objIndex].pics.splice(data.picIndex, 1)
+    objects[objIndex].pics.push(dragItemContent)
     props.updateFormValue(props.field_name, objects)
-    dragItem.current = { picIndex: -1, objIndex: -1 };
-    dragOverItem.current = { picIndex: -1, objIndex: -1 };
-  };
-
-  const dragEnter = (e: React.DragEvent<HTMLDivElement>, picIndex: number, objIndex: number) => {
-    e.stopPropagation()
-    dragOverItem.current = {
-      picIndex: picIndex,
-      objIndex: objIndex
-    };
-  };
-
-  const onDragEnterOtherObject = (e: React.DragEvent<HTMLDivElement>, objIndex: number) => {
-    console.log("Entrando")
-    e.stopPropagation()
-    dragOverItem.current = {
-      picIndex: -1,
-      objIndex: objIndex
-    };
   }
 
-  const onDragLeaveObjects = (e: React.DragEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) {
-      console.log("Saindo")
-      console.log(e.target)
-      console.log(e.currentTarget)
-      dragOverItem.current = {
-        picIndex: -1,
-        objIndex: -1
-      };
-    }
+  const onDropInPic = (e: React.DragEvent<HTMLDivElement>, objIndex: number, picIndex: number) => {
+    e.preventDefault()
+    e.stopPropagation()
+    const dataStr = e.dataTransfer.getData("Text")
+    const data = JSON.parse(dataStr)
 
+    const objects = [...props.data]
+    const dragItemContent = objects[data.objIndex].pics[data.picIndex]
+    objects[data.objIndex].pics.splice(data.picIndex, 1);
+    objects[objIndex].pics.splice(picIndex, 0, dragItemContent);
+    props.updateFormValue(props.field_name, objects)
   }
 
-  // const dropOnOtherObject =(e: React.DragEvent<HTMLDivElement>) =>{
-  //   console.log("Drop on object")
-  // }
 
   const deletePic = (picIndex: number, objIndex: number, relPath: string) => {
     deleteAsset(props.randomID, props.field_name, relPath).then(data => {
@@ -179,9 +147,7 @@ function ObjectsPicsWidget(props: Props) {
   }
 
   return (
-    <div
-      onDragLeave={onDragLeaveObjects}
-    >
+    <div>
       <strong><Form.Label>{props.label}</Form.Label></strong>
       <Container fluid>
         <Row >
@@ -224,10 +190,8 @@ function ObjectsPicsWidget(props: Props) {
           <div
             className='ObjectsPicsImagesContainer'
             key={objIndex}
-            // onDragEnter={(e)=>{dragEnterOnOtherObject(e, objIndex)}}
-            onDragEnter={(e) => { onDragEnterOtherObject(e, objIndex) }}
-
-          // onDragEnd={drop}
+            onDrop={(e) => { onDropInObject(e, objIndex) }}
+            onDragOver={(e) => { e.preventDefault() }}
           >
             {objIndex > 0 && <i
               className="fas fa-trash-alt ObjectsPicsTrash"
@@ -243,8 +207,8 @@ function ObjectsPicsWidget(props: Props) {
                 <div
                   className={`ObjectsPicsImageContainer ${item.selected ? "ObjectsPicsImageContainerSelected" : ""}`}
                   onDragStart={(e) => dragStart(e, picIndex, objIndex)}
-                  onDragEnter={(e) => dragEnter(e, picIndex, objIndex)}
-                  onDragEnd={drop}
+                  onDrop={(e) => { onDropInPic(e, objIndex, picIndex) }}
+                  onDragOver={(e) => { e.preventDefault() }}
                   key={picIndex}
                   draggable>
                   <i

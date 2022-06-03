@@ -1,0 +1,29 @@
+.container {
+    position: relative;
+}
+
+.optionsContainer{
+    border-radius: 5px;
+    border-style: solid;
+    border-color: rgb(197, 197, 197);
+    border-width: 1px;
+    overflow-y: scroll;
+    max-height: 200px;
+    position: absolute;
+    width: 100%;
+    background-color: white;
+    z-index: 2;
+}
+
+.option {
+    padding: 5px 10px 5px 10px;
+}
+
+.option:hover{
+    background-color: rgb(212, 212, 212);
+    cursor: pointer;
+}
+
+.optionSelected {
+    background-color: rgb(212, 212, 212);
+}

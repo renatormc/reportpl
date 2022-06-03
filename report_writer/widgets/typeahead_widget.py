@@ -6,15 +6,16 @@ from report_writer.types import ConverterType, ErrorsType, FileType, ModelListIt
 import stringcase
 
 
-class TypeAheadObjWidget:
+class TypeAheadWidget:
 
     def __init__(self, form: 'BaseWebForm',
                  name: str,
                  options: str | list[str] | list[ModelListItem],
                  label: str | None = None,
                  col: int = 0,
-                 default: Any = None,
+                 default: str = "",
                  placeholder: str = "",
+                 required: bool = False,
                  validators: list[ValidatorType] = [],
                  converter: Optional[ConverterType] = None) -> None:
         self.form = form
@@ -24,6 +25,7 @@ class TypeAheadObjWidget:
         self.col = col
         self.default = default
         self.placeholder = placeholder
+        self.required = required
         self.label = label or stringcase.capitalcase(name)
         self.validators = validators
         self.converter = converter
@@ -34,10 +36,11 @@ class TypeAheadObjWidget:
         pass
 
     def convert_data(self, raw_data: Any) -> Tuple[Any, ErrorsType]:
-        if raw_data is None:
-            return None, "Opção inválida"
+        text = str(raw_data).strip()
+        if self.required and text == "":
+            return None, "Campo obrigatório"
         try:
-            self.data = self.converter(self.form, raw_data['value']) if self.converter else raw_data['value']
+            self.data = self.converter(self.form, text) if self.converter else text
         except ValidationError as e:
             return None, str(e)
         for v in self.validators:
@@ -56,7 +59,7 @@ class TypeAheadObjWidget:
         options = [] if self.ajax else [self._convert_item_list(item) for item in self.options]
         return {
             'field_name': self.name,
-            'widget_type': "typeahead_obj_widget",
+            'widget_type': "typeahead_widget",
             'label': self.label,
             'col': self.col,
             'widget_props': {

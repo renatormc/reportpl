@@ -6,6 +6,7 @@ from .checkbox_widget import CheckBoxWidget
 from .select_widget import SelectWidget
 from .text_area_widget import TextAreaWidget
 from .typeahead_obj_widget import TypeAheadObjWidget
+from .typeahead_widget import TypeAheadWidget
 from .objects_pics_widget import ObjectsPicsWidget
 
 __widgets__: dict[str, Type['Widget']] = {
@@ -15,7 +16,8 @@ __widgets__: dict[str, Type['Widget']] = {
     'select_widget': SelectWidget,
     'text_widget': TextAreaWidget,
     'type_ahead_object_widget': TypeAheadObjWidget,
-    'objects_pics_widget': ObjectsPicsWidget
+    'objects_pics_widget': ObjectsPicsWidget,
+    'type_ahead_widget': TypeAheadWidget
 }
 
 
