@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Form, Image, Container, Row, Col, Dropdown } from 'react-bootstrap';
 import { deleteAsset, uploadWidgetAsset, urlForWidgetAsset } from '../services/api';
 
@@ -26,6 +26,7 @@ type Props = {
 
 function ObjectsPicsWidget(props: Props) {
 
+  const [picSize, setPicSize] = useState(100)
 
   const uploadHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     let formData = new FormData()
@@ -56,7 +57,7 @@ function ObjectsPicsWidget(props: Props) {
     e.preventDefault()
     const dataStr = e.dataTransfer.getData("Text")
     const data = JSON.parse(dataStr)
-    
+
     const objects = [...props.data]
     const dragItemContent = objects[data.objIndex].pics[data.picIndex]
     objects[data.objIndex].pics.splice(data.picIndex, 1)
@@ -99,7 +100,13 @@ function ObjectsPicsWidget(props: Props) {
       })
     }
     objects.push(newObj)
+    for (let objIndex = 0; objIndex < objects.length; objIndex++) {
+      for (let picIndex = 0; picIndex < objects[objIndex].pics.length; picIndex++) {
+        objects[objIndex].pics[picIndex].selected = false;
+      }
+    }
     props.updateFormValue(props.field_name, objects)
+    // selectUnselectAll(false)
   }
 
   const movePicToObject = (toIndex: number) => {
@@ -149,39 +156,51 @@ function ObjectsPicsWidget(props: Props) {
   return (
     <div>
       <strong><Form.Label>{props.label}</Form.Label></strong>
-      <Container fluid>
+      <Container fluid className="p-0">
         <Row >
-          <Col xs={10}>
+          <Col xs={8}>
             <Form.Control
               type="file"
               multiple
               onChange={uploadHandler} />
           </Col>
-          <Col className="text-end" xs={2}>
-            <Dropdown>
-              <Dropdown.Toggle variant="success" id="dropdown-basic">
-                Ações
-              </Dropdown.Toggle>
+          <Col xs={4} >
+            <div className="d-flex justify-content-between" >
+              <Form.Range
+                min={50}
+                max={300}
+                value={picSize}
+                onChange = {(e)=> {setPicSize(parseInt(e.target.value))}}
+                style={{ marginRight: "10px" }}
+              />
+              <Dropdown>
+                <Dropdown.Toggle variant="success" id="dropdown-basic">
+                  Ações
+                </Dropdown.Toggle>
 
-              <Dropdown.Menu>
-                <Dropdown.Item as="button">
-                  <div onClick={() => { selectUnselectAll(true) }}>Selecionar todas</div>
-                </Dropdown.Item>
-                <Dropdown.Item as="button">
-                  <div onClick={() => { selectUnselectAll(false) }}>Remover seleção de todas</div>
-                </Dropdown.Item>
-                {props.widget_props.multiple && <div>
+                <Dropdown.Menu>
                   <Dropdown.Item as="button">
-                    <div onClick={moveToNewObjects}>Mover selecionadas para novo objeto</div>
+                    <div onClick={() => { selectUnselectAll(true) }}>Selecionar todas</div>
                   </Dropdown.Item>
                   <Dropdown.Item as="button">
-                    <div onClick={() => { movePicToObject(0) }}>Remover selecionadas dos objetos</div>
+                    <div onClick={() => { selectUnselectAll(false) }}>Remover seleção de todas</div>
                   </Dropdown.Item>
-                </div>}
+                  {props.widget_props.multiple && <div>
+                    <Dropdown.Item as="button">
+                      <div onClick={moveToNewObjects}>Mover selecionadas para novo objeto</div>
+                    </Dropdown.Item>
+                    <Dropdown.Item as="button">
+                      <div onClick={() => { movePicToObject(0) }}>Remover selecionadas dos objetos</div>
+                    </Dropdown.Item>
+                  </div>}
 
-              </Dropdown.Menu>
-            </Dropdown>
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
           </Col>
+          {/* <Col className="text-end" xs={2}>
+
+          </Col> */}
         </Row>
       </Container>
 
@@ -217,8 +236,10 @@ function ObjectsPicsWidget(props: Props) {
                   ></i>
                   <Image
                     onClick={() => { toggleSelected(objIndex, picIndex) }}
+                    style={{ height: picSize + 'px' }}
                     className='ObjectsPicsImage'
                     src={urlForWidgetAsset(props.randomID, props.field_name, item.path)} />
+                  <p className='text-center'>{item.path}</p>
                 </div>
               )
             })}
