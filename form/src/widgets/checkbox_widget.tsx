@@ -9,6 +9,7 @@ type Props = {
   field_name: string,
   label: string,
   updateFormValue: (field: string, value: any) => void
+  formService: (action: string, field: string, payload: any) => void
 }
 
 function CheckboxWidget(props: Props) {

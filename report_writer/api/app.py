@@ -36,8 +36,7 @@ def form_layout(model_name: str):
 def form_default_data(random_id: str, model_name: str):
     if not model_name:
         abort(404)
-    rw = ReportWriter("./models", random_id=random_id, tempfolder=config.TEMPFOLDER)
-    rw.set_model(model_name)
+    rw = ReportWriter("./models", random_id=random_id, model_name=model_name, tempfolder=config.TEMPFOLDER)
     data = rw.get_default_data()
     return jsonify(data)
 
@@ -99,10 +98,18 @@ def delete_widget_asset(random_id: str, field_name: str, relpath: str):
 
 
 @app.route("/api/upload-widget-assets/<random_id>/<widget_type>/<field_name>", methods=("POST",))
-def upload_widget_assets(random_id: str, widget_type:str, field_name: str):
+def upload_widget_assets(random_id: str, widget_type: str, field_name: str):
     rw = ReportWriter("./models", random_id=random_id, tempfolder=config.TEMPFOLDER)
     files = request.files.getlist("file[]")
     files_ = [FileType(f.stream, str(f.filename)) for f in files]
     data = rw.save_widget_assets(widget_type, field_name, files_)
     return jsonify(data)
 
+
+@app.route("/api/update-data/<model_name>/<random_id>/<field_name>", methods=("POST", ))
+def update_data(model_name: str, random_id: str, field_name: str):
+    rw = ReportWriter("./models", random_id=random_id,
+                      model_name=model_name, tempfolder=config.TEMPFOLDER)
+    payload = request.json
+    data = rw.get_update_data(field_name, payload)
+    return jsonify(data)

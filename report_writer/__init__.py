@@ -5,7 +5,7 @@ from report_writer.widgets.composite_widget import CompositeWidget
 from report_writer.widgets import get_widget_class_by_widget_type
 from .doc_handler import DocxHandler
 from .html_render import render_pre_html
-from .types import ErrorsType, FileType, ModelList, ModelListItem,  WidgetAttributesType
+from .types import ErrorsType, ExternalBrigdWasNotSet, FileType, ModelList, ModelListItem,  WidgetAttributesType
 import json
 import json
 import os
@@ -38,7 +38,8 @@ class ReportWriter:
     def __init__(self, models_folder: str | Path,
                  tempfolder: str | Path | None = None,
                  random_id: str | None = None,
-                 model_name: str | None = None) -> None:
+                 model_name: str | None = None,
+                 external_brigde: Any = None) -> None:
         self.models_folder = Path(models_folder)
         self._tempfolder: Path | None = None
         if tempfolder is not None:
@@ -49,6 +50,7 @@ class ReportWriter:
             self.set_model(model_name)
         self._context: dict | None = None
         self._random_id: str | None = random_id
+        self._external_bridge = external_brigde
 
     @property
     def tempfolder(self) -> Path:
@@ -75,6 +77,12 @@ class ReportWriter:
         return self._current_module_model
 
     @property
+    def external_bridge(self) -> Any:
+        if self._external_bridge is None:
+            raise  ExternalBrigdWasNotSet("external bridge was not set")
+        return self._external_bridge
+
+    @property
     def context(self) -> dict:
         if self._context is None:
             raise Exception("validate was not called")
@@ -87,6 +95,9 @@ class ReportWriter:
         self._tempfolder = Path(folder)
         if not self._tempfolder.is_dir():
             raise Exception(f"\"{folder}\" is not a valid folder")
+
+    def set_external_bridge(self, value: Any) -> None:
+        self._external_bridge = value
 
     def _gen_tempfolder(self) -> Path:
         folder = Path(tempfile.gettempdir(), "report_writer")
@@ -222,13 +233,14 @@ class ReportWriter:
 
     def save_widget_assets(self, widget_type: str, field_name: str, files: list[FileType]) -> Any:
         class_ = get_widget_class_by_widget_type(widget_type)
-
-        # if not isinstance(file, (Path, str)):
-        #     if filename is None:
-        #         raise Exception("filename was not provided")
-        # else:
-        #     filename = Path(file).stem
         return class_.save_widget_assets(self.get_widget_assets_folder(field_name), files)
+
+    def get_update_data(self, field_name: str, payload: Any) -> Any:
+        form = self.current_module_model.get_web_form()
+        form.set_report_writer(self)
+        form.define_widgets()
+        w = form.get_widget(field_name)
+        return w.get_update_data(payload)
 
     def get_instructions_html(self) -> str:
         """Get the instructions especified in instructions.md in model folder"""

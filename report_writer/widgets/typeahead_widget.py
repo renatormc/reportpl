@@ -35,6 +35,9 @@ class TypeAheadWidget:
     def save_widget_assets(widget_folder: Path, files: list[FileType]) -> Any:
         pass
 
+    def get_update_data(self, payload: Any) -> Any:
+        pass
+
     def convert_data(self, raw_data: Any) -> Tuple[Any, ErrorsType]:
         text = str(raw_data).strip()
         if self.required and text == "":

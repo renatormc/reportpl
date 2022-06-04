@@ -1,11 +1,15 @@
+from pathlib import Path
 from report_writer.base_web_form import BaseWebForm
-from report_writer.widgets import TextWidget, ObjectsPicsWidget, TypeAheadWidget
-from report_writer.types import ValidationError
+from report_writer.widgets import TextWidget, ObjectsPicsWidget, TypeAheadWidget, FileWidget
+from report_writer.types import ExternalBrigdWasNotSet, ValidationError
 from report_writer.web_converters import DateConverter, PathConverter
 
 def convert_pericia(form, value):
     parts = value.split("/")
-    return {"seq": int(parts[0]), "rg": int(parts[1]), "ano": int(parts[2])}
+    try:
+        return {"seq": int(parts[0]), "rg": int(parts[1]), "ano": int(parts[2])}
+    except:
+        raise ValidationError("Formato incorreto")
 
 
 def convert_relatores(form, value):
@@ -13,11 +17,21 @@ def convert_relatores(form, value):
 
 class Form(BaseWebForm):
 
+    def file_parse(self, path: Path):
+        try:
+            brg = self.report_writer.external_bridge
+        except ExternalBrigdWasNotSet:
+            pass
+        return {'pericia': "123/123456/2021"}
+
     def define_widgets(self):
 
         self.widgets = [
             [
-                TextWidget(self, 'pericia', label="Perícia", required=True, converter=convert_pericia),
+                FileWidget(self, 'requisicao', label='PDF Requisição ODIN',file_parser=self.file_parse, accept=".pdf"),
+            ],
+            [
+                TextWidget(self, 'pericia', label="Perícia", placeholder="SEQ/RG/ANO", required=True, converter=convert_pericia),
                 TextWidget(self,'requisitante', label="Requisitante", required=True),
                 TextWidget(self,'procedimento', label="Procedimento"),
                 TextWidget(self,'ocorrencia_odin', label="Ocorrência ODIN")

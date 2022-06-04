@@ -13,6 +13,9 @@ class ValidationError(Exception):
 class ModelNotFoundError(Exception):
     pass
 
+class ExternalBrigdWasNotSet(Exception):
+    pass
+
 
 class ModelListItem(TypedDict):
     key: str

@@ -21,6 +21,7 @@ type Props = {
   label: string,
   randomID: string,
   updateFormValue: (field: string, value: any) => void
+  formService: (action: string, field: string, payload: any) => void
 }
 
 
@@ -37,7 +38,6 @@ function ObjectsPicsWidget(props: Props) {
       }
 
       uploadWidgetAsset(props.randomID, 'objects_pics_widget', props.field_name, formData).then(data => {
-        console.log(data)
         props.updateFormValue(props.field_name, data);
       })
     }
@@ -106,7 +106,6 @@ function ObjectsPicsWidget(props: Props) {
       }
     }
     props.updateFormValue(props.field_name, objects)
-    // selectUnselectAll(false)
   }
 
   const movePicToObject = (toIndex: number) => {
@@ -153,6 +152,20 @@ function ObjectsPicsWidget(props: Props) {
     props.updateFormValue(props.field_name, objects)
   }
 
+  const deleteSelected = async () => {
+    const objects = [...props.data]
+    for (let objIndex = 0; objIndex < objects.length; objIndex++) {
+      for (let picIndex = objects[objIndex].pics.length - 1; picIndex >= 0; picIndex--) {
+        const pic = objects[objIndex].pics[picIndex]
+        if(pic.selected){
+          await deleteAsset(props.randomID, props.field_name, pic.path)
+          objects[objIndex].pics.splice(picIndex, 1)
+        }
+      }
+    }
+    props.updateFormValue(props.field_name, objects)
+  }
+
   return (
     <div>
       <strong><Form.Label>{props.label}</Form.Label></strong>
@@ -170,7 +183,7 @@ function ObjectsPicsWidget(props: Props) {
                 min={50}
                 max={300}
                 value={picSize}
-                onChange = {(e)=> {setPicSize(parseInt(e.target.value))}}
+                onChange={(e) => { setPicSize(parseInt(e.target.value)) }}
                 style={{ marginRight: "10px" }}
               />
               <Dropdown>
@@ -192,15 +205,15 @@ function ObjectsPicsWidget(props: Props) {
                     <Dropdown.Item as="button">
                       <div onClick={() => { movePicToObject(0) }}>Remover selecionadas dos objetos</div>
                     </Dropdown.Item>
+                    <Dropdown.Item as="button">
+                      <div onClick={deleteSelected}>Deletar selecionadas</div>
+                    </Dropdown.Item>
                   </div>}
 
                 </Dropdown.Menu>
               </Dropdown>
             </div>
           </Col>
-          {/* <Col className="text-end" xs={2}>
-
-          </Col> */}
         </Row>
       </Container>
 

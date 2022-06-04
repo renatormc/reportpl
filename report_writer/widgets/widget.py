@@ -27,3 +27,6 @@ class Widget(Protocol):
     @staticmethod
     def save_widget_assets(widget_folder: Path, files: list[FileType]) -> Any:
         pass
+
+    def get_update_data(self, payload: Any) -> Any:
+        pass

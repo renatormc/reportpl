@@ -1,3 +1,3 @@
 from . import example
-from . import sinf_generico
+from . import celular_sinf
 from . import example2

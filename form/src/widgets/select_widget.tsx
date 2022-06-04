@@ -10,6 +10,7 @@ type Props = {
   field_name: string,
   label: string,
   updateFormValue: (field: string, value: any) => void
+  formService: (action: string, field: string, payload: any) => void
 }
 
 function SelectWidget(props: Props) {
@@ -35,8 +36,8 @@ function SelectWidget(props: Props) {
         onChange={(e) => { updateFormValue(e.target.value) }}
         id={props.field_name}
       >
-        {props.widget_props.options.map((data: TypeAheadItem) => {
-          return (<option value={data.key}>{data.key}</option>)
+        {props.widget_props.options.map((data: TypeAheadItem, index: number) => {
+          return (<option value={data.key} key={index}>{data.key}</option>)
         })}
       </Form.Select>
 

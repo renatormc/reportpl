@@ -8,6 +8,7 @@ from .text_area_widget import TextAreaWidget
 from .typeahead_obj_widget import TypeAheadObjWidget
 from .typeahead_widget import TypeAheadWidget
 from .objects_pics_widget import ObjectsPicsWidget
+from .file_widget import FileWidget
 
 __widgets__: dict[str, Type['Widget']] = {
     'text_widget': TextWidget,
@@ -17,7 +18,8 @@ __widgets__: dict[str, Type['Widget']] = {
     'text_widget': TextAreaWidget,
     'type_ahead_object_widget': TypeAheadObjWidget,
     'objects_pics_widget': ObjectsPicsWidget,
-    'type_ahead_widget': TypeAheadWidget
+    'type_ahead_widget': TypeAheadWidget,
+    'file_widget': FileWidget
 }
 
 

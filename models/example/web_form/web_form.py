@@ -1,12 +1,17 @@
-from typing_extensions import Required
-from report_writer.widgets import TextWidget, ArrayWidget, TextAreaWidget, TypeAheadObjWidget, TypeAheadWidget, SelectWidget, CheckBoxWidget, ObjectsPicsWidget
+from pathlib import Path
+from report_writer.widgets import TextWidget, ArrayWidget, TextAreaWidget, TypeAheadObjWidget, TypeAheadWidget, SelectWidget, CheckBoxWidget, ObjectsPicsWidget, FileWidget
 from report_writer.types import ValidationError
 from report_writer.web_converters import DateConverter, FloatConverter
 from report_writer.base_web_form import BaseWebForm
 
 
 class Form(BaseWebForm):
-    
+
+
+    @staticmethod
+    def file_parse(path: Path):
+        return {'nome': "Mudar nome"}
+
     def define_widgets(self):
         self.widgets = [
             [

@@ -90,6 +90,7 @@ function Typeahead(props: Props) {
           return (
             <div
               className={`${styles.option} ${index === selectedIndex ? styles.optionSelected : ""}`}
+              key={index}
               onClick={(e) => {
                 e.stopPropagation()
                 onClickOption(index)

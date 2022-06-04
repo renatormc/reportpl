@@ -12,6 +12,7 @@ type Props = {
   label: string,
   randomID: string,
   updateFormValue: (field: string, value: any) => void
+  formService: (action: string, field: string, payload: any) => void
 }
 
 function ArrayWidget(props: Props) {
@@ -85,7 +86,7 @@ function ArrayWidget(props: Props) {
                 data-bs-placement="top"
                 title="Deletar todos"
                 onClick={removeAll}
-                disabled={props.data.length === 0? true: false}>
+                disabled={props.data.length === 0 ? true : false}>
                 <i className="fas fa-trash-alt"></i>
               </Button>
             </div>
@@ -121,7 +122,8 @@ function ArrayWidget(props: Props) {
                 randomID={props.randomID}
                 updateFormValue={(field: string, value: any) => {
                   updateFormValue(index, field, value);
-                }} />
+                }}
+                formService={props.formService} />
             </div>
 
           );

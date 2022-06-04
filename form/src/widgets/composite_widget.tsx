@@ -11,6 +11,7 @@ type Props = {
   randomID: string,
   field_name?: string,
   updateFormValue: (field: string, value: any) => void
+  formService: (action: string, field: string, payload: any) => void
 }
 
 function CompositeWidget(props: Props) {
@@ -45,7 +46,8 @@ function CompositeWidget(props: Props) {
                     widget_type={w.widget_type}
                     updateFormValue={updateFormValue}
                     errors={errors[w.field_name]}
-                    label={w.label} />
+                    label={w.label} 
+                    formService={props.formService}/>
                 </Col>
               );
             })}

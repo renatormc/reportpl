@@ -49,6 +49,9 @@ class ObjectsPicsWidget:
                 for entry in folder.iterdir() if entry.is_file()]
         return [{'name': '0', 'pics': pics}]
 
+    def get_update_data(self, payload: Any) -> Any:
+        pass
+
     @staticmethod
     def save_widget_assets(widget_folder: Path, files: list[FileType]) -> Any:
         try:

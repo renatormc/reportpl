@@ -3,10 +3,10 @@ import './App.css';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import 'react-bootstrap-typeahead/css/Typeahead.bs5.css';
 import MsgBox from './components/msgbox';
-import { getFormDefaultData, getFormLayout, getModelInstructions, renderDoc } from './services/api';
-import { DataType, ErrorsType, WidgetMatrixType } from './types/custom_types';
+import { getFormDefaultData, getFormLayout, getModelInstructions, getUpdateData, renderDoc } from './services/api';
+import { DataType, ErrorsType, WidgetMatrixType, WidgetsMapType } from './types/custom_types';
 import CompositeWidget from './widgets/composite_widget';
-import { Button, Row, Col, Container, Form, Card } from 'react-bootstrap';
+import { Button, Row, Col, Container, Form, Accordion } from 'react-bootstrap';
 import { getSavedFormData, saveFormData } from './services/storage';
 
 
@@ -15,8 +15,10 @@ type Props = {
   randomID: string
 }
 
+
 function App(props: Props) {
   const [widgetMatrix, setWidgetMatrix] = useState<WidgetMatrixType>([[]]);
+  const [widgetsMap, setWidgetsMap] = useState<WidgetsMapType>({});
 
   const [modalVisible, setModalVisible] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
@@ -28,12 +30,23 @@ function App(props: Props) {
 
   const [errors, setErrors] = useState<ErrorsType>({});
 
+  const mapWidgets = () => {
+    const m: WidgetsMapType = {}
+    for (let rowIndex = 0; rowIndex < widgetMatrix.length; rowIndex++) {
+      for (let wIndex = 0; wIndex < widgetMatrix[rowIndex].length; wIndex++) {
+        const w = widgetMatrix[rowIndex][wIndex]
+        m[w.field_name] = w
+      }
+    }
+    setWidgetsMap(m)
+  }
+
   const updateFormValue = (field: string, value: any) => {
     setData(data => ({ ...data, [field]: value }));
   }
 
   const submitForm = async () => {
-    saveFormData(props.model_name, data);
+    saveFormData(props.model_name, data, widgetsMap);
     const errors = await renderDoc(props.model_name, data, props.randomID);
     setErrors(errors);
     if (errors === null) {
@@ -41,28 +54,53 @@ function App(props: Props) {
     }
   }
 
-  const loadSavedForm = async () => {
-    const data = getSavedFormData(props.model_name);
-    if (data !== null) {
-      setData(data);
+  const formService = async (action: string, field: string, payload: any) => {
+    switch (action) {
+      case "updateForm":
+        const d = await getUpdateData(props.randomID, props.model_name, field, payload)
+        await updateData(d)
+        break;
+    
+      default:
+        break;
     }
   }
 
+  const updateData = async (updateData: DataType) => {
+    if (updateData !== null) {
+      const copyData = { ...data }
+      const keys = Object.keys(updateData)
+      for (let index = 0; index < keys.length; index++) {
+        const k = keys[index];
+        if (k in copyData) {
+          copyData[k] = updateData[k]
+        }
+      }
+      setData(copyData)
+    }
+  }
+
+  const loadSavedForm = async () => {
+    const savedData = getSavedFormData(props.model_name);
+    await updateData(savedData)
+  }
+
   const clearForm = () => {
-    saveFormData(props.model_name, data);
+    saveFormData(props.model_name, data, widgetsMap);
     getFormDefaultData(props.randomID, props.model_name).then((data) => {
       setData(data);
     })
   }
 
   const showModal = (title: string, text: string) => {
-    console.log("Mostrar modal");
     setModalTitle(title);
     setModalText(text);
     setModalVisible(true);
   }
 
   useEffect(() => {
+
+
     getFormDefaultData(props.randomID, props.model_name).then((data) => {
       setData(data);
       getFormLayout(props.model_name).then((data) => {
@@ -78,18 +116,25 @@ function App(props: Props) {
 
   }, [])
 
+  useEffect(() => {
+    mapWidgets()
+  }, [widgetMatrix])
+
   return (
     <div className="App">
 
       <Container fluid>
         {modelInstructions !== "" && <Row>
           <Col>
-            <Card>
-            <Card.Header as="h5">Instruções</Card.Header>
-              <Card.Body>
-                <div dangerouslySetInnerHTML={{ __html: modelInstructions }} />
-              </Card.Body>
-            </Card>
+            <Accordion >
+              <Accordion.Item eventKey="0">
+                <Accordion.Header className="bg-primary">Instruções</Accordion.Header>
+                <Accordion.Body>
+                  <div dangerouslySetInnerHTML={{ __html: modelInstructions }} />
+                </Accordion.Body>
+              </Accordion.Item>
+
+            </Accordion>
           </Col>
         </Row>}
         <Row>
@@ -101,7 +146,8 @@ function App(props: Props) {
                 errors={errors}
                 data={data}
                 randomID={props.randomID}
-                updateFormValue={updateFormValue} />
+                updateFormValue={updateFormValue}
+                formService={formService} />
               <Row className="mt-3">
                 <Col className="text-center">
 
@@ -114,6 +160,7 @@ function App(props: Props) {
               </Row>
               {/* <p className='text-center'>{JSON.stringify(data)}</p>
               <p className='text-center'>{JSON.stringify(errors)}</p> */}
+
             </Form>
           </Col>
         </Row>

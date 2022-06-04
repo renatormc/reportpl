@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { WidgetMatrixType, ErrorsType, TypeAheadItem, ModelInstructionsResponse } from './../types/custom_types';
+import { WidgetMatrixType, ErrorsType, TypeAheadItem, ModelInstructionsResponse, DataType } from './../types/custom_types';
 import axios from './axios'
 import { getCookie } from './cookies';
 
@@ -12,8 +12,13 @@ export const getFormLayout = async (model_name: string): Promise<WidgetMatrixTyp
 }
 
 
-export const getFormDefaultData = async (random_id: string, model_name: string): Promise<{ [key: string]: any }> => {
-    const resp = await axios.get<WidgetMatrixType>(`/form-default-data/${random_id}/${model_name}`);
+export const getFormDefaultData = async (random_id: string, model_name: string): Promise<DataType> => {
+    const resp = await axios.get<DataType>(`/form-default-data/${random_id}/${model_name}`);
+    return resp.data;
+}
+
+export const getUpdateData = async (random_id: string, model_name: string, field_name: string, payload: object): Promise<DataType> => {
+    const resp = await axios.post<DataType>(`/update-data/${model_name}/${random_id}/${field_name}`, payload);
     return resp.data;
 }
 

@@ -8,6 +8,11 @@ export type WidgetAttributesType = {
 
 export type WidgetMatrixType = Array<Array<WidgetAttributesType>>
 
+export type WidgetsMapType = {
+    [key: string]: WidgetAttributesType
+}
+
+
 export type ErrorsType = { [key: string]: any }
 
 export type DataType = { [key: string]: any }

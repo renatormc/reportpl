@@ -32,6 +32,9 @@ class SelectWidget:
     def save_widget_assets(widget_folder: Path, files: list[FileType]) -> Any:
         pass
 
+    def get_update_data(self, payload: Any) -> Any:
+        pass
+
     @property
     def options_obj(self)->list[ModelListItem]:
         if self._options_obj is None:
