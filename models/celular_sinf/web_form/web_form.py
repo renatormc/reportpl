@@ -1,8 +1,8 @@
 from pathlib import Path
 from report_writer.base_web_form import BaseWebForm
-from report_writer.widgets import TextWidget, ObjectsPicsWidget, TypeAheadWidget, FileWidget
+from report_writer.widgets import TextWidget, ObjectsPicsWidget, TypeAheadWidget, FileWidget, SelectWidget
 from report_writer.types import ExternalBrigdWasNotSet, ValidationError
-from report_writer.web_converters import DateConverter, PathConverter
+from report_writer.web_converters import DateConverter, PathConverter, IntConverter
 
 def convert_pericia(form, value):
     parts = value.split("/")
@@ -42,7 +42,7 @@ class Form(BaseWebForm):
                 TextWidget(self,'data_recebimento', label="Data de recebimento", converter=DateConverter())
             ],
             [
-                TextWidget(self,'numero_quesito', label="Número do quesito"),
+                TextWidget(self,'n_quesito', label="Número do quesito"),
                 TextWidget(self,'autoridade', label="Autoridade", placeholder="Nome do delegado ou juiz"),
             ],
             [
@@ -51,12 +51,10 @@ class Form(BaseWebForm):
             ],
             [
                 TextWidget(self,'lacre_entrada', label="Lacre de entrada"),
-                TextWidget(self,'lacre_saida', label="Lacre de saída")
+                TextWidget(self,'lacre_saida', label="Lacre de saída"),
+                SelectWidget(self, 'n_midias', options='opcoes_midias', default="Sem mídias")
             ],
             [
-                ObjectsPicsWidget(self, 'fotos', label="Fotos", new_object_name="Celular", multiple=True)
-            ],
-            [
-                TypeAheadWidget(self, 'test_typeahead', label="Test Typeahead", options='tipos_objetos')
+                ObjectsPicsWidget(self, 'objects', label="Fotos",  new_object_name="Celular", multiple=True)
             ]
         ]

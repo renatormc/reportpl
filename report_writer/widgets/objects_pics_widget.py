@@ -65,7 +65,7 @@ class ObjectsPicsWidget:
         return ObjectsPicsWidget.get_data_from_folder(widget_folder)
 
     def convert_data(self, raw_data: Any) -> Tuple[Any, ErrorsType]:
-        data: list[ObjectData] = raw_data
+        data: list[ObjectData] = raw_data[1:]
         folder = self.form.report_writer.get_widget_assets_folder(
             self.name, create=True)
         for i, obj in enumerate(data):

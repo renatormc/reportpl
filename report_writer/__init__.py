@@ -170,7 +170,7 @@ class ReportWriter:
 
         items: list[ModelListItem] = []
         if path.suffix == ".txt":
-            text = path.read_text(encoding="utf-8")
+            text = path.read_text(encoding="utf-8").strip()
             lines = text.split("\n")
             items = [{'key': line, 'value': line}
                      for line in lines]

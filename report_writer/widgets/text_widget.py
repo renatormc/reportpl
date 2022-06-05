@@ -35,8 +35,11 @@ class TextWidget:
 
     def convert_data(self, raw_data: Any) -> Tuple[Any, ErrorsType]:
         text = str(raw_data).strip()
-        if self.required and text == "":
-            return None, "Campo obrigatório"
+        if text == "":
+            if self.required:
+                return None, "Campo obrigatório"
+            else:
+                return None, None
         try:
             self.data = self.converter(self.form, text) if self.converter else text
         except ValidationError as e:

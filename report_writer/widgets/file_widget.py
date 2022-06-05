@@ -30,6 +30,10 @@ class FileWidget:
 
     @staticmethod
     def save_widget_assets(widget_folder: Path, files: list[FileType]) -> Any:
+        try:
+            widget_folder.mkdir(parents=True)
+        except FileExistsError:
+            pass
         files[0].save(widget_folder)
         return files[0].filename
 
