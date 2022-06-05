@@ -34,27 +34,28 @@
   position: relative;
 }
 
+.ObjectsPicsImageCaption {
+  font-size: 9pt;
+  max-width: 150px;
+  overflow: auto;
+}
+
 .ObjectsPicsImageContainerSelected {
   border-color: rgb(102, 143, 80);
   border-style: solid;
-  /* font-size: 12px; */
-
-  /* background: transparent;
-  -webkit-appearance: none; */
-
 }
 
 .ObjectsPicsImageTrash {
   position: absolute;
   right: 7px;
   top: 7px;
-  color: rgb(109, 8, 8);
+  color: rgb(173, 15, 15);
   font-size: 15pt;
 }
 
 .ObjectsPicsImageTrash:hover {
   cursor: pointer;
-  color: rgb(150, 12, 12);
+  color: rgb(136, 12, 12);
 }
 
 .ObjectsPicsTrash {

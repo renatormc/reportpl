@@ -1,8 +1,0 @@
-<p>
-    {% if ctx.n_midias < 1 %}
-    {% elif ctx.n_midias > 1 %}
-    Os dados relacionados a esta perícia foram transcritos para {{ ctx.n_midias }} ({{ ctx.n_midias|numero_extenso }}) mídias óticas que acompanham o laudo. 
-    {% else %}
-    Os dados relacionados a esta perícia foram transcritos para 1 (uma) mídia ótica que acompanha o laudo. 
-    {% endif %}
-</p>

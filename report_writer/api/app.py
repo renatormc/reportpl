@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import IO
 from flask import Flask, jsonify, request, abort, render_template, send_from_directory
 from report_writer import ReportWriter, get_file_names
@@ -57,8 +58,10 @@ def render_doc(model_name: str, random_id: str):
         return jsonify(errors), 422
     print("\n\nContext: ")
     print(rw.context)
-    rw.render_docx("./compilado.docx")
-    return jsonify(errors)
+    path = Path("./compilado.docx").absolute()
+    rw.render_docx(path)
+    return send_from_directory(path.parent, path.name)
+    # return jsonify(errors)
 
 
 @app.route("/api/list-items/<model_name>/<list_name>")

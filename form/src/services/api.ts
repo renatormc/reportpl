@@ -2,6 +2,7 @@ import { AxiosError } from 'axios';
 import { WidgetMatrixType, ErrorsType, TypeAheadItem, ModelInstructionsResponse, DataType } from './../types/custom_types';
 import axios from './axios'
 import { getCookie } from './cookies';
+import fileDownload from 'js-file-download';
 
 const rootEl = document.getElementById('root') as HTMLElement;
 const urlPrefix = rootEl.getAttribute("url_prefix") || "";
@@ -25,18 +26,24 @@ export const getUpdateData = async (random_id: string, model_name: string, field
 export const renderDoc = async (model_name: string, data: any, randomID: string): Promise<ErrorsType> => {
     try {
         const csrftoken = getCookie('csrftoken') || "";
-        const resp = await axios.post<ErrorsType>(`/render-doc/${model_name}/${randomID}`,
+        const resp = await axios.post<Blob>(`/render-doc/${model_name}/${randomID}`,
             data,
             {
                 headers: {
-                    'X-CSRFToken': csrftoken
-                }
+                    'X-CSRFToken': csrftoken,
+                },
+                responseType: 'arraybuffer'
             });
+            fileDownload(resp.data, "Compilado.docx");
         return resp.data;
     } catch (error) {
         const err = error as AxiosError
         if (err.response && err.response.status === 422) {
-            return err.response.data as ErrorsType;
+            const aux = err.response.data as ArrayBuffer
+            console.log(aux)
+            const enc = new TextDecoder("utf-8")
+            return JSON.parse(enc.decode(aux))
+            // return err.response.data as ErrorsType;
         }
         throw error;
     }

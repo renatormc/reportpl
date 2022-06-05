@@ -27,7 +27,7 @@ class ModuleModel:
 
     @property
     def html_templates_folder(self) -> Path:
-        return self.model_folder / "html_templates"
+        return self.model_folder / "templates"
 
     @property
     def filters(self) -> Type:

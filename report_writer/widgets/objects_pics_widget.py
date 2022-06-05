@@ -47,11 +47,13 @@ class ObjectsPicsWidget:
             pass
         pics = [{'path': f"{entry.name}", 'selected': False}
                 for entry in folder.iterdir() if entry.is_file()]
-        pics.sort(key=lambda x: x['path'])
+        pics.sort(key=lambda x: x['path']) # type: ignore
         return [{'name': '0', 'pics': pics}]
 
     def get_update_data(self, payload: Any) -> Any:
         pass
+
+
 
     @staticmethod
     def save_widget_assets(widget_folder: Path, files: list[FileType]) -> Any:
@@ -62,7 +64,10 @@ class ObjectsPicsWidget:
         folder = widget_folder
         folder.mkdir(parents=True)
         for f in files:
-            f.save(folder)
+            if f.filename.endswith(".zip"):
+                pass
+            else:
+                f.save(folder)
         return ObjectsPicsWidget.get_data_from_folder(widget_folder)
 
     def convert_data(self, raw_data: Any) -> Tuple[Any, ErrorsType]:

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "report_writer"
-version = "0.1.8"
+version = "0.1.9"
 description = ""
 authors = ["renatormc <renatomartinsrmc@gmail.com>"]
 
@@ -22,6 +22,7 @@ types-beautifulsoup4 = "^4.10.18"
 autopep8 = "^1.6.0"
 sqlalchemy-stubs = "^0.4"
 types-Markdown = "^3.3.23"
+odin_pdf_parser = { git = "https://github.com/renatormc/odin_pdf_parser.git", branch = "v0.1.2" }
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

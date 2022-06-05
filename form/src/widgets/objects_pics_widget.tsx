@@ -157,7 +157,7 @@ function ObjectsPicsWidget(props: Props) {
     for (let objIndex = 0; objIndex < objects.length; objIndex++) {
       for (let picIndex = objects[objIndex].pics.length - 1; picIndex >= 0; picIndex--) {
         const pic = objects[objIndex].pics[picIndex]
-        if(pic.selected){
+        if (pic.selected) {
           await deleteAsset(props.randomID, props.field_name, pic.path)
           objects[objIndex].pics.splice(picIndex, 1)
         }
@@ -237,7 +237,7 @@ function ObjectsPicsWidget(props: Props) {
             {object.pics.map((item: PicData, picIndex: number) => {
               return (
                 <div
-                  className={`ObjectsPicsImageContainer ${item.selected ? "ObjectsPicsImageContainerSelected" : ""}`}
+                  className={`text-center ObjectsPicsImageContainer ${item.selected ? "ObjectsPicsImageContainerSelected" : ""}`}
                   onDragStart={(e) => dragStart(e, picIndex, objIndex)}
                   onDrop={(e) => { onDropInPic(e, objIndex, picIndex) }}
                   onDragOver={(e) => { e.preventDefault() }}
@@ -252,7 +252,10 @@ function ObjectsPicsWidget(props: Props) {
                     style={{ height: picSize + 'px' }}
                     className='ObjectsPicsImage'
                     src={urlForWidgetAsset(props.randomID, props.field_name, item.path)} />
-                  <p className='text-center'>{item.path}</p>
+                  <div className="d-flex justify-content-center" >
+                    <p className='ObjectsPicsImageCaption'>{item.path}</p>
+                  </div>
+
                 </div>
               )
             })}
