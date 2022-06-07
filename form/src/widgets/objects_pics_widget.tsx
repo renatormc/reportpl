@@ -89,7 +89,7 @@ function ObjectsPicsWidget(props: Props) {
 
   const moveToNewObjects = () => {
     const objects = [...props.data]
-    const newObj: ObjectData = { name: props.widget_props.new_object_name, pics: [] }
+    const newObj: ObjectData = { name: `${props.widget_props.new_object_name} ${objects.length}`, pics: [] }
     for (let objIndex = 0; objIndex < objects.length; objIndex++) {
       let selPics = objects[objIndex].pics.filter((pic) => {
         return pic.selected
