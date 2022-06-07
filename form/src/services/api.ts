@@ -35,7 +35,7 @@ export const renderDoc = async (model_name: string, data: any, randomID: string)
                 },
                 responseType: 'arraybuffer'
             });
-            fileDownload(resp.data, "Compilado.docx");
+            fileDownload(resp.data, randomID +  ".docx");
         return resp.data;
     } catch (error) {
         const err = error as AxiosError
