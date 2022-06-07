@@ -26,7 +26,8 @@ export const getUpdateData = async (random_id: string, model_name: string, field
 export const renderDoc = async (model_name: string, data: any, randomID: string): Promise<ErrorsType> => {
     try {
         const csrftoken = getCookie('csrftoken') || "";
-        const resp = await axios.post<Blob>(`/render-doc/${model_name}/${randomID}`,
+        const rnumber = Math.random()
+        const resp = await axios.post<Blob>(`/render-doc/${model_name}/${randomID}#${Math.random}`,
             data,
             {
                 headers: {
