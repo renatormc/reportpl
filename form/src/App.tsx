@@ -52,7 +52,8 @@ function App(props: Props) {
       setLoading(true)
       const errors = await renderDoc(props.model_name, data, props.randomID);
       setErrors(errors);
-      if (errors !== null && errors !== {}) {
+      
+      if (!(errors instanceof ArrayBuffer)) {
         showModal("Erros", "Há erros no seu formulário. Corrija-os e clique em \"Gerar docx\" novamente.");
       }
     } finally {
