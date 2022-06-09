@@ -171,7 +171,7 @@ function ObjectsPicsWidget(props: Props) {
       <strong><Form.Label>{props.label}</Form.Label></strong>
       <Container fluid className="p-0">
         <Row >
-          <Col xs={6}>
+          <Col xs={8}>
             <div className="d-flex justify-content-between" >
               <Dropdown>
                 <Dropdown.Toggle variant="success" id="dropdown-basic">
@@ -198,25 +198,22 @@ function ObjectsPicsWidget(props: Props) {
                   </div>}
                 </Dropdown.Menu>
               </Dropdown>
-              <Form.Range
-                min={50}
-                max={300}
-                value={picSize}
-                onChange={(e) => { setPicSize(parseInt(e.target.value)) }}
-                style={{ marginLeft: "10px" }}
-              />
+              <Form.Control
+                type="file"
+                multiple
+                onChange={uploadHandler} 
+                style={{ marginLeft: "10px" }}/>
 
             </div>
-
           </Col>
-          <Col xs={6} >
+          <Col xs={4} >
 
-            <Form.Control
-              type="file"
-              multiple
-              onChange={uploadHandler} />
-
-
+            <Form.Range
+              min={50}
+              max={300}
+              value={picSize}
+              onChange={(e) => { setPicSize(parseInt(e.target.value)) }}
+            />
 
           </Col>
         </Row>

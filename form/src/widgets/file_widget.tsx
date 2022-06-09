@@ -17,7 +17,7 @@ type Props = {
 function FileWidget(props: Props) {
 
 
-  const uploadHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const uploadHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
     let formData = new FormData()
     const files = event.currentTarget.files
     if (files !== null) {
@@ -25,10 +25,14 @@ function FileWidget(props: Props) {
         formData.append("file[]", files[i])
       }
 
-      uploadWidgetAsset(props.randomID, 'file_widget', props.field_name, formData).then(data => {
+      try {
+        props.formService("setLoading", props.field_name, true)
+        const data  =  await uploadWidgetAsset(props.randomID, 'file_widget', props.field_name, formData)
         props.formService("updateForm", props.field_name, { relpath: data })
-        // props.updateFormValue(props.field_name, data);
-      })
+      } finally {
+        props.formService("setLoading", props.field_name, false)
+      }
+     
     }
   }
 

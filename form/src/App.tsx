@@ -6,7 +6,7 @@ import MsgBox from './components/msgbox';
 import { getFormDefaultData, getFormLayout, getModelInstructions, getUpdateData, renderDoc } from './services/api';
 import { DataType, ErrorsType, WidgetMatrixType, WidgetsMapType } from './types/custom_types';
 import CompositeWidget from './widgets/composite_widget';
-import { Button, Row, Col, Container, Form, Accordion } from 'react-bootstrap';
+import { Button, Row, Col, Container, Form, Accordion, Spinner } from 'react-bootstrap';
 import { getSavedFormData, saveFormData } from './services/storage';
 
 
@@ -29,6 +29,7 @@ function App(props: Props) {
   const [modelInstructions, setModelInstructions] = useState("");
 
   const [errors, setErrors] = useState<ErrorsType>({});
+  const [loading, setLoading] = useState(false);
 
   const mapWidgets = () => {
     const m: WidgetsMapType = {}
@@ -47,11 +48,17 @@ function App(props: Props) {
 
   const submitForm = async () => {
     saveFormData(props.model_name, data, widgetsMap);
-    const errors = await renderDoc(props.model_name, data, props.randomID);
-    setErrors(errors);
-    if (errors !== null) {
-      showModal("Erros", "Há erros no seu formulário. Corrija-os e clique em \"Gerar docx\" novamente.");
+    try {
+      setLoading(true)
+      const errors = await renderDoc(props.model_name, data, props.randomID);
+      setErrors(errors);
+      if (errors !== null && errors !== {}) {
+        showModal("Erros", "Há erros no seu formulário. Corrija-os e clique em \"Gerar docx\" novamente.");
+      }
+    } finally {
+      setLoading(false)
     }
+
   }
 
   const formService = async (action: string, field: string, payload: any) => {
@@ -60,7 +67,9 @@ function App(props: Props) {
         const d = await getUpdateData(props.randomID, props.model_name, field, payload)
         await updateData(d)
         break;
-    
+      case "setLoading":
+        setLoading(payload)
+        break;
       default:
         break;
     }
@@ -122,7 +131,9 @@ function App(props: Props) {
 
   return (
     <div className="App">
-
+      {loading && <div className='main-spinner-container d-flex d-flex-column justify-content-center align-items-center'>
+        <Spinner animation="border" variant="primary" style={{ position: 'absolute' }} />
+      </div>}
       <Container fluid>
         {modelInstructions !== "" && <Row>
           <Col>
@@ -152,6 +163,7 @@ function App(props: Props) {
                 <Col className="text-center">
 
                   <div className="d-inline-flex p-2 bd-highlight gap-3">
+
                     <Button variant="secondary" onClick={clearForm}><i className="fa fa-broom"></i> Limpar</Button>
                     <Button variant="primary" onClick={submitForm}><i className="fa fa-file-word"></i> Gerar docx</Button>
                     <Button variant="warning" onClick={loadSavedForm}><i className="fas fa-archive"></i> Carregar último preenchimento</Button>

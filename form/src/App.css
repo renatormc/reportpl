@@ -75,3 +75,12 @@
   cursor: pointer;
   color: rgb(150, 12, 12);
 }
+
+.main-spinner-container{
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  z-index: 4;
+  background-color: grey;
+  opacity: 0.3;
+}
