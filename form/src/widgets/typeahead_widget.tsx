@@ -32,6 +32,7 @@ function TypeAheadWidget(props: Props) {
       <Form.Group>
         <strong><Form.Label>{props.label}</Form.Label></strong>
         <Typeahead
+          hasError={props.errors !== null}
           value={props.data}
           onChange={(value) => { props.updateFormValue(props.field_name, value) }}
           getOptions={getOptions}

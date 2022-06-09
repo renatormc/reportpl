@@ -3,6 +3,11 @@
   font-size: 10pt;
 }
 
+.field-with-errors {
+  border-color: brown;
+  border-width: 2px;
+}
+
 .array-widget-item {
   background-color: aliceblue;
   margin-top: 5px;

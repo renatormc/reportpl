@@ -171,21 +171,8 @@ function ObjectsPicsWidget(props: Props) {
       <strong><Form.Label>{props.label}</Form.Label></strong>
       <Container fluid className="p-0">
         <Row >
-          <Col xs={8}>
-            <Form.Control
-              type="file"
-              multiple
-              onChange={uploadHandler} />
-          </Col>
-          <Col xs={4} >
+          <Col xs={6}>
             <div className="d-flex justify-content-between" >
-              <Form.Range
-                min={50}
-                max={300}
-                value={picSize}
-                onChange={(e) => { setPicSize(parseInt(e.target.value)) }}
-                style={{ marginRight: "10px" }}
-              />
               <Dropdown>
                 <Dropdown.Toggle variant="success" id="dropdown-basic">
                   Ações
@@ -209,10 +196,28 @@ function ObjectsPicsWidget(props: Props) {
                       <div onClick={deleteSelected}>Deletar selecionadas</div>
                     </Dropdown.Item>
                   </div>}
-
                 </Dropdown.Menu>
               </Dropdown>
+              <Form.Range
+                min={50}
+                max={300}
+                value={picSize}
+                onChange={(e) => { setPicSize(parseInt(e.target.value)) }}
+                style={{ marginLeft: "10px" }}
+              />
+
             </div>
+
+          </Col>
+          <Col xs={6} >
+
+            <Form.Control
+              type="file"
+              multiple
+              onChange={uploadHandler} />
+
+
+
           </Col>
         </Row>
       </Container>

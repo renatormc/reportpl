@@ -26,7 +26,7 @@ function FileWidget(props: Props) {
       }
 
       uploadWidgetAsset(props.randomID, 'file_widget', props.field_name, formData).then(data => {
-        props.formService("updateForm", props.field_name, {relpath: data})
+        props.formService("updateForm", props.field_name, { relpath: data })
         // props.updateFormValue(props.field_name, data);
       })
     }
@@ -36,9 +36,10 @@ function FileWidget(props: Props) {
     <div>
       <strong><Form.Label>{props.label}</Form.Label></strong>
       <Form.Control
+        className={props.errors ? 'field-with-errors' : ''}
         type="file"
-        onChange={uploadHandler} 
-        accept={props.widget_props.accept}/>
+        onChange={uploadHandler}
+        accept={props.widget_props.accept} />
       {props.errors && <div className="error-message">{props.errors}</div>}
     </div >
   );

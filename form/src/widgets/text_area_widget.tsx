@@ -18,6 +18,7 @@ function TextAreaWidget(props: Props) {
     <div>
       <strong><Form.Label>{props.label}</Form.Label></strong>
       <Form.Control as="textarea"
+        className={props.errors ? 'field-with-errors' : ''}
         rows={props.widget_props.rows}
         value={props.data}
         placeholder={props.widget_props.placeholder}

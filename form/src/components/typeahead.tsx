@@ -4,6 +4,7 @@ import styles from './typeahead.module.css'
 
 type Props = {
   value: string
+  hasError: boolean
   onChange: (value: string) => void
   getOptions:  (query: string) => Promise<Array<string>>
 }
@@ -80,6 +81,7 @@ function Typeahead(props: Props) {
   return (
     <div className={styles.container}>
       <Form.Control
+        className={props.hasError ? 'field-with-errors': ''}
         type="text"
         value={props.value}
         onChange={onChange}

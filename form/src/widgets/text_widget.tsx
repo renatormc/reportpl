@@ -21,6 +21,7 @@ function TextWidget(props: Props) {
       <Form.Control
         type="text"
         placeholder={props.widget_props.placeholder}
+        className={props.errors ? 'field-with-errors': ''}
         value={props.data}
         onChange={(e) => { props.updateFormValue(props.field_name, e.target.value) }}
         id={props.field_name}

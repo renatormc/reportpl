@@ -33,21 +33,24 @@ function CompositeWidget(props: Props) {
     <div>
       {props.widgetMatrix.map((row, index) => {
         return (
-          <Row key={index}>
+          <Row key={index} className="gx-5">
             {row.map((w, index2) => {
               return (
                 <Col sm={w.col > 0 ? w.col : undefined} key={index2}>
-                  <SwitchWidget
-                    model_name={props.model_name}
-                    widget_props={w.widget_props}
-                    randomID={props.randomID}
-                    data={props.data[w.field_name]}
-                    field_name={w.field_name}
-                    widget_type={w.widget_type}
-                    updateFormValue={updateFormValue}
-                    errors={errors[w.field_name]}
-                    label={w.label} 
-                    formService={props.formService}/>
+                  <div className='mb-2'>
+                    <SwitchWidget
+                      model_name={props.model_name}
+                      widget_props={w.widget_props}
+                      randomID={props.randomID}
+                      data={props.data[w.field_name]}
+                      field_name={w.field_name}
+                      widget_type={w.widget_type}
+                      updateFormValue={updateFormValue}
+                      errors={errors[w.field_name]}
+                      label={w.label}
+                      formService={props.formService} />
+                  </div>
+
                 </Col>
               );
             })}

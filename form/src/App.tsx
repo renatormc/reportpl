@@ -49,8 +49,8 @@ function App(props: Props) {
     saveFormData(props.model_name, data, widgetsMap);
     const errors = await renderDoc(props.model_name, data, props.randomID);
     setErrors(errors);
-    if (errors === null) {
-      showModal("Renderização", "Arquivo renderizado com sucesso");
+    if (errors !== null) {
+      showModal("Erros", "Há erros no seu formulário. Corrija-os e clique em \"Gerar docx\" novamente.");
     }
   }
 

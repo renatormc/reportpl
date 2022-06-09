@@ -35,6 +35,7 @@ function SelectWidget(props: Props) {
         value={props.data.key}
         onChange={(e) => { updateFormValue(e.target.value) }}
         id={props.field_name}
+        className={props.errors ? 'field-with-errors': ''}
       >
         {props.widget_props.options.map((data: TypeAheadItem, index: number) => {
           return (<option value={data.key} key={index}>{data.key}</option>)

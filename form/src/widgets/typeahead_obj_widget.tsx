@@ -7,7 +7,7 @@ import { TypeAheadItem } from '../types/custom_types'
 type Props = {
   model_name: string,
   widget_props: any,
-  data: TypeAheadItem|null,
+  data: TypeAheadItem | null,
   errors: any,
   field_name: string,
   label: string,
@@ -49,6 +49,7 @@ function TypeAheadObjWidget(props: Props) {
       <Form.Group>
         <strong><Form.Label>{props.label}</Form.Label></strong>
         <Typeahead
+          hasError={props.errors !== null}
           value={props.data ? props.data.key : tempValue}
           onChange={(value) => { onChange(value) }}
           getOptions={getOptions}
