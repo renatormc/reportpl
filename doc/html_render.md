@@ -59,3 +59,11 @@ Os paragrafos terão por padrão o estilo "Normal" caso não especificado outro.
 ```html
 <p class="Caption">Esta é uma legenda</p>
 ```
+
+# Subdocs docx dentro do template html
+```html
+<p>
+    {{ subdoc_docx("pessoa.docx", nome="João", sobrenome="Pereira") }}
+</p>
+
+``` 

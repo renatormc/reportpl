@@ -1,13 +1,12 @@
 from pathlib import Path
 from typing import Optional, Union
-from docxtpl import DocxTemplate, InlineImage
+from docxtpl import DocxTemplate, InlineImage, Subdoc
 from report_writer.doc_handler.jenv import make_jinja_env
 from docx.shared import Mm
 from uuid import uuid4
 from report_writer.doc_handler.subdoc_html import SubdocHtmlFunction
 from report_writer.module_model import ModuleModel
 from report_writer.doc_handler.subdoc import SubdocFunction
-
 
 
 class SInlineImage:
@@ -27,6 +26,7 @@ class DocxHandler:
         self.templates_folder = self.module_model.docx_templates_folder
         self.jinja_env = make_jinja_env(self.module_model)
         self.context = None
+        self.pos_subdocs: list[Subdoc]  = []
 
     def prepare_jinja_env(self, tpl: DocxTemplate):
         self.jinja_env.globals['subdoc'] = SubdocFunction(tpl, self.module_model)
@@ -54,5 +54,17 @@ class DocxHandler:
             jinja_env = self.prepare_jinja_env(tpl)
             tpl.render(context, jinja_env)
             tpl.save(dest_file)
+      
+
+            #Renderizar uma segunda vez para inserir os subdocs referenciados nos templates html
+            # tpl = DocxTemplate(str(dest_file))
+            # jinja_env = self.prepare_jinja_env(tpl)
+            # subdocs: list[Subdoc] = []
+            # for doc in self.pos_subdocs:
+            #     sd: Subdoc = tpl.new_subdoc()
+            #     sd.subdocx = doc.docx
+            #     subdocs.append(sd)
+            # tpl.render({'pos_subdocs': subdocs}, jinja_env)
+            # tpl.save(dest_file)
             return dest_file
         return None

@@ -4,9 +4,26 @@ from docxtpl import DocxTemplate, Subdoc
 import jinja2
 from report_writer.module_model import ModuleModel
 from .elment_parses import parse_element
+from uuid import uuid4
 
 if TYPE_CHECKING:
     from report_writer.doc_handler import DocxHandler
+
+
+class SubdocDocxFunction:
+    def __init__(self, docx_handler: 'DocxHandler', tpl: DocxTemplate) -> None:
+       self.docx_handler = docx_handler
+       self.tpl = tpl
+
+    def __call__(self, template, **context):
+        n = len(self.docx_handler.pos_subdocs)
+        path = self.docx_handler.module_model.docx_templates_folder / template
+        subtpl = DocxTemplate(path)
+        subtpl.render(context)
+        # sd: Subdoc = self.tpl.new_subdoc()
+        # sd.subdocx = subtpl.docx
+        self.docx_handler.pos_subdocs.append(subtpl)
+        return "{{p " + f"pos_subdocs[{n}]" + " }}"
 
 
 class SubdocHtmlFunction:
@@ -14,7 +31,9 @@ class SubdocHtmlFunction:
         self.tpl = tpl
         self.module_model = module_model
         self.jinja_env = jinja_env
+        self.jinja_env.globals['subdoc_docx'] = SubdocDocxFunction(docx_handler, tpl)
         self.docx_handler = docx_handler
+
 
     def __call__(self, template: str, context: Any = None) -> Subdoc:
         if not isinstance(context, dict):
