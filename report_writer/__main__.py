@@ -40,6 +40,9 @@ p_clone_model.add_argument("new_name")
 p_delete_model = subparsers.add_parser("delete-model")
 p_delete_model.add_argument("model_name")
 
+
+p_copy_examples = subparsers.add_parser("copy-examples")
+
 args = parser.parse_args()
 if args.command == "dev":
     if not args.no_build_db:
@@ -88,6 +91,10 @@ elif args.command == "clone-model":
 elif args.command == "delete-model":
     rw = ReportWriter("./models")
     rw.delete_model(args.model_name)
+elif args.command == "copy-examples":
+    from report_writer.config import MODELS_EXAMPLE_FOLDER
+    rw = ReportWriter(MODELS_EXAMPLE_FOLDER)
+    rw.copy_models_example()
 
 
 

@@ -231,6 +231,13 @@ class ReportWriter:
         shutil.copytree(folder_model, folder_new)
         self.fix_imports()
 
+    def copy_models_example(self):
+        """Copy model folder with examples"""
+        folder_new = Path("./models")
+        if folder_new.exists() and folder_new.is_dir():
+            raise FileExistsError(f"Model folder already exists on current directory")
+        shutil.copytree(self.models_folder, folder_new)
+
     def delete_model(self, model_name: str) -> None:
         """Deletes a model by its name"""
         folder = self.models_folder / model_name
