@@ -1,10 +1,9 @@
-from sqlalchemy import create_engine, event, engine
+from sqlalchemy import create_engine, event
 from sqlalchemy.engine.base import Engine
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm import scoped_session, sessionmaker, Session
 import re
 from typing import Tuple
-from pathlib import Path
-from typing import Union
+
 
 
 class DB(object):
@@ -12,7 +11,7 @@ class DB(object):
         self.database_uri: str = uri
         self.database_type: str = uri.split(":")[0]
         engine, session = self.connect()
-        self.session: scoped_session = session
+        self.session: Session = session
         self.engine: Engine = engine
         
 
@@ -24,7 +23,7 @@ class DB(object):
         self.engine.dispose()
 
 
-    def connect(self) -> Tuple[Engine, scoped_session]:
+    def connect(self) -> Tuple[Engine, Session]:
         self.engine = create_engine(
             self.database_uri, convert_unicode=True, encoding="utf-8")
         if self.database_type == 'sqlite':

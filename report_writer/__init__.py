@@ -79,7 +79,7 @@ class ReportWriter:
     @property
     def external_bridge(self) -> Any:
         if self._external_bridge is None:
-            raise  ExternalBrigdWasNotSet("external bridge was not set")
+            raise ExternalBrigdWasNotSet("external bridge was not set")
         return self._external_bridge
 
     @property
@@ -220,6 +220,15 @@ class ReportWriter:
         if folder.exists() and not overwrite:
             raise FileExistsError(f"Model \"{filename}\" already exists")
         unzip_file(zipfile, folder)
+        self.fix_imports()
+
+    def clone_model(self, model_name: str, new_name: str) -> None:
+        """Clones a model by its name"""
+        folder_new = self.models_folder / new_name
+        if folder_new.exists():
+            raise FileExistsError(f"Model \"{new_name}\" already exists")
+        folder_model = self.models_folder / model_name
+        shutil.copytree(folder_model, folder_new)
         self.fix_imports()
 
     def delete_model(self, model_name: str) -> None:

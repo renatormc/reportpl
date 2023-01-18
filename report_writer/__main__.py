@@ -33,6 +33,10 @@ p_export_model.add_argument("zipfile")
 p_import_model = subparsers.add_parser("import-model")
 p_import_model.add_argument("zipfile")
 
+p_clone_model = subparsers.add_parser("clone-model")
+p_clone_model.add_argument("model_name")
+p_clone_model.add_argument("new_name")
+
 p_delete_model = subparsers.add_parser("delete-model")
 p_delete_model.add_argument("model_name")
 
@@ -78,6 +82,9 @@ elif args.command == "export-model":
 elif args.command == "import-model":
     rw = ReportWriter("./models")
     rw.import_model(args.zipfile)
+elif args.command == "clone-model":
+    rw = ReportWriter("./models")
+    rw.clone_model(args.model_name, args.new_name)
 elif args.command == "delete-model":
     rw = ReportWriter("./models")
     rw.delete_model(args.model_name)
