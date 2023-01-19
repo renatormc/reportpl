@@ -34,7 +34,7 @@ class Renderer:
         return context, self.engine.render("Main.docx", context, dest_file)
 
 
-class ReportWriter:
+class Reportpl:
     def __init__(self, models_folder: str | Path,
                  tempfolder: str | Path | None = None,
                  random_id: str | None = None,
@@ -236,7 +236,11 @@ class ReportWriter:
         folder_new = Path("./models")
         if folder_new.exists() and folder_new.is_dir():
             raise FileExistsError(f"Model folder already exists on current directory")
-        shutil.copytree(self.models_folder, folder_new)
+        folder_new.mkdir()
+        for entry in self.models_folder.iterdir():
+            if not entry.is_dir() or entry.name.startswith("__"):
+                continue
+            shutil.copytree(entry, folder_new / entry.name)
 
     def delete_model(self, model_name: str) -> None:
         """Deletes a model by its name"""

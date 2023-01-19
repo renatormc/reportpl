@@ -1,5 +1,5 @@
 from reportpl import __version__
-from reportpl import ReportWriter
+from reportpl import Reportpl
 import pytest
 
 def test_version():
@@ -7,5 +7,5 @@ def test_version():
 
            
 def test_form():
-    rw = ReportWriter("./models")
+    rw = Reportpl("./models")
 

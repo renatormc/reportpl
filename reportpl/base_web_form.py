@@ -1,7 +1,7 @@
 from reportpl.widgets.widget import Widget
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from reportpl import ReportWriter
+    from reportpl import Reportpl
 
 
 class BaseWebForm:
@@ -9,7 +9,7 @@ class BaseWebForm:
     def __init__(self) -> None:
         self._widgets_map: dict[str, Widget] | None = None
         self._widgets: list[list[Widget]] | None = None
-        self._reportpl: 'ReportWriter' | None = None
+        self._reportpl: 'Reportpl' | None = None
 
     @property
     def widgets(self) -> list[list[Widget]]:
@@ -22,12 +22,12 @@ class BaseWebForm:
         self._widgets = value
 
     @property
-    def reportpl(self) -> 'ReportWriter':
+    def reportpl(self) -> 'Reportpl':
         if self._reportpl is None:
-            raise Exception("ReportWriter instance was not injected on form")
+            raise Exception("Reportpl instance was not injected on form")
         return self._reportpl
 
-    def set_reportpl(self, rw: 'ReportWriter') -> None:
+    def set_reportpl(self, rw: 'Reportpl') -> None:
         self._reportpl = rw
 
     def define_widgets(self) -> None:

@@ -1,6 +1,6 @@
 from reportpl.api.database import db
 from reportpl.api.database import repo
-from reportpl import ReportWriter
+from reportpl import Reportpl
 from reportpl.api import config
 
 def reacreate_db():
@@ -11,7 +11,7 @@ def reacreate_db():
         pass
     db.init_db()
 
-    rw = ReportWriter("./models")
+    rw = Reportpl("./models")
     docmodels = rw.list_models()
     for d in docmodels:
         rw.set_model(d)

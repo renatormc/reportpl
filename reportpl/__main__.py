@@ -6,7 +6,7 @@ from reportpl.copy_spa import copy_spa
 import os
 import subprocess
 import json
-from reportpl.api.helpers import reacreate_db, ReportWriter
+from reportpl.api.helpers import reacreate_db, Reportpl
 import sys
 
 script_dir = Path(os.path.dirname(os.path.realpath(__file__)))
@@ -79,19 +79,19 @@ elif args.command == "update":
     os.system(f"git checkout {args.branch}")
     os.system(f"git pull origin {args.branch}")
 elif args.command == "export-model":
-    rw = ReportWriter("./models")
+    rw = Reportpl("./models")
     rw.set_model(args.model_name)
     rw.export_model(args.zipfile)
 elif args.command == "import-model":
-    rw = ReportWriter("./models")
+    rw = Reportpl("./models")
     rw.import_model(args.zipfile)
 elif args.command == "clone-model":
-    rw = ReportWriter("./models")
+    rw = Reportpl("./models")
     rw.clone_model(args.model_name, args.new_name)
 elif args.command == "delete-model":
-    rw = ReportWriter("./models")
+    rw = Reportpl("./models")
     rw.delete_model(args.model_name)
 elif args.command == "copy-examples":
     from reportpl.config import MODELS_EXAMPLE_FOLDER
-    rw = ReportWriter(MODELS_EXAMPLE_FOLDER)
+    rw = Reportpl(MODELS_EXAMPLE_FOLDER)
     rw.copy_models_example()

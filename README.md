@@ -1,19 +1,8 @@
 # Install
 
 ```
-pip install -e git+ssh://git@github.com/renatormc/reportpl.git@v0.1.16#egg=reportpl
+pip install reportpl
 ```
-ou
-
-```
-pip install -e git+https://git@github.com/renatormc/reportpl.git@v0.1.16#egg=reportpl
-```
-
-# Update
-```
-python -m reportpl update master
-```
-
 
 # Como desenvolver docmodels
 Para desenvolver docmodels o desenvolvedor poderá utilizar apenas a lib reportpl em si. Para isto basta instala no seu python.
@@ -74,9 +63,9 @@ Importe os arquivos js e css e deixe um div de id "root" passando o nome do mode
 
 ## Instanciando o objeto
 ```python
-from reportpl import ReportWriter
+from reportpl import Reportpl
 
-rw = ReportWriter("/caminho/pasta/models")
+rw = Reportpl("/caminho/pasta/models")
 rw.set_model("model_name")
 ```
 
@@ -92,7 +81,7 @@ data = rw.get_default_data()
 
 ## Validar dados e renderizar docx
 ```python
-rw = ReportWriter("/caminho/pasta/models")
+rw = Reportpl("/caminho/pasta/models")
 rw.set_model("docmodel_name")
 errors = rw.validate(json_data)
 if not errors:
@@ -103,7 +92,7 @@ if not errors:
 As listas de  autocomplete deverão ser salvas em banco para futura filtragem. Para pegar quais listas existem em cada docmodel pode-se utilizar o código a seguir.
 
 ```python
-rw = ReportWriter("/caminho/pasta/models")
+rw = Reportpl("/caminho/pasta/models")
 rw.set_model("docmodel_name")
 lists = rw.get_lists()
 ```
@@ -111,14 +100,14 @@ lists = rw.get_lists()
 ## Pegar lista de todos os models existentes
 
 ```python
-rw = ReportWriter("/caminho/pasta/models")
+rw = Reportpl("/caminho/pasta/models")
 models = rw.list_models()
 ```
 
 ## Exportar docmodel
 
 ```python
-rw = ReportWriter("/caminho/pasta/models")
+rw = Reportpl("/caminho/pasta/models")
 rw.set_model("docmodel_name")
 models = rw.export_model("docmodel_name.zip")
 ```
@@ -126,21 +115,21 @@ models = rw.export_model("docmodel_name.zip")
 ## Importar docmodel
 
 ```python
-rw = ReportWriter("/caminho/pasta/models")
+rw = Reportpl("/caminho/pasta/models")
 models = rw.import_model("docmodel_name.zip")
 ```
 
 ## Deletar docmodel
 
 ```python
-rw = ReportWriter("/caminho/pasta/models")
+rw = Reportpl("/caminho/pasta/models")
 rw.delete_model("docmodel_name")
 ```
 
 ## Verificar existência de um docmodel
 
 ```python
-rw = ReportWriter("/caminho/pasta/models")
+rw = Reportpl("/caminho/pasta/models")
 if rw.model_exists("docmodel_name"):
   print("Existe")
 ```

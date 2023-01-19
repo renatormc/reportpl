@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import IO
 from flask import Flask, jsonify, request, abort, render_template, send_from_directory
-from reportpl import ReportWriter, get_file_names
+from reportpl import Reportpl, get_file_names
 from reportpl.api import config
 from reportpl.api.database import repo
 from reportpl.types import FileType, ModelNotFoundError
@@ -14,7 +14,7 @@ app = Flask(__name__)
 def index():
     model_name = request.args.get("model_name")
     filenames = get_file_names()
-    rw = ReportWriter("./models")
+    rw = Reportpl("./models")
     models = rw.list_models()
     random_id = "RG123_2021"
     return render_template('base.html', model_name=model_name, filenames=filenames, models=models, random_id=random_id)
@@ -25,7 +25,7 @@ def form_layout(model_name: str):
     if not model_name:
         abort(404)
     try:
-        rw = ReportWriter("./models")
+        rw = Reportpl("./models")
         rw.set_model(model_name)
     except ModelNotFoundError:
         abort(404)
@@ -37,7 +37,7 @@ def form_layout(model_name: str):
 def form_default_data(random_id: str, model_name: str):
     if not model_name:
         abort(404)
-    rw = ReportWriter("./models", random_id=random_id, model_name=model_name, tempfolder=config.TEMPFOLDER)
+    rw = Reportpl("./models", random_id=random_id, model_name=model_name, tempfolder=config.TEMPFOLDER)
     data = rw.get_default_data()
     return jsonify(data)
 
@@ -46,7 +46,7 @@ def form_default_data(random_id: str, model_name: str):
 def render_doc(model_name: str, random_id: str):
     if not model_name:
         abort(404)
-    rw = ReportWriter("./models", random_id=random_id, tempfolder=config.TEMPFOLDER)
+    rw = Reportpl("./models", random_id=random_id, tempfolder=config.TEMPFOLDER)
     rw.set_model(model_name)
     json_data = request.json
     if not isinstance(json_data, dict):
@@ -75,7 +75,7 @@ def list_items(model_name: str, list_name: str):
 
 @app.route("/api/model-instructions/<model_name>")
 def model_instructions(model_name: str):
-    rw = ReportWriter("./models", model_name=model_name)
+    rw = Reportpl("./models", model_name=model_name)
     return jsonify({
         "html": rw.get_instructions_html()
     })
@@ -83,7 +83,7 @@ def model_instructions(model_name: str):
 
 @app.route("/api/widget-asset/<random_id>/<field_name>/<path:relpath>")
 def widget_asset(random_id: str, field_name: str, relpath: str):
-    rw = ReportWriter("./models", random_id=random_id, tempfolder=config.TEMPFOLDER)
+    rw = Reportpl("./models", random_id=random_id, tempfolder=config.TEMPFOLDER)
     path = rw.get_widget_asset(field_name, relpath)
     if path is None:
         return "file not found", 404
@@ -92,7 +92,7 @@ def widget_asset(random_id: str, field_name: str, relpath: str):
 
 @app.route("/api/widget-asset/<random_id>/<field_name>/<path:relpath>", methods=("DELETE",))
 def delete_widget_asset(random_id: str, field_name: str, relpath: str):
-    rw = ReportWriter("./models", random_id=random_id, tempfolder=config.TEMPFOLDER)
+    rw = Reportpl("./models", random_id=random_id, tempfolder=config.TEMPFOLDER)
     try:
         rw.delete_widget_asset(field_name, relpath)
     except FileNotFoundError:
@@ -102,7 +102,7 @@ def delete_widget_asset(random_id: str, field_name: str, relpath: str):
 
 @app.route("/api/upload-widget-assets/<random_id>/<widget_type>/<field_name>", methods=("POST",))
 def upload_widget_assets(random_id: str, widget_type: str, field_name: str):
-    rw = ReportWriter("./models", random_id=random_id, tempfolder=config.TEMPFOLDER)
+    rw = Reportpl("./models", random_id=random_id, tempfolder=config.TEMPFOLDER)
     files = request.files.getlist("file[]")
     files_ = [FileType(f.stream, str(f.filename)) for f in files]
     data = rw.save_widget_assets(widget_type, field_name, files_)
@@ -111,7 +111,7 @@ def upload_widget_assets(random_id: str, widget_type: str, field_name: str):
 
 @app.route("/api/update-data/<model_name>/<random_id>/<field_name>", methods=("POST", ))
 def update_data(model_name: str, random_id: str, field_name: str):
-    rw = ReportWriter("./models", random_id=random_id,
+    rw = Reportpl("./models", random_id=random_id,
                       model_name=model_name, tempfolder=config.TEMPFOLDER)
     payload = request.json
     data = rw.get_update_data(field_name, payload)
