@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "report_writer"
-version = "0.1.14"
+name = "reportpl"
+version = "0.1.16"
 description = ""
 authors = ["renatormc <renatomartinsrmc@gmail.com>"]
 
@@ -13,6 +13,7 @@ Pillow = "^9.1.0"
 Flask = "^2.1.2"
 SQLAlchemy = "^1.4.36"
 Markdown = "^3.3.7"
+pdfminer-six = "^20221105"
 
 [tool.poetry.dev-dependencies]
 mypy = "^0.950"
@@ -22,7 +23,10 @@ types-beautifulsoup4 = "^4.10.18"
 autopep8 = "^1.6.0"
 sqlalchemy-stubs = "^0.4"
 types-Markdown = "^3.3.23"
-odin_pdf_parser = { git = "https://github.com/renatormc/odin_pdf_parser.git", branch = "v0.1.2" }
+
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^6.0.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

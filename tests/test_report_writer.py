@@ -1,5 +1,5 @@
-from report_writer import __version__
-from report_writer import ReportWriter
+from reportpl import __version__
+from reportpl import ReportWriter
 import pytest
 
 def test_version():

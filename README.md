@@ -1,26 +1,26 @@
 # Install
 
 ```
-pip install -e git+ssh://git@github.com/renatormc/report_writer.git@v0.1.16#egg=report_writer
+pip install -e git+ssh://git@github.com/renatormc/reportpl.git@v0.1.16#egg=reportpl
 ```
 ou
 
 ```
-pip install -e git+https://git@github.com/renatormc/report_writer.git@v0.1.16#egg=report_writer
+pip install -e git+https://git@github.com/renatormc/reportpl.git@v0.1.16#egg=reportpl
 ```
 
 # Update
 ```
-python -m report_writer update master
+python -m reportpl update master
 ```
 
 
 # Como desenvolver docmodels
-Para desenvolver docmodels o desenvolvedor poderá utilizar apenas a lib report_writer em si. Para isto basta instala no seu python.
+Para desenvolver docmodels o desenvolvedor poderá utilizar apenas a lib reportpl em si. Para isto basta instala no seu python.
 Criar uma pasta de trabalho, colocar a pasta de models dentro dela, abrir o terminal na pasta de trabalho e executar o comando a seguir.
 
 ```
-python -m report_writer dev
+python -m reportpl dev
 ```
 
 Acesse no navegador o endereço abaixo substituindo <\model_name>\ pelo nome do docmodel que você irá desenvolver.
@@ -39,7 +39,7 @@ Em seguida vá fazendo as modificações dentro da pasta models.
 Execute o comando abaixo substituindo <\destination_folder>\ pelo caminho da pasta para a qual você deseja copiar. Escolha uma pasta dentro da sua pasta de arquivos estáticos.
 
 ```
-python -m report_writer copy-spa <destination_folder>
+python -m reportpl copy-spa <destination_folder>
 ```
 
 ## Importar dentro do template
@@ -47,7 +47,7 @@ Como os arquivos js e css mudam o nome a cada nova compilação foi disponibiliz
 os quais deverão ser passado para o template.
 
 ```python
-from report_writer import get_file_names
+from reportpl import get_file_names
 
 filenames = get_file_names()
 ```
@@ -59,8 +59,8 @@ Importe os arquivos js e css e deixe um div de id "root" passando o nome do mode
 <html lang="pt-BR">
   <head>
     ...
-    <script defer="defer" src="{% static 'report_writer_form/js/' %}{{ filenames.js_filename }}"></script>
-    <link href="{% static 'report_writer_form/css/' %}{{ filenames.css_filename }}" rel="stylesheet" />
+    <script defer="defer" src="{% static 'reportpl_form/js/' %}{{ filenames.js_filename }}"></script>
+    <link href="{% static 'reportpl_form/css/' %}{{ filenames.css_filename }}" rel="stylesheet" />
     ...
   </head>
   <body>
@@ -74,7 +74,7 @@ Importe os arquivos js e css e deixe um div de id "root" passando o nome do mode
 
 ## Instanciando o objeto
 ```python
-from report_writer import ReportWriter
+from reportpl import ReportWriter
 
 rw = ReportWriter("/caminho/pasta/models")
 rw.set_model("model_name")

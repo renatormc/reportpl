@@ -8,3 +8,4 @@ dist
 test.py
 .local
 compilado.docx
+.mypy_cache
