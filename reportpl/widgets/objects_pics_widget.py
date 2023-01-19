@@ -47,13 +47,11 @@ class ObjectsPicsWidget:
             pass
         pics = [{'path': f"{entry.name}", 'selected': False}
                 for entry in folder.iterdir() if entry.is_file()]
-        pics.sort(key=lambda x: x['path']) # type: ignore
+        pics.sort(key=lambda x: x['path'])  # type: ignore
         return [{'name': '0', 'pics': pics}]
 
     def get_update_data(self, payload: Any) -> Any:
         pass
-
-
 
     @staticmethod
     def save_widget_assets(widget_folder: Path, files: list[FileType]) -> Any:

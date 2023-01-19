@@ -8,6 +8,7 @@ import SelectWidget from './select_widget';
 import CheckboxWidget from './checkbox_widget';
 import ObjectsPicsWidget from './objects_pics_widget';
 import FileWidget from './file_widget'
+import PicsSubfolderWidget from './pics_subfolder_widget';
 
 type Props = {
   model_name: string,
@@ -108,6 +109,17 @@ function SwitchWidget(props: Props) {
         formService={props.formService} />
     case "file_widget":
       return <FileWidget
+        model_name={props.model_name}
+        updateFormValue={props.updateFormValue}
+        widget_props={props.widget_props}
+        data={props.data}
+        randomID={props.randomID}
+        field_name={props.field_name}
+        errors={props.errors}
+        label={props.label}
+        formService={props.formService} />
+    case "pics_subfolder_widget":
+      return <PicsSubfolderWidget
         model_name={props.model_name}
         updateFormValue={props.updateFormValue}
         widget_props={props.widget_props}
