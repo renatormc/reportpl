@@ -1,6 +1,7 @@
 from datetime import datetime
 from .helpers_filters import *
 import math
+from pathlib import Path
 
 nome_meses = [
     'janeiro',
@@ -149,6 +150,14 @@ class Filters:
             middle_text += f" e {centavos_text} {aux2}"
         text = f"{prefix}{value_str} ({middle_text})"
         return text
+
+    @staticmethod
+    def file_stem(value):
+        try:
+            path = Path(value)
+            return path.stem
+        except:
+            return ""
 
 
 

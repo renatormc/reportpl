@@ -27,7 +27,7 @@ function PicsSubfolderWidget(props: Props) {
 
       try {
         props.formService("setLoading", props.field_name, true)
-        const data  =  await uploadWidgetAsset(props.randomID, 'file_widget', props.field_name, formData)
+        const data  =  await uploadWidgetAsset(props.randomID, 'pics_subfolder_widget', props.field_name, formData)
         props.updateFormValue(props.field_name, data);
       } finally {
         props.formService("setLoading", props.field_name, false)

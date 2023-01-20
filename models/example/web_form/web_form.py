@@ -1,5 +1,6 @@
 from pathlib import Path
-from reportpl.widgets import TextWidget, ArrayWidget, TextAreaWidget, TypeAheadObjWidget, TypeAheadWidget, SelectWidget, CheckBoxWidget, ObjectsPicsWidget, FileWidget
+from reportpl.widgets import TextWidget, ArrayWidget, TextAreaWidget, TypeAheadObjWidget, \
+TypeAheadWidget, SelectWidget, CheckBoxWidget, ObjectsPicsWidget, FileWidget, PicsSubfolderWidget
 from reportpl.types import ValidationError
 from reportpl.web_converters import DateConverter, FloatConverter
 from reportpl.base_web_form import BaseWebForm
@@ -40,5 +41,8 @@ class Form(BaseWebForm):
             ]   ,
             [
                 ObjectsPicsWidget(self, 'fotos', label='Fotos', multiple=True),
+            ], 
+            [
+                PicsSubfolderWidget(self, 'fotos2', label='Fotos 2'),
             ]   
         ]

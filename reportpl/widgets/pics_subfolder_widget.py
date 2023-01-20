@@ -65,6 +65,7 @@ class PicsSubfolderWidget:
                 for entry2 in entry.iterdir():
                     if entry2.is_file():
                         item['files'].append(str(entry2.absolute()))
+                data.append(item)
         self.data = data
 
         for v in self.validators:
