@@ -15,6 +15,12 @@ export type WidgetsMapType = {
 
 export type ErrorsType = { [key: string]: any }
 
+export type RenderResponse = {
+    errors: ErrorsType | null,
+    type: "errors" | "message" | "file"
+    data: any
+}
+
 export type DataType = { [key: string]: any }
 
 export interface TypeAheadItem {

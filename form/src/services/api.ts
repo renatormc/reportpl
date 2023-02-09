@@ -1,8 +1,8 @@
 import { AxiosError } from 'axios';
-import { WidgetMatrixType, ErrorsType, TypeAheadItem, ModelInstructionsResponse, DataType } from './../types/custom_types';
+import { WidgetMatrixType, TypeAheadItem, ModelInstructionsResponse, DataType, RenderResponse } from './../types/custom_types';
 import axios from './axios'
 import { getCookie } from './cookies';
-import fileDownload from 'js-file-download';
+
 
 const rootEl = document.getElementById('root') as HTMLElement;
 const urlPrefix = rootEl.getAttribute("url_prefix") || "";
@@ -23,11 +23,10 @@ export const getUpdateData = async (random_id: string, model_name: string, field
     return resp.data;
 }
 
-export const renderDoc = async (model_name: string, data: any, randomID: string): Promise<ErrorsType> => {
+export const renderDoc = async (model_name: string, data: any, randomID: string): Promise<RenderResponse> => {
     try {
         const csrftoken = getCookie('csrftoken') || "";
-        // const rnumber = Math.random()
-        const resp = await axios.post<Blob>(`/render-doc/${model_name}/${randomID}#${Math.random}`,
+        const resp = await axios.post<any>(`/render-doc/${model_name}/${randomID}#${Math.random}`,
             data,
             {
                 headers: {
@@ -35,16 +34,35 @@ export const renderDoc = async (model_name: string, data: any, randomID: string)
                 },
                 responseType: 'arraybuffer'
             });
-            fileDownload(resp.data, randomID +  ".docx");
-        return resp.data;
+        try {
+            const enc = new TextDecoder("utf-8");
+            const message = JSON.parse(enc.decode(resp.data)).message
+            
+            return {
+                type: "message",
+                data: message,
+                errors: null
+            }
+        } catch (err) {
+            return {
+                type: "file",
+                data: resp.data,
+                errors: null
+            }
+        }
+
+
     } catch (error) {
         const err = error as AxiosError
         if (err.response && err.response.status === 422) {
             const aux = err.response.data as ArrayBuffer
             console.log(aux)
             const enc = new TextDecoder("utf-8")
-            return JSON.parse(enc.decode(aux))
-            // return err.response.data as ErrorsType;
+            return {
+                type: "errors",
+                errors: JSON.parse(enc.decode(aux)),
+                data: null
+            }
         }
         throw error;
     }
@@ -74,7 +92,7 @@ export const uploadWidgetAsset = async (
     return resp.data;
 }
 
-export const deleteAsset = async (randomID: string, fieldName: string, relPath: string):Promise<any> => {
+export const deleteAsset = async (randomID: string, fieldName: string, relPath: string): Promise<any> => {
     const resp = await axios.delete<any>(`/widget-asset/${randomID}/${fieldName}/${relPath}`);
     return resp.data;
 }
@@ -83,6 +101,6 @@ export const urlFor = (path: string): string => {
     return urlPrefix + "/" + path;
 }
 
-export const urlForWidgetAsset = (randomID:string, fieldName: string, path: string): string => {
+export const urlForWidgetAsset = (randomID: string, fieldName: string, path: string): string => {
     return `${urlPrefix}/widget-asset/${randomID}/${fieldName}/${path}`
 }

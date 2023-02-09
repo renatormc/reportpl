@@ -8,7 +8,7 @@ import { DataType, ErrorsType, WidgetMatrixType, WidgetsMapType } from './types/
 import CompositeWidget from './widgets/composite_widget';
 import { Button, Row, Col, Container, Form, Accordion, Spinner } from 'react-bootstrap';
 import { getSavedFormData, saveFormData } from './services/storage';
-
+import fileDownload from 'js-file-download';
 
 type Props = {
   model_name: string,
@@ -50,12 +50,23 @@ function App(props: Props) {
     saveFormData(props.model_name, data, widgetsMap);
     try {
       setLoading(true)
-      const errors = await renderDoc(props.model_name, data, props.randomID);
-      setErrors(errors);
-      
-      if (!(errors instanceof ArrayBuffer)) {
-        showModal("Erros", "Há erros no seu formulário. Corrija-os e clique em \"Gerar docx\" novamente.");
-      }
+      const resp = await renderDoc(props.model_name, data, props.randomID);
+      switch (resp.type) {
+        case 'errors':
+          
+          if (!(errors instanceof ArrayBuffer)) {
+            setErrors(resp.errors as ErrorsType);
+            showModal("Erros", "Há erros no seu formulário. Corrija-os e clique em \"Gerar docx\" novamente.");
+          }
+          break;
+        case 'file':
+          fileDownload(resp.data, props.randomID + ".docx");
+          break;
+        case 'message':
+          showModal("Mensagem", resp.data);
+          break;
+      }     
+
     } finally {
       setLoading(false)
     }
