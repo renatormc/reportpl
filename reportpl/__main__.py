@@ -1,5 +1,4 @@
 import argparse
-from reportpl.api import run_app, config
 from pathlib import Path
 import shutil
 from reportpl.copy_spa import copy_spa
@@ -12,8 +11,9 @@ import sys
 script_dir = Path(os.path.dirname(os.path.realpath(__file__)))
 
 parser = argparse.ArgumentParser()
+
+parser.add_argument("-l", "--local", action="store_true",  help="Use local")
 subparsers = parser.add_subparsers(dest="command", required=True, help='Command to be used')
-parser.add_argument("-v", "--verbose", help="Verbose")
 
 p_dev = subparsers.add_parser("dev")
 p_dev.add_argument("--no-build-db", action="store_true", help="Do not recreate the dev db")
@@ -44,6 +44,12 @@ p_delete_model.add_argument("model_name")
 p_copy_examples = subparsers.add_parser("copy-examples")
 
 args = parser.parse_args()
+
+from reportpl.api import run_app, config
+from reportpl import config as rplcfg
+if args.local:
+    rplcfg.set_local(True)
+   
 if args.command == "dev":
     if not args.no_build_db:
         reacreate_db()
@@ -79,17 +85,17 @@ elif args.command == "update":
     os.system(f"git checkout {args.branch}")
     os.system(f"git pull origin {args.branch}")
 elif args.command == "export-model":
-    rw = Reportpl("./models")
+    rw = Reportpl(report_config.MODELS_FOLDER)
     rw.set_model(args.model_name)
     rw.export_model(args.zipfile)
 elif args.command == "import-model":
-    rw = Reportpl("./models")
+    rw = Reportpl(report_config.MODELS_FOLDER)
     rw.import_model(args.zipfile)
 elif args.command == "clone-model":
-    rw = Reportpl("./models")
+    rw = Reportpl(report_config.MODELS_FOLDER)
     rw.clone_model(args.model_name, args.new_name)
 elif args.command == "delete-model":
-    rw = Reportpl("./models")
+    rw = Reportpl(report_config.MODELS_FOLDER)
     rw.delete_model(args.model_name)
 elif args.command == "copy-examples":
     from reportpl.config import MODELS_EXAMPLE_FOLDER

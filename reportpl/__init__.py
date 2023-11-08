@@ -14,6 +14,7 @@ import tempfile
 import markdown
 from datetime import timedelta, datetime
 from reportpl.module_model import ModuleModel
+from reportpl import config as rplcfg
 
 __version__ = '0.1.14'
 
@@ -233,7 +234,7 @@ class Reportpl:
 
     def copy_models_example(self):
         """Copy model folder with examples"""
-        folder_new = Path("./models")
+        folder_new = Path(rplcfg.MODELS_FOLDER)
         if folder_new.exists() and folder_new.is_dir():
             raise FileExistsError(f"Model folder already exists on current directory")
         folder_new.mkdir()

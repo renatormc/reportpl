@@ -2,8 +2,10 @@ from reportpl.api.database import db
 from reportpl.api.database import repo
 from reportpl import Reportpl
 from reportpl.api import config
+from reportpl import config as rplcfg
 
 def reacreate_db():
+    print(rplcfg.MODELS_FOLDER)
     print("Recreating DB")
     try:
         config.DBFILE.unlink()
@@ -11,7 +13,7 @@ def reacreate_db():
         pass
     db.init_db()
 
-    rw = Reportpl("./models")
+    rw = Reportpl(rplcfg.MODELS_FOLDER)
     docmodels = rw.list_models()
     for d in docmodels:
         rw.set_model(d)
