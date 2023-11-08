@@ -338,6 +338,11 @@ class Reportpl:
             else:
                 entry.unlink()
 
+    def read_workdir(self) -> dict:
+        form = self.current_module_model.get_web_form()
+        form.set_reportpl(self)
+        return form.read_workdir()
+
 
 def get_file_names() -> dict[str, str]:
     folder = script_dir / "api/static/front"

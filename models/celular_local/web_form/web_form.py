@@ -46,6 +46,12 @@ class Form(BaseWebForm):
             pass
         print(result)
         return result
+    
+    def read_workdir(self) -> dict:
+        path = Path("Requisicao.pdf")
+        if path.is_file():
+            return self.file_parse(path)
+        return {}
 
     def define_widgets(self):
 
@@ -84,10 +90,6 @@ class Form(BaseWebForm):
             ],
             [
                 TextWidget(self, 'pessoas_envolvidas', label="Pessoas envolvidas",
-                           placeholder="Pessoas separadas por vírgula", converter=StringListConverter(), col=10),
-                CheckBoxWidget(self, 'incluir_fotos_iniciais', "Incluir fotos iniciais", default=False, col=2)
-            ],
-            [
-                ObjectsPicsWidget(self, 'objects', label="Fotos", new_object_name="Celular", multiple=True),
+                           placeholder="Pessoas separadas por vírgula", converter=StringListConverter())
             ]
         ]

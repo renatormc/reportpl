@@ -16,7 +16,7 @@ def index():
     rw = Reportpl(rplcfg.MODELS_FOLDER)
     models = rw.list_models()
     random_id = "RG123_2021"
-    return render_template('base.html', model_name=model_name, filenames=filenames, models=models, random_id=random_id)
+    return render_template('base.html', model_name=model_name, filenames=filenames, models=models, random_id=random_id, local=rplcfg.LOCAL)
 
 
 @app.route("/api/form-layout/<model_name>")
@@ -59,6 +59,8 @@ def render_doc(model_name: str, random_id: str):
     print(rw.context)
     path = Path("./compilado.docx").absolute()
     rw.render_docx(path)
+    if rplcfg.LOCAL:
+        return jsonify({"message": f"Renderizado \"{path}\""})
     return send_from_directory(path.parent, path.name)
     # return jsonify(errors)
 
@@ -115,3 +117,9 @@ def update_data(model_name: str, random_id: str, field_name: str):
     payload = request.json
     data = rw.get_update_data(field_name, payload)
     return jsonify(data)
+
+
+@app.route("/api/read-workdir/<model_name>")
+def read_workdir(model_name: str):
+    rw = Reportpl(rplcfg.MODELS_FOLDER, model_name=model_name)
+    return jsonify(rw.read_workdir())

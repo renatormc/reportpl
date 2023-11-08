@@ -8,7 +8,6 @@ default_meta: ModelMetaType = {
     'has_web_form': False
 }
 
-
 class ModelInfo:
     def __init__(self, model_folder: str | Path) -> None:
         self.model_folder = Path(model_folder)

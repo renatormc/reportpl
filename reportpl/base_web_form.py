@@ -33,6 +33,9 @@ class BaseWebForm:
     def define_widgets(self) -> None:
         self.widgets = []
 
+    def read_workdir(self) -> dict:
+        return {}
+
     @property
     def widgets_map(self) -> dict[str, Widget]:
         if self._widgets_map is None:

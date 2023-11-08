@@ -34,7 +34,7 @@
   {% if model_name %}
   <script defer="defer" src="{{ url_for('static', filename='front/js/' + filenames.js_filename ) }}"></script>
   <link href="{{ url_for('static', filename='front/css/' + filenames.css_filename) }}" rel="stylesheet" />
-  <div id="root" model_name="{{ model_name }}" url_prefix="api" ramdon_id="{{ random_id }}"></div>
+  <div id="root" model_name="{{ model_name }}" url_prefix="api" ramdon_id="{{ random_id }}" local="{{ 'true' if local else 'false' }}"></div>
   {% else %}
   <div class="contaienr-fluid">
     <div class="row">

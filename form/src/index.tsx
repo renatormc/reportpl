@@ -8,6 +8,7 @@ import {v4 as uuidv4} from 'uuid';
 const rootEl = document.getElementById('root') as HTMLElement;
 const modelName = rootEl.getAttribute("model_name") || "";
 const randomID = rootEl.getAttribute("random_id") || uuidv4();
+const local = rootEl.getAttribute("local")?.toLowerCase() === "true" || false
 console.log(randomID);
 
 const root = ReactDOM.createRoot(
@@ -15,7 +16,7 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <App model_name={modelName} randomID={randomID}/>
+    <App model_name={modelName} randomID={randomID} local={local}/>
   </React.StrictMode>
 );
 

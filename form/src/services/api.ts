@@ -104,3 +104,8 @@ export const urlFor = (path: string): string => {
 export const urlForWidgetAsset = (randomID: string, fieldName: string, path: string): string => {
     return `${urlPrefix}/widget-asset/${randomID}/${fieldName}/${path}`
 }
+
+export const readWorkdir = async (modelName: string): Promise<any> => {
+    const resp = await axios.get<any>(`/read-workdir/${modelName}`);
+    return resp.data;
+}

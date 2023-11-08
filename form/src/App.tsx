@@ -3,7 +3,7 @@ import './App.css';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import 'react-bootstrap-typeahead/css/Typeahead.bs5.css';
 import MsgBox from './components/msgbox';
-import { getFormDefaultData, getFormLayout, getModelInstructions, getUpdateData, renderDoc } from './services/api';
+import { getFormDefaultData, getFormLayout, getModelInstructions, getUpdateData, renderDoc, readWorkdir } from './services/api';
 import { DataType, ErrorsType, WidgetMatrixType, WidgetsMapType } from './types/custom_types';
 import CompositeWidget from './widgets/composite_widget';
 import { Button, Row, Col, Container, Form, Accordion, Spinner } from 'react-bootstrap';
@@ -12,7 +12,8 @@ import fileDownload from 'js-file-download';
 
 type Props = {
   model_name: string,
-  randomID: string
+  randomID: string,
+  local: boolean
 }
 
 
@@ -113,6 +114,11 @@ function App(props: Props) {
     })
   }
 
+  const readWorkDirWrap = async () => {
+     const data = await readWorkdir(props.model_name)
+     await updateData(data)
+  }
+
   const showModal = (title: string, text: string) => {
     setModalTitle(title);
     setModalText(text);
@@ -120,8 +126,6 @@ function App(props: Props) {
   }
 
   useEffect(() => {
-
-
     getFormDefaultData(props.randomID, props.model_name).then((data) => {
       setData(data);
       getFormLayout(props.model_name).then((data) => {
@@ -179,6 +183,7 @@ function App(props: Props) {
                     <Button variant="secondary" onClick={clearForm}><i className="fa fa-broom"></i> Limpar</Button>
                     <Button variant="primary" onClick={submitForm}><i className="fa fa-file-word"></i> Gerar docx</Button>
                     <Button variant="warning" onClick={loadSavedForm}><i className="fas fa-archive"></i> Carregar último preenchimento</Button>
+                    {props.local && <Button variant="secondary" onClick={readWorkDirWrap}><i className="fas fa-archive"></i> Ler diretório de trabalho</Button>}
                   </div>
                 </Col>
               </Row>
