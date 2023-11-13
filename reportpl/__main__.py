@@ -7,6 +7,7 @@ import subprocess
 import json
 from reportpl.api.helpers import reacreate_db, Reportpl
 import sys
+from reportpl import config as report_config
 
 script_dir = Path(os.path.dirname(os.path.realpath(__file__)))
 
@@ -58,6 +59,7 @@ elif args.command == "copy-spa":
     copy_spa(args.folder_to)
 elif args.command == "build-spa":
     os.chdir(script_dir.parent / "form")
+    subprocess.check_call(["yarn", "install"])
     subprocess.check_call(["yarn", "build"])
     folder_from = script_dir.parent / "form/build/static"
     folder_to = config.api_dir / "static/front"

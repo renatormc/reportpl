@@ -1,0 +1,17 @@
+#!/bin/bash
+if [ -f .env ]; then
+    export $(cat .env | grep -v '#' | sed 's/\r$//' | awk '/=/ {print $1}' )
+fi
+
+case $1 in
+    "app")
+        trap 'kill $(jobs -p)' EXIT
+        python -m reportpl dev &
+        cd form && yarn start &
+        wait
+    ;;
+    
+    *)
+        echo "Command unknown"
+    ;;
+esac
